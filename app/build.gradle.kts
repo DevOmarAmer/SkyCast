@@ -1,13 +1,12 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.ksp)
 }
 
 android {
     namespace = "com.example.skycast"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36 // تم تعديلها لتكون رقماً مباشراً لتجنب أي مشاكل مع release()
 
     defaultConfig {
         applicationId = "com.example.skycast"
@@ -56,10 +55,16 @@ dependencies {
 
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
 
-    //Room
-    val room_version = "2.8.4"
+    // Room
+    val room_version = "2.7.0-alpha11"
     implementation("androidx.room:room-runtime:$room_version")
+
+    implementation("androidx.room:room-ktx:$room_version")
+    ksp("androidx.room:room-compiler:$room_version")
+
+    implementation("io.coil-kt:coil-compose:2.6.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
