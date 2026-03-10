@@ -1,7 +1,9 @@
 package com.example.skycast
 
 import android.Manifest
+import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -74,10 +76,20 @@ class MainActivity : ComponentActivity() {
                     val permissionLauncher = rememberLauncherForActivityResult(
                         contract = ActivityResultContracts.RequestMultiplePermissions()
                     ) { permissions ->
-                        val isGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
+
+                        // location permission
+                        val isLocationGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
                                 permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
 
-                        if (isGranted) {
+                        // noti per for +13v
+                        val isNotificationGranted = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            permissions[Manifest.permission.POST_NOTIFICATIONS] == true
+                        } else {
+                            true
+                        }
+
+
+                        if (isLocationGranted) {
                             LocationHelper.getCurrentLocation(context) { location ->
                                 if (location != null) {
                                     homeViewModel.getWeatherData(
@@ -93,6 +105,11 @@ class MainActivity : ComponentActivity() {
                         } else {
                             homeViewModel.getWeatherData(30.0444, 31.2357, API_KEY)
                             locationFetched = true
+                        }
+
+
+                        if (!isNotificationGranted) {
+                            Toast.makeText(context, "Please grant notification permission", Toast.LENGTH_SHORT).show()
                         }
                     }
 
