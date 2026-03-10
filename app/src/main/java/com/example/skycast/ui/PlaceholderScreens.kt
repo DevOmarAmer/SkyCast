@@ -8,12 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
 
-@Composable
-fun FavoritesScreen() {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text("Favorites Screen", fontSize = 24.sp)
-    }
-}
+
 
 @Composable
 fun AlertsScreen() {

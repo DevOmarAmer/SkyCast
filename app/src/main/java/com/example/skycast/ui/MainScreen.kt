@@ -11,11 +11,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.skycast.navigation.BottomNavItem
+import com.example.skycast.ui.favorites.FavoritesScreen
+import com.example.skycast.ui.favorites.FavoritesViewModel
 import com.example.skycast.ui.home.HomeScreen
 import com.example.skycast.ui.home.HomeViewModel
 
 @Composable
-fun MainScreen(homeViewModel: HomeViewModel) {
+fun MainScreen(homeViewModel: HomeViewModel, favoritesViewModel: FavoritesViewModel) {
     val navController = rememberNavController()
 
     Scaffold(
@@ -30,7 +32,10 @@ fun MainScreen(homeViewModel: HomeViewModel) {
                 HomeScreen(viewModel = homeViewModel)
             }
             composable(BottomNavItem.Favorites.route) {
-                FavoritesScreen()
+                FavoritesScreen( viewModel = favoritesViewModel, onNavigateToAddPlace = {
+                    //TODO: navigate to add place screen
+                })
+
             }
             composable(BottomNavItem.Alerts.route) {
                 AlertsScreen()

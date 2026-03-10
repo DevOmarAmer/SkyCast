@@ -24,7 +24,8 @@ import com.example.skycast.data.local.WeatherDatabase
 import com.example.skycast.data.remote.RetrofitClient // بافتراض أنك أنشأت RetrofitClient سابقاً
 import com.example.skycast.data.repository.WeatherRepository
 import com.example.skycast.ui.MainScreen
-import com.example.skycast.ui.home.HomeScreen
+import com.example.skycast.ui.favorites.FavoritesViewModel
+import com.example.skycast.ui.favorites.FavoritesViewModelFactory
 import com.example.skycast.ui.home.HomeViewModel
 import com.example.skycast.ui.home.HomeViewModelFactory
 import com.example.skycast.ui.theme.SkyCastTheme
@@ -45,7 +46,9 @@ class MainActivity : ComponentActivity() {
         val repository = WeatherRepository(apiService, favoriteDao)
 
         // 4 Factory
-        val factory = HomeViewModelFactory(repository)
+        val homeFactory = HomeViewModelFactory(repository)
+
+        val favoritesFactory = FavoritesViewModelFactory(repository)
 
         setContent {
             SkyCastTheme {
@@ -54,7 +57,8 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val context = LocalContext.current
-                    val homeViewModel: HomeViewModel = viewModel(factory = factory)
+                    val homeViewModel: HomeViewModel = viewModel(factory = homeFactory)
+                    val favoritesViewModel: FavoritesViewModel = viewModel(factory = favoritesFactory)
 
                     var locationFetched by remember { mutableStateOf(false) }
 
@@ -97,8 +101,7 @@ class MainActivity : ComponentActivity() {
                             CircularProgressIndicator()
                         }
                     } else {
-                        MainScreen(homeViewModel = homeViewModel)
-                    }
+                        MainScreen(homeViewModel = homeViewModel, favoritesViewModel = favoritesViewModel)                    }
                 }
             }
         }
