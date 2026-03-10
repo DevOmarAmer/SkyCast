@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.skycast.navigation.BottomNavItem
+import com.example.skycast.ui.favorites.AddFavoriteScreen
 import com.example.skycast.ui.favorites.FavoritesScreen
 import com.example.skycast.ui.favorites.FavoritesViewModel
 import com.example.skycast.ui.home.HomeScreen
@@ -33,7 +34,7 @@ fun MainScreen(homeViewModel: HomeViewModel, favoritesViewModel: FavoritesViewMo
             }
             composable(BottomNavItem.Favorites.route) {
                 FavoritesScreen( viewModel = favoritesViewModel, onNavigateToAddPlace = {
-                    //TODO: navigate to add place screen
+                    navController.navigate("add_favorite")
                 })
 
             }
@@ -42,6 +43,14 @@ fun MainScreen(homeViewModel: HomeViewModel, favoritesViewModel: FavoritesViewMo
             }
             composable(BottomNavItem.Settings.route) {
                 SettingsScreen()
+            }
+            composable("add_favorite") {
+                AddFavoriteScreen(
+                    viewModel = favoritesViewModel,
+                    onNavigateBack = {
+                        navController.popBackStack() // الرجوع بعد الحفظ
+                    }
+                )
             }
         }
     }

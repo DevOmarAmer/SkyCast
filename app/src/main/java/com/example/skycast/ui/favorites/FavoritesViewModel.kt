@@ -25,4 +25,10 @@ class FavoritesViewModel(
             repository.deleteFavoriteLocation(location)
         }
     }
+
+    fun addLocation(location: FavoriteLocation) {
+        viewModelScope.launch {
+            repository.insertFavoriteLocation(location)
+        }
+    }
 }
