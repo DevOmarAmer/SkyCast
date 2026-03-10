@@ -38,22 +38,25 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val API_KEY : String  = "59ea0a0dbe5f3beceb5f818d109328ec"
+
         // 1. (Local)
         val database = WeatherDatabase.getDatabase(applicationContext)
         val favoriteDao = database.favoriteLocationDao()
-        val API_KEY : String  = "59ea0a0dbe5f3beceb5f818d109328ec"
+
         // 2. (Remote)
         val apiService = RetrofitClient.apiService
-
-        // 3.Repository
         val repository = WeatherRepository(apiService, favoriteDao)
 
-        // 4 Factory
-        val homeFactory = HomeViewModelFactory(repository)
-
-        val favoritesFactory = FavoritesViewModelFactory(repository)
+        // settings
         val settingsManager = SettingsManager(applicationContext)
         val settingsFactory = SettingsViewModelFactory(settingsManager)
+
+
+        val homeFactory = HomeViewModelFactory(repository, settingsManager )
+
+        val favoritesFactory = FavoritesViewModelFactory(repository)
+
 
 
         setContent {
