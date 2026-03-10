@@ -67,7 +67,6 @@ fun WeatherContent(data: WeatherResponse) {
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // --- الجزء الثاني: درجة الحرارة والأيقونة ---
         Row(verticalAlignment = Alignment.CenterVertically) {
             val iconCode = currentWeather.weatherInfo.firstOrNull()?.icon
             AsyncImage(
@@ -83,7 +82,6 @@ fun WeatherContent(data: WeatherResponse) {
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // --- الجزء الثالث: تفاصيل الطقس (الرطوبة، الرياح، الضغط) ---
         Card(
             modifier = Modifier.fillMaxWidth(),
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
@@ -102,7 +100,6 @@ fun WeatherContent(data: WeatherResponse) {
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // --- الجزء الرابع: توقعات الساعات القادمة ---
         Text(
             text = "Upcoming Forecast",
             fontSize = 20.sp,
@@ -112,7 +109,7 @@ fun WeatherContent(data: WeatherResponse) {
         Spacer(modifier = Modifier.height(8.dp))
 
         LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            items(data.forecastList.take(8)) { forecast -> // عرض أول 8 فترات (24 ساعة)
+            items(data.forecastList.take(8)) { forecast ->
                 ForecastCard(forecast)
             }
         }
