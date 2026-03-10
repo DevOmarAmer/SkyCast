@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.skycast.navigation.BottomNavItem
+import com.example.skycast.ui.alerts.AlertsScreen
 import com.example.skycast.ui.favorites.AddFavoriteScreen
 import com.example.skycast.ui.favorites.FavoritesScreen
 import com.example.skycast.ui.favorites.FavoritesViewModel
