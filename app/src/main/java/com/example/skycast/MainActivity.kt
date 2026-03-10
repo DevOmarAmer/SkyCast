@@ -26,10 +26,13 @@ import com.example.skycast.data.repository.WeatherRepository
 import com.example.skycast.ui.MainScreen
 import com.example.skycast.ui.favorites.FavoritesViewModel
 import com.example.skycast.ui.favorites.FavoritesViewModelFactory
+import com.example.skycast.ui.favorites.SettingsViewModelFactory
 import com.example.skycast.ui.home.HomeViewModel
 import com.example.skycast.ui.home.HomeViewModelFactory
+import com.example.skycast.ui.settings.SettingsViewModel
 import com.example.skycast.ui.theme.SkyCastTheme
 import com.example.skycast.utils.LocationHelper
+import com.example.skycast.utils.SettingsManager
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,6 +52,9 @@ class MainActivity : ComponentActivity() {
         val homeFactory = HomeViewModelFactory(repository)
 
         val favoritesFactory = FavoritesViewModelFactory(repository)
+        val settingsManager = SettingsManager(applicationContext)
+        val settingsFactory = SettingsViewModelFactory(settingsManager)
+
 
         setContent {
             SkyCastTheme {
@@ -59,7 +65,7 @@ class MainActivity : ComponentActivity() {
                     val context = LocalContext.current
                     val homeViewModel: HomeViewModel = viewModel(factory = homeFactory)
                     val favoritesViewModel: FavoritesViewModel = viewModel(factory = favoritesFactory)
-
+                    val settingsViewModel: SettingsViewModel = viewModel(factory = settingsFactory)
                     var locationFetched by remember { mutableStateOf(false) }
 
                     val permissionLauncher = rememberLauncherForActivityResult(
@@ -101,7 +107,7 @@ class MainActivity : ComponentActivity() {
                             CircularProgressIndicator()
                         }
                     } else {
-                        MainScreen(homeViewModel = homeViewModel, favoritesViewModel = favoritesViewModel)                    }
+                        MainScreen(homeViewModel = homeViewModel, favoritesViewModel = favoritesViewModel, SettingsViewModel = settingsViewModel )                    }
                 }
             }
         }

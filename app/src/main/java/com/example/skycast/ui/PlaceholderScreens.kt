@@ -16,10 +16,3 @@ fun AlertsScreen() {
         Text("Alerts Screen", fontSize = 24.sp)
     }
 }
-
-@Composable
-fun SettingsScreen() {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text("Settings Screen", fontSize = 24.sp)
-    }
-}

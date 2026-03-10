@@ -16,9 +16,11 @@ import com.example.skycast.ui.favorites.FavoritesScreen
 import com.example.skycast.ui.favorites.FavoritesViewModel
 import com.example.skycast.ui.home.HomeScreen
 import com.example.skycast.ui.home.HomeViewModel
+import com.example.skycast.ui.settings.SettingsScreen
+import com.example.skycast.ui.settings.SettingsViewModel
 
 @Composable
-fun MainScreen(homeViewModel: HomeViewModel, favoritesViewModel: FavoritesViewModel) {
+fun MainScreen(homeViewModel: HomeViewModel, favoritesViewModel: FavoritesViewModel, SettingsViewModel: SettingsViewModel) {
     val navController = rememberNavController()
 
     Scaffold(
@@ -42,7 +44,7 @@ fun MainScreen(homeViewModel: HomeViewModel, favoritesViewModel: FavoritesViewMo
                 AlertsScreen()
             }
             composable(BottomNavItem.Settings.route) {
-                SettingsScreen()
+                SettingsScreen( viewModel = SettingsViewModel)
             }
             composable("add_favorite") {
                 AddFavoriteScreen(
