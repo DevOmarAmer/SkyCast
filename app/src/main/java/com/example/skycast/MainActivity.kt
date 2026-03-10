@@ -23,6 +23,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.skycast.data.local.WeatherDatabase
 import com.example.skycast.data.remote.RetrofitClient // بافتراض أنك أنشأت RetrofitClient سابقاً
 import com.example.skycast.data.repository.WeatherRepository
+import com.example.skycast.ui.MainScreen
 import com.example.skycast.ui.home.HomeScreen
 import com.example.skycast.ui.home.HomeViewModel
 import com.example.skycast.ui.home.HomeViewModelFactory
@@ -96,7 +97,7 @@ class MainActivity : ComponentActivity() {
                             CircularProgressIndicator()
                         }
                     } else {
-                        HomeScreen(viewModel = homeViewModel)
+                        MainScreen(homeViewModel = homeViewModel)
                     }
                 }
             }
