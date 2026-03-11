@@ -2,6 +2,7 @@ package com.example.skycast.ui.home
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -19,6 +21,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -147,14 +151,17 @@ fun WeatherContent(data: WeatherResponse) {
 // ── Hero: City, Date, Big Temp, Icon ─────────────────────────────────────────
 @Composable
 fun HeroSection(data: WeatherResponse, currentWeather: ForecastItem) {
+    // Pulsing glow behind the hero icon
     val infiniteTransition = rememberInfiniteTransition(label = "pulse")
-    val alpha by infiniteTransition.animateFloat(
-        initialValue = 0.6f, targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(2000, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "iconAlpha"
+    val glowScale by infiniteTransition.animateFloat(
+        initialValue = 0.9f, targetValue = 1.1f,
+        animationSpec = infiniteRepeatable(tween(2000, easing = FastOutSlowInEasing), RepeatMode.Reverse),
+        label = "glow"
+    )
+    val float by infiniteTransition.animateFloat(
+        initialValue = -6f, targetValue = 6f,
+        animationSpec = infiniteRepeatable(tween(2200, easing = FastOutSlowInEasing), RepeatMode.Reverse),
+        label = "float"
     )
 
     Box(
@@ -163,7 +170,7 @@ fun HeroSection(data: WeatherResponse, currentWeather: ForecastItem) {
             .background(
                 Brush.verticalGradient(listOf(SkyBlue.copy(alpha = 0.3f), Color.Transparent))
             )
-            .padding(horizontal = 24.dp, vertical = 32.dp)
+            .padding(horizontal = 24.dp, vertical = 24.dp)
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
             // City name
@@ -182,46 +189,73 @@ fun HeroSection(data: WeatherResponse, currentWeather: ForecastItem) {
             )
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Icon + Temperature
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
+            // Glowing icon
+            Box(contentAlignment = Alignment.Center) {
+                // Ambient glow
+                Box(
+                    modifier = Modifier
+                        .size((120 * glowScale).dp)
+                        .scale(glowScale)
+                        .background(
+                            Brush.radialGradient(
+                                listOf(SkyBlueBright.copy(alpha = 0.25f), Color.Transparent)
+                            ),
+                            CircleShape
+                        )
+                        .blur(20.dp)
+                )
                 val iconCode = currentWeather.weatherInfo.firstOrNull()?.icon
                 AsyncImage(
                     model = "https://openweathermap.org/img/wn/${iconCode}@4x.png",
                     contentDescription = "Weather Icon",
-                    modifier = Modifier.size(120.dp)
+                    modifier = Modifier
+                        .size(130.dp)
+                        .offset(y = float.dp)
                 )
-                Spacer(modifier = Modifier.width(8.dp))
-                Column {
-                    Text(
-                        text = "${currentWeather.main.temp.toInt()}°",
-                        fontSize = 72.sp,
-                        fontWeight = FontWeight.W200,
-                        color = CloudWhite,
-                        lineHeight = 72.sp
-                    )
-                    Text(
-                        text = currentWeather.weatherInfo.firstOrNull()?.description?.replaceFirstChar {
-                            it.titlecase(Locale.getDefault())
-                        } ?: "",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = SkyBluePale
-                    )
-                }
             }
 
             Spacer(modifier = Modifier.height(8.dp))
-            // Feels-like / min-max placeholder
-            val humidityRes = stringResource(R.string.humidity)
-            val windRes = stringResource(R.string.wind)
+
+            // Temperature
             Text(
-                text = "${humidityRes} ${currentWeather.main.humidity}%  ·  ${windRes} ${currentWeather.wind.speed} m/s",
-                style = MaterialTheme.typography.bodySmall,
-                color = CloudGrey
+                text = "${currentWeather.main.temp.toInt()}°",
+                fontSize = 80.sp,
+                fontWeight = FontWeight.W200,
+                color = CloudWhite,
+                lineHeight = 80.sp
             )
+            Text(
+                text = currentWeather.weatherInfo.firstOrNull()?.description?.replaceFirstChar {
+                    it.titlecase(Locale.getDefault())
+                } ?: "",
+                style = MaterialTheme.typography.titleMedium,
+                color = SkyBluePale,
+                fontWeight = FontWeight.W400
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Min / Max pill
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                TemperaturePill(label = "Feels", value = "${currentWeather.main.feelsLike.toInt()}°", color = SunGold)
+                Box(Modifier.size(4.dp).background(FrostStrong, CircleShape))
+                TemperaturePill(label = "Min", value = "${currentWeather.main.tempMin.toInt()}°", color = RainBlue)
+                Box(Modifier.size(4.dp).background(FrostStrong, CircleShape))
+                TemperaturePill(label = "Max", value = "${currentWeather.main.tempMax.toInt()}°", color = StormRed)
+            }
         }
+    }
+}
+
+// ── Temperature pill ──────────────────────────────────────────────────────────
+@Composable
+private fun TemperaturePill(label: String, value: String, color: Color) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(text = value, color = color, fontWeight = FontWeight.W700, fontSize = 15.sp)
+        Text(text = label, color = CloudGrey, fontSize = 11.sp)
     }
 }
 
@@ -231,22 +265,36 @@ fun WeatherDetailsCard(currentWeather: ForecastItem) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        shape = RoundedCornerShape(20.dp),
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(containerColor = Frost),
         border = androidx.compose.foundation.BorderStroke(1.dp, FrostStrong)
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 20.dp, horizontal = 8.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            WeatherStatItem(emoji = "💧", label = stringResource(R.string.humidity), value = "${currentWeather.main.humidity}%")
-            VerticalDivider()
-            WeatherStatItem(emoji = "💨", label = stringResource(R.string.wind), value = "${currentWeather.wind.speed} m/s")
-            VerticalDivider()
-            WeatherStatItem(emoji = "🌡️", label = stringResource(R.string.pressure), value = "${currentWeather.main.pressure} hPa")
+        Column(modifier = Modifier.padding(vertical = 20.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                WeatherStatItem(emoji = "💧", label = stringResource(R.string.humidity), value = "${currentWeather.main.humidity}%")
+                VerticalDivider()
+                WeatherStatItem(emoji = "💨", label = stringResource(R.string.wind), value = "${currentWeather.wind.speed} m/s")
+                VerticalDivider()
+                WeatherStatItem(emoji = "🌡️", label = stringResource(R.string.pressure), value = "${currentWeather.main.pressure} hPa")
+            }
+            HorizontalDivider(
+                modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp),
+                color = FrostStrong
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                WeatherStatItem(emoji = "👁️", label = "Visibility", value = "${currentWeather.visibility / 1000} km")
+                VerticalDivider()
+                WeatherStatItem(emoji = "☁️", label = "Clouds", value = "${currentWeather.clouds.all}%")
+                VerticalDivider()
+                WeatherStatItem(emoji = "🌫️", label = "Feels Like", value = "${currentWeather.main.feelsLike.toInt()}°")
+            }
         }
     }
 }
@@ -256,7 +304,7 @@ private fun VerticalDivider() {
     Box(
         modifier = Modifier
             .width(1.dp)
-            .height(40.dp)
+            .height(44.dp)
             .background(FrostStrong)
     )
 }
@@ -269,7 +317,7 @@ fun WeatherStatItem(emoji: String, label: String, value: String) {
         Text(
             text = value,
             style = MaterialTheme.typography.titleSmall,
-            fontWeight = FontWeight.W600,
+            fontWeight = FontWeight.W700,
             color = CloudWhite
         )
         Text(
@@ -305,15 +353,17 @@ fun HourlyForecastRow(hourlyItems: List<ForecastItem>) {
     }
 }
 
+// ── Hourly Card ───────────────────────────────────────────────────────────────
 @Composable
 fun HourlyCard(forecast: ForecastItem) {
+    val iconCode = forecast.weatherInfo.firstOrNull()?.icon
     Card(
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Frost),
+        shape = RoundedCornerShape(18.dp),
+        colors = CardDefaults.cardColors(containerColor = SkyNavy),
         border = androidx.compose.foundation.BorderStroke(1.dp, FrostStrong)
     ) {
         Column(
-            modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -321,19 +371,23 @@ fun HourlyCard(forecast: ForecastItem) {
                 style = MaterialTheme.typography.labelMedium,
                 color = CloudGrey
             )
-            Spacer(modifier = Modifier.height(6.dp))
-            val iconCode = forecast.weatherInfo.firstOrNull()?.icon
+            Spacer(modifier = Modifier.height(8.dp))
             AsyncImage(
                 model = "https://openweathermap.org/img/wn/${iconCode}@2x.png",
                 contentDescription = null,
                 modifier = Modifier.size(44.dp)
             )
-            Spacer(modifier = Modifier.height(6.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = "${forecast.main.temp.toInt()}°",
                 style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.W600,
+                fontWeight = FontWeight.W700,
                 color = CloudWhite
+            )
+            Text(
+                text = "${forecast.main.humidity}%",
+                style = MaterialTheme.typography.labelSmall,
+                color = RainBlue
             )
         }
     }
@@ -348,43 +402,57 @@ fun DailyForecastRow(forecast: ForecastItem) {
         SimpleDateFormat("EEEE", Locale.getDefault()).format(date!!)
     } catch (e: Exception) { forecast.dateText.substring(0, 10) }
 
+    val dateShort = try {
+        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val date = sdf.parse(forecast.dateText.substring(0, 10))
+        SimpleDateFormat("dd MMM", Locale.getDefault()).format(date!!)
+    } catch (e: Exception) { "" }
+
     val iconCode = forecast.weatherInfo.firstOrNull()?.icon
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 5.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Frost),
+        shape = RoundedCornerShape(18.dp),
+        colors = CardDefaults.cardColors(containerColor = SkyNavy),
         border = androidx.compose.foundation.BorderStroke(1.dp, FrostStrong)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 14.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+                .padding(horizontal = 20.dp, vertical = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = dayName,
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.W500,
-                color = CloudWhite,
-                modifier = Modifier.weight(1f)
-            )
+            // Day info
+            Column(modifier = Modifier.weight(1f)) {
+                Text(text = dayName, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.W600, color = CloudWhite)
+                Text(text = dateShort, style = MaterialTheme.typography.labelSmall, color = CloudGrey)
+            }
+
+            // Icon
             AsyncImage(
                 model = "https://openweathermap.org/img/wn/${iconCode}@2x.png",
                 contentDescription = null,
-                modifier = Modifier.size(36.dp)
+                modifier = Modifier.size(40.dp)
             )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = "${forecast.main.temp.toInt()}°",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.W600,
-                color = SunGold,
-                modifier = Modifier.padding(start = 8.dp)
-            )
+            
+            Spacer(Modifier.width(12.dp))
+
+            // Temp range
+            Column(horizontalAlignment = Alignment.End) {
+                Text(
+                    text = "${forecast.main.tempMax.toInt()}°",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.W700,
+                    color = SunGold
+                )
+                Text(
+                    text = "${forecast.main.tempMin.toInt()}°",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = CloudGrey
+                )
+            }
         }
     }
 }
