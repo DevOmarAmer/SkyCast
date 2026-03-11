@@ -14,7 +14,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
-
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -30,24 +29,17 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.work.*
 import com.example.skycast.R
+import com.example.skycast.data.model.WeatherAlert
 import com.example.skycast.ui.theme.*
 import com.example.skycast.utils.WeatherWorker
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-// ── Simple in-memory alert model (will be replaced by Room entity in Phase 3) ─
-data class AlertItem(
-    val id: String = UUID.randomUUID().toString(),
-    val delayMinutes: Long,
-    val type: String,         // "notification" | "alarm"
-    val createdAt: Long = System.currentTimeMillis()
-)
-
 @Composable
-fun AlertsScreen() {
+fun AlertsScreen(viewModel: AlertsViewModel) {
     val context = LocalContext.current
-    val alerts = remember { mutableStateListOf<AlertItem>() }
+    val alerts by viewModel.alertsList.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
 
     Box(
@@ -56,7 +48,7 @@ fun AlertsScreen() {
             .background(Brush.verticalGradient(listOf(SkyDeepNavy, DarkSurface)))
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            // ── Top Bar ───────────────────────────────────────────────────────
+            // ── Top Bar
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -111,10 +103,12 @@ fun AlertsScreen() {
                             AlertCard(
                                 alert = alert,
                                 onDelete = {
-                                    WorkManager.getInstance(context).cancelWorkById(UUID.fromString(alert.id))
-                                    alerts.remove(alert)
-                                    val alertRemovedMsg = context.getString(R.string.alert_removed)
-                                    Toast.makeText(context, alertRemovedMsg, Toast.LENGTH_SHORT).show()
+                                    // 1 cancel
+                                    WorkManager.getInstance(context).cancelWorkById(UUID.fromString(alert.workerId))
+                                    // 2 delete
+                                    viewModel.deleteAlert(alert)
+
+                                    Toast.makeText(context, context.getString(R.string.alert_removed), Toast.LENGTH_SHORT).show()
                                 }
                             )
                         }
@@ -154,32 +148,36 @@ fun AlertsScreen() {
 
                 WorkManager.getInstance(context).enqueue(request)
 
-                val item = AlertItem(
-                    id = request.id.toString(),
-                    delayMinutes = delayMinutes,
-                    type = type
+                val currentTime = System.currentTimeMillis()
+                val triggerTime = currentTime + TimeUnit.MINUTES.toMillis(delayMinutes)
+
+                val newAlert = WeatherAlert(
+                    startTime = currentTime,
+                    endTime = triggerTime,
+                    alertType = type,
+                    workerId = request.id.toString()
                 )
-                alerts.add(item)
+
+                viewModel.addAlert(newAlert)
+
                 showDialog = false
-                val scheduledMsg = context.getString(R.string.alert_scheduled)
-                Toast.makeText(context, scheduledMsg, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, context.getString(R.string.alert_scheduled), Toast.LENGTH_SHORT).show()
             }
         )
     }
 }
 
+
+
 // ── Alert Card ────────────────────────────────────────────────────────────────
 @Composable
-fun AlertCard(alert: AlertItem, onDelete: () -> Unit) {
-    val emoji = if (alert.type == "notification") "🔔" else "⏰"
-    val typeLabel = if (alert.type == "notification") stringResource(R.string.notification_type) else stringResource(R.string.alarm_type)
-    val timeLabel = when {
-        alert.delayMinutes < 60 -> "In ${alert.delayMinutes} min"
-        alert.delayMinutes == 60L -> "In 1 hour"
-        else -> "In ${alert.delayMinutes / 60}h ${alert.delayMinutes % 60}m"
-    }
-    val createdLabel = SimpleDateFormat("HH:mm · dd MMM", Locale.getDefault())
-        .format(Date(alert.createdAt))
+fun AlertCard(alert: WeatherAlert, onDelete: () -> Unit) {
+    val emoji = if (alert.alertType == "notification") "🔔" else "⏰"
+    val typeLabel = if (alert.alertType == "notification") stringResource(R.string.notification_type) else stringResource(R.string.alarm_type)
+
+    // حساب التوقيت الذي سيتم التنبيه فيه لعرضه بشكل جميل
+    val timeLabel = SimpleDateFormat("hh:mm a", Locale.getDefault()).format(Date(alert.endTime))
+    val createdLabel = SimpleDateFormat("dd MMM", Locale.getDefault()).format(Date(alert.startTime))
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -199,7 +197,7 @@ fun AlertCard(alert: AlertItem, onDelete: () -> Unit) {
                     .size(44.dp)
                     .clip(CircleShape)
                     .background(
-                        if (alert.type == "notification") RainBlue.copy(alpha = 0.2f)
+                        if (alert.alertType == "notification") RainBlue.copy(alpha = 0.2f)
                         else SunGold.copy(alpha = 0.2f)
                     ),
                 contentAlignment = Alignment.Center
@@ -209,7 +207,7 @@ fun AlertCard(alert: AlertItem, onDelete: () -> Unit) {
             Spacer(modifier = Modifier.width(14.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = timeLabel,
+                    text = "تنبيه الساعة: $timeLabel",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.W600,
                     color = CloudWhite
@@ -239,8 +237,6 @@ fun AlertCard(alert: AlertItem, onDelete: () -> Unit) {
         }
     }
 }
-
-// ── Add Alert Dialog ──────────────────────────────────────────────────────────
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddAlertDialog(
@@ -272,11 +268,10 @@ fun AddAlertDialog(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                // Duration
+                // Duration section
                 Text(stringResource(R.string.notify_after), style = MaterialTheme.typography.labelLarge, color = SkyBluePale)
                 Spacer(modifier = Modifier.height(10.dp))
 
-                // 2x2 grid of duration chips
                 val chunked = durationOptions.chunked(2)
                 chunked.forEach { row ->
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -307,7 +302,7 @@ fun AddAlertDialog(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Alert type
+                // Alert type section
                 Text(stringResource(R.string.alert_type), style = MaterialTheme.typography.labelLarge, color = SkyBluePale)
                 Spacer(modifier = Modifier.height(10.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -336,7 +331,7 @@ fun AddAlertDialog(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Actions
+                // Action buttons
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     OutlinedButton(
                         onClick = onDismiss,

@@ -36,6 +36,8 @@ import com.example.skycast.data.remote.RetrofitClient
 import com.example.skycast.data.repository.WeatherRepository
 import com.example.skycast.ui.MainScreen
 import com.example.skycast.ui.SplashScreen
+import com.example.skycast.ui.alerts.AlertsViewModel
+import com.example.skycast.ui.alerts.AlertsViewModelFactory
 import com.example.skycast.ui.favorites.FavoritesViewModel
 import com.example.skycast.ui.favorites.FavoritesViewModelFactory
 import com.example.skycast.ui.favorites.SettingsViewModelFactory
@@ -72,6 +74,8 @@ class MainActivity : ComponentActivity() {
         val homeFactory = HomeViewModelFactory(repository, settingsManager)
         val favoritesFactory = FavoritesViewModelFactory(repository)
 
+        val alertsFactory = AlertsViewModelFactory(repository)
+
         setContent {
             val settingsViewModel: SettingsViewModel = viewModel(factory = settingsFactory)
             val currentLang by settingsViewModel.language.collectAsState()
@@ -93,7 +97,8 @@ class MainActivity : ComponentActivity() {
                 val homeViewModel: HomeViewModel = viewModel(factory = homeFactory)
                 val favoritesViewModel: FavoritesViewModel = viewModel(factory = favoritesFactory)
                 val weatherState by homeViewModel.weatherState.collectAsState()
-                
+                val alertsViewModel: AlertsViewModel = viewModel(factory = alertsFactory)
+
                 var minSplashTimeMatured by remember { mutableStateOf(false) }
                 var locationFetched by remember { mutableStateOf(false) }
                 var isSplashDismissed by remember { mutableStateOf(false) }
@@ -166,7 +171,9 @@ class MainActivity : ComponentActivity() {
                         MainScreen(
                             homeViewModel = homeViewModel,
                             favoritesViewModel = favoritesViewModel,
-                            SettingsViewModel = settingsViewModel
+                            SettingsViewModel = settingsViewModel,
+                            alertsViewModel = alertsViewModel
+
                         )
                     }
                 }

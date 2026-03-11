@@ -31,6 +31,7 @@ import com.example.skycast.R
 import com.example.skycast.data.model.FavoriteLocation
 import com.example.skycast.navigation.BottomNavItem
 import com.example.skycast.ui.alerts.AlertsScreen
+import com.example.skycast.ui.alerts.AlertsViewModel
 import com.example.skycast.ui.favorites.AddFavoriteScreen
 import com.example.skycast.ui.favorites.FavoriteDetailScreen
 import com.example.skycast.ui.favorites.FavoritesScreen
@@ -45,7 +46,8 @@ import com.example.skycast.ui.theme.*
 fun MainScreen(
     homeViewModel: HomeViewModel,
     favoritesViewModel: FavoritesViewModel,
-    SettingsViewModel: SettingsViewModel
+    SettingsViewModel: SettingsViewModel,
+    alertsViewModel: AlertsViewModel
 ) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -76,7 +78,7 @@ fun MainScreen(
                     )
                 }
                 composable(BottomNavItem.Alerts.route) {
-                    AlertsScreen()
+                    AlertsScreen(viewModel = alertsViewModel)
                 }
                 composable(BottomNavItem.Settings.route) {
                     SettingsScreen(viewModel = SettingsViewModel)
