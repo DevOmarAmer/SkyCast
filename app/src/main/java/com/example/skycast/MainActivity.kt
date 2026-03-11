@@ -61,10 +61,17 @@ class MainActivity : ComponentActivity() {
         setContent {
             val settingsViewModel: SettingsViewModel = viewModel(factory = settingsFactory)
             val currentLang by settingsViewModel.language.collectAsState()
+            var initialLang by remember { mutableStateOf("") }
 
             LaunchedEffect(currentLang) {
                 if (currentLang.isNotEmpty()) {
                     com.example.skycast.utils.LocaleHelper.setLocale(this@MainActivity, currentLang)
+                    if (initialLang.isNotEmpty() && initialLang != currentLang) {
+                        this@MainActivity.recreate()
+                    }
+                    if (initialLang.isEmpty()) {
+                        initialLang = currentLang
+                    }
                 }
             }
 
