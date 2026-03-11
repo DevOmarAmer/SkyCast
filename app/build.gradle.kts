@@ -1,3 +1,5 @@
+import java.util.Properties
+import java.io.FileInputStream
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
@@ -8,7 +10,6 @@ plugins {
 android {
     namespace = "com.example.skycast"
     compileSdk = 36 // تم تعديلها لتكون رقماً مباشراً لتجنب أي مشاكل مع release()
-
     defaultConfig {
         applicationId = "com.example.skycast"
         minSdk = 24
@@ -17,6 +18,16 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        // 2. كود لفتح ملف local.properties وقراءة المفتاح منه
+        val localProperties = Properties()
+        val localPropertiesFile = rootProject.file("local.properties")
+        if (localPropertiesFile.exists()) {
+            localProperties.load(FileInputStream(localPropertiesFile))
+        }
+        val apiKey = localProperties.getProperty("WEATHER_API_KEY") ?: "\"\""
+
+        // 3. حقن المفتاح كمتغير String يمكننا استخدامه في أي مكان في الكود
+        buildConfigField("String", "API_KEY", apiKey)
     }
 
     buildTypes {
@@ -34,6 +45,8 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true // 1. تفعيل خاصية توليد كود الـ BuildConfig
+
     }
 }
 
@@ -41,7 +54,6 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
-    implementation("androidx.core:core-splashscreen:1.0.1")
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)

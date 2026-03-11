@@ -12,6 +12,7 @@ data class ForecastItem(
     @SerializedName("main") val main: MainTemp,
     @SerializedName("weather") val weatherInfo: List<WeatherDescription>,
     @SerializedName("wind") val wind: Wind,
+    @SerializedName("clouds") val clouds: Clouds,
     @SerializedName("dt_txt") val dateText: String
 )
 
@@ -40,4 +41,8 @@ data class City(
 data class Coordinates(
     @SerializedName("lat") val lat: Double,
     @SerializedName("lon") val lon: Double
+)
+
+data class Clouds(
+    val all: Int //  80%
 )

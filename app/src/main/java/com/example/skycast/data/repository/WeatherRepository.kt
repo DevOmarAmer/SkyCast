@@ -1,8 +1,10 @@
 package com.example.skycast.data.repository
 
 
+import com.example.skycast.data.local.AlertDao
 import com.example.skycast.data.local.FavoriteLocationDao
 import com.example.skycast.data.model.FavoriteLocation
+import com.example.skycast.data.model.WeatherAlert
 import com.example.skycast.data.model.WeatherResponse
 import com.example.skycast.data.remote.WeatherApiService
 import com.example.skycast.utils.Resource
@@ -13,12 +15,13 @@ import retrofit2.HttpException
 
 class WeatherRepository(
     private val apiService: WeatherApiService,
-    private val favoriteDao: FavoriteLocationDao
-) {
+    private val favoriteDao: FavoriteLocationDao,
+    private val alertDao: AlertDao
+): IWeatherRepository {
 
     // (Remote) responsibality
 
-    suspend fun getWeatherForecast(
+    override suspend fun getWeatherForecast(
         lat: Double,
         lon: Double,
         apiKey: String,
@@ -49,12 +52,23 @@ class WeatherRepository(
 
     // --- (Local) Responsibility ---
 
-    fun getFavoriteLocations(): Flow<List<FavoriteLocation>> =
+    override fun getFavoriteLocations(): Flow<List<FavoriteLocation>> =
         favoriteDao.getAllFavoriteLocations()
 
-    suspend fun insertFavoriteLocation(location: FavoriteLocation) =
+    override suspend fun insertFavoriteLocation(location: FavoriteLocation) =
         favoriteDao.insertLocation(location)
 
-    suspend fun deleteFavoriteLocation(location: FavoriteLocation) =
+    override suspend fun deleteFavoriteLocation(location: FavoriteLocation) =
         favoriteDao.deleteLocation(location)
+
+    override fun getAlerts(): Flow<List<WeatherAlert>> = alertDao.getAlerts()
+
+    override suspend fun insertAlert(alert: WeatherAlert) {
+        alertDao.insertAlert(alert)
+    }
+
+    override suspend fun deleteAlert(alert: WeatherAlert) {
+        alertDao.deleteAlert(alert)
+
+    }
 }

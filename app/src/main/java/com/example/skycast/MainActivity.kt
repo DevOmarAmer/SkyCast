@@ -57,13 +57,14 @@ class MainActivity : ComponentActivity() {
         // Enable edge-to-edge so content goes under status & navigation bars
         enableEdgeToEdge()
 
-        val apiKey = "59ea0a0dbe5f3beceb5f818d109328ec"
+
 
         // Data layer
         val database = WeatherDatabase.getDatabase(applicationContext)
         val favoriteDao = database.favoriteLocationDao()
         val apiService = RetrofitClient.apiService
-        val repository = WeatherRepository(apiService, favoriteDao)
+        val alertDao = database.alertDao()
+        val repository = WeatherRepository(apiService, favoriteDao, alertDao)
 
         // Settings
         val settingsManager = SettingsManager(applicationContext)
@@ -121,14 +122,15 @@ class MainActivity : ComponentActivity() {
                     if (locationGranted) {
                         LocationHelper.getCurrentLocation(this@MainActivity) { location ->
                             if (location != null) {
-                                homeViewModel.getWeatherData(location.latitude, location.longitude, apiKey)
+                                homeViewModel.getWeatherData(location.latitude, location.longitude,
+                                    BuildConfig.API_KEY)
                             } else {
-                                homeViewModel.getWeatherData(30.0444, 31.2357, apiKey)
+                                homeViewModel.getWeatherData(30.0444, 31.2357, BuildConfig.API_KEY)
                             }
                             locationFetched = true
                         }
                     } else {
-                        homeViewModel.getWeatherData(30.0444, 31.2357, apiKey)
+                        homeViewModel.getWeatherData(30.0444, 31.2357, BuildConfig.API_KEY)
                         locationFetched = true
                         Toast.makeText(this@MainActivity, "Using default location (Cairo)", Toast.LENGTH_SHORT).show()
                     }
