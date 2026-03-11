@@ -1,93 +1,162 @@
 package com.example.skycast.ui
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.skycast.data.model.FavoriteLocation
 import com.example.skycast.navigation.BottomNavItem
 import com.example.skycast.ui.alerts.AlertsScreen
 import com.example.skycast.ui.favorites.AddFavoriteScreen
+import com.example.skycast.ui.favorites.FavoriteDetailScreen
 import com.example.skycast.ui.favorites.FavoritesScreen
 import com.example.skycast.ui.favorites.FavoritesViewModel
 import com.example.skycast.ui.home.HomeScreen
 import com.example.skycast.ui.home.HomeViewModel
 import com.example.skycast.ui.settings.SettingsScreen
 import com.example.skycast.ui.settings.SettingsViewModel
+import com.example.skycast.ui.theme.*
 
 @Composable
-fun MainScreen(homeViewModel: HomeViewModel, favoritesViewModel: FavoritesViewModel, SettingsViewModel: SettingsViewModel) {
+fun MainScreen(
+    homeViewModel: HomeViewModel,
+    favoritesViewModel: FavoritesViewModel,
+    SettingsViewModel: SettingsViewModel
+) {
     val navController = rememberNavController()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
 
-    Scaffold(
-        bottomBar = { BottomNavigationBar(navController = navController) }
-    ) { innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = BottomNavItem.Home.route,
-            modifier = Modifier.padding(innerPadding)
-        ) {
-            composable(BottomNavItem.Home.route) {
-                HomeScreen(viewModel = homeViewModel)
-            }
-            composable(BottomNavItem.Favorites.route) {
-                FavoritesScreen( viewModel = favoritesViewModel, onNavigateToAddPlace = {
-                    navController.navigate("add_favorite")
-                })
+    // Routes where we hide the bottom nav (detail/add screens)
+    val hideNavRoutes = setOf("add_favorite", "favorite_detail")
+    val showBottomNav = currentRoute !in hideNavRoutes
 
+    Box(modifier = Modifier.fillMaxSize()) {
+        Scaffold(
+            containerColor = Color.Transparent,
+            bottomBar = {
+                AnimatedVisibility(
+                    visible = showBottomNav,
+                    enter = slideInVertically(tween(250)) { it } + fadeIn(tween(250)),
+                    exit = slideOutVertically(tween(200)) { it } + fadeOut(tween(200))
+                ) {
+                    SkyCastBottomNav(navController = navController)
+                }
             }
-            composable(BottomNavItem.Alerts.route) {
-                AlertsScreen()
-            }
-            composable(BottomNavItem.Settings.route) {
-                SettingsScreen( viewModel = SettingsViewModel)
-            }
-            composable("add_favorite") {
-                AddFavoriteScreen(
-                    viewModel = favoritesViewModel,
-                    onNavigateBack = {
-                        navController.popBackStack() // الرجوع بعد الحفظ
+        ) { innerPadding ->
+            NavHost(
+                navController = navController,
+                startDestination = BottomNavItem.Home.route,
+                modifier = Modifier.padding(innerPadding)
+            ) {
+                composable(BottomNavItem.Home.route) {
+                    HomeScreen(viewModel = homeViewModel)
+                }
+                composable(BottomNavItem.Favorites.route) {
+                    FavoritesScreen(
+                        viewModel = favoritesViewModel,
+                        onNavigateToAddPlace = { navController.navigate("add_favorite") },
+                        onNavigateToDetail = { location ->
+                            // Encode city name as nav arg
+                            navController.currentBackStackEntry?.savedStateHandle?.set("fav_location", location)
+                            navController.navigate("favorite_detail")
+                        }
+                    )
+                }
+                composable(BottomNavItem.Alerts.route) {
+                    AlertsScreen()
+                }
+                composable(BottomNavItem.Settings.route) {
+                    SettingsScreen(viewModel = SettingsViewModel)
+                }
+                composable("add_favorite") {
+                    AddFavoriteScreen(
+                        viewModel = favoritesViewModel,
+                        onNavigateBack = { navController.popBackStack() }
+                    )
+                }
+                composable("favorite_detail") {
+                    val location = navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.get<FavoriteLocation>("fav_location")
+
+                    if (location != null) {
+                        FavoriteDetailScreen(
+                            location = location,
+                            viewModel = favoritesViewModel,
+                            onNavigateBack = { navController.popBackStack() }
+                        )
                     }
-                )
+                }
             }
         }
     }
 }
 
 @Composable
-fun BottomNavigationBar(navController: NavHostController) {
+fun SkyCastBottomNav(navController: NavHostController) {
     val items = listOf(
         BottomNavItem.Home,
         BottomNavItem.Favorites,
         BottomNavItem.Alerts,
         BottomNavItem.Settings
     )
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
 
-    NavigationBar {
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentRoute = navBackStackEntry?.destination?.route
-
+    NavigationBar(
+        modifier = Modifier
+            .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
+            .background(SkyNavy),
+        containerColor = SkyNavy,
+        tonalElevation = 0.dp
+    ) {
         items.forEach { item ->
+            val isSelected = currentRoute == item.route
             NavigationBarItem(
-                icon = { Icon(imageVector = item.icon, contentDescription = item.title) },
-                label = { Text(text = item.title) },
-                selected = currentRoute == item.route,
+                icon = {
+                    Icon(
+                        imageVector = item.icon,
+                        contentDescription = item.title
+                    )
+                },
+                label = { Text(item.title, style = MaterialTheme.typography.labelSmall) },
+                selected = isSelected,
                 onClick = {
                     navController.navigate(item.route) {
                         navController.graph.startDestinationRoute?.let { route ->
-                            popUpTo(route) {
-                                saveState = true
-                            }
+                            popUpTo(route) { saveState = true }
                         }
-                        launchSingleTop = true // يمنع تكرار نفس الصفحة عند الضغط على الزر مرتين
+                        launchSingleTop = true
                         restoreState = true
                     }
-                }
+                },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = SkyBlueBright,
+                    selectedTextColor = SkyBlueBright,
+                    unselectedIconColor = CloudGrey,
+                    unselectedTextColor = CloudGrey,
+                    indicatorColor = SkyBlueBright.copy(alpha = 0.15f)
+                )
             )
         }
     }
