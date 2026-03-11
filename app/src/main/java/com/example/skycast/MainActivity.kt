@@ -1,6 +1,7 @@
 package com.example.skycast
 
 import android.Manifest
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
@@ -9,6 +10,11 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
@@ -20,12 +26,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.skycast.data.local.WeatherDatabase
 import com.example.skycast.data.remote.RetrofitClient
 import com.example.skycast.data.repository.WeatherRepository
 import com.example.skycast.ui.MainScreen
+import com.example.skycast.ui.SplashScreen
 import com.example.skycast.ui.favorites.FavoritesViewModel
 import com.example.skycast.ui.favorites.FavoritesViewModelFactory
 import com.example.skycast.ui.favorites.SettingsViewModelFactory
@@ -76,9 +82,21 @@ class MainActivity : ComponentActivity() {
             }
 
             SkyCastTheme {
-                val homeViewModel: HomeViewModel = viewModel(factory = homeFactory)
-                val favoritesViewModel: FavoritesViewModel = viewModel(factory = favoritesFactory)
-                var locationFetched by remember { mutableStateOf(false) }
+                var splashDone by remember { mutableStateOf(false) }
+
+                AnimatedContent(
+                    targetState = splashDone,
+                    transitionSpec = {
+                        fadeIn(tween(600)) togetherWith fadeOut(tween(400))
+                    },
+                    label = "splashContent"
+                ) { done ->
+                    if (!done) {
+                        SplashScreen(onSplashComplete = { splashDone = true })
+                    } else {
+                        val homeViewModel: HomeViewModel = viewModel(factory = homeFactory)
+                        val favoritesViewModel: FavoritesViewModel = viewModel(factory = favoritesFactory)
+                        var locationFetched by remember { mutableStateOf(false) }
 
                 val permissionLauncher = rememberLauncherForActivityResult(
                     contract = ActivityResultContracts.RequestMultiplePermissions()
@@ -88,7 +106,7 @@ class MainActivity : ComponentActivity() {
                                 permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
 
                     if (locationGranted) {
-                        LocationHelper.getCurrentLocation(this) { location ->
+                        LocationHelper.getCurrentLocation(this@MainActivity) { location ->
                             if (location != null) {
                                 homeViewModel.getWeatherData(location.latitude, location.longitude, apiKey)
                             } else {
@@ -99,13 +117,13 @@ class MainActivity : ComponentActivity() {
                     } else {
                         homeViewModel.getWeatherData(30.0444, 31.2357, apiKey)
                         locationFetched = true
-                        Toast.makeText(this, "Using default location (Cairo)", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@MainActivity, "Using default location (Cairo)", Toast.LENGTH_SHORT).show()
                     }
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
                         permissions[Manifest.permission.POST_NOTIFICATIONS] != true
                     ) {
-                        Toast.makeText(this, "Grant notification permission for alerts", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@MainActivity, "Grant notification permission for alerts", Toast.LENGTH_SHORT).show()
                     }
                 }
 
@@ -130,8 +148,10 @@ class MainActivity : ComponentActivity() {
                         favoritesViewModel = favoritesViewModel,
                         SettingsViewModel = settingsViewModel
                     )
-                }
-            }
+                    } // end if locationFetched
+                    } // end else (splashDone)
+                } // end AnimatedContent
+            } // end SkyCastTheme
         }
     }
 }
