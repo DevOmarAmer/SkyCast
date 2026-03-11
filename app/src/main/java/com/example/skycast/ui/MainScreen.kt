@@ -106,7 +106,7 @@ fun MainScreen(
             visible = showBottomNav,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(horizontal = 24.dp, vertical = 24.dp)
+                .padding(horizontal = 24.dp, vertical = 8.dp)
                 .navigationBarsPadding(),
             enter = slideInVertically(tween(250)) { it } + fadeIn(tween(250)),
             exit = slideOutVertically(tween(200)) { it } + fadeOut(tween(200))

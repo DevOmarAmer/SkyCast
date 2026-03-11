@@ -184,7 +184,7 @@ fun FavoriteItemCard(
         onClick = onItemClick,
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = Frost),
+        colors = CardDefaults.cardColors(containerColor = SkyNavy),
         border = androidx.compose.foundation.BorderStroke(1.dp, FrostStrong),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
