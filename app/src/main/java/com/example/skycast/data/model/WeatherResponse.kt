@@ -13,11 +13,15 @@ data class ForecastItem(
     @SerializedName("weather") val weatherInfo: List<WeatherDescription>,
     @SerializedName("wind") val wind: Wind,
     @SerializedName("clouds") val clouds: Clouds,
-    @SerializedName("dt_txt") val dateText: String
+    @SerializedName("dt_txt") val dateText: String,
+    @SerializedName("visibility") val visibility: Int = 10000
 )
 
 data class MainTemp(
     @SerializedName("temp") val temp: Double,
+    @SerializedName("feels_like") val feelsLike: Double = 0.0,
+    @SerializedName("temp_min") val tempMin: Double = 0.0,
+    @SerializedName("temp_max") val tempMax: Double = 0.0,
     @SerializedName("humidity") val humidity: Int,
     @SerializedName("pressure") val pressure: Int
 )
