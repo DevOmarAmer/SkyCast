@@ -1,7 +1,10 @@
 package com.example.skycast.ui.settings
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -30,7 +33,7 @@ import com.example.skycast.R
 import com.example.skycast.ui.theme.*
 
 @Composable
-fun SettingsScreen(viewModel: SettingsViewModel) {
+fun SettingsScreen(viewModel: SettingsViewModel, onOpenMap: () -> Unit = {}) {
     val currentTempUnit    by viewModel.tempUnit.collectAsState()
     val currentWindUnit    by viewModel.windUnit.collectAsState()
     val currentLang        by viewModel.language.collectAsState()
@@ -74,6 +77,36 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
                     selected = currentLocMethod,
                     onSelect = { viewModel.saveLocationMethod(it) }
                 )
+
+                // When map mode is selected, show the open-map button
+                AnimatedVisibility(
+                    visible = currentLocMethod == "map",
+                    enter = fadeIn(tween(300)),
+                    exit = fadeOut(tween(200))
+                ) {
+                    Column {
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Button(
+                            onClick = onOpenMap,
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = SkyBlueBright)
+                        ) {
+                            Icon(
+                                Icons.Outlined.LocationOn,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            Text(
+                                text = "Open Map to Set Location →",
+                                style = MaterialTheme.typography.labelLarge,
+                                fontWeight = FontWeight.W600,
+                                modifier = Modifier.padding(vertical = 4.dp)
+                            )
+                        }
+                    }
+                }
             }
 
             SettingsSection(

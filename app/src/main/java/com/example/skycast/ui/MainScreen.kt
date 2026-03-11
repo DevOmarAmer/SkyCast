@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import kotlinx.coroutines.launch
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
@@ -38,6 +39,7 @@ import com.example.skycast.ui.favorites.FavoritesScreen
 import com.example.skycast.ui.favorites.FavoritesViewModel
 import com.example.skycast.ui.home.HomeScreen
 import com.example.skycast.ui.home.HomeViewModel
+import com.example.skycast.ui.settings.MapLocationPickerScreen
 import com.example.skycast.ui.settings.SettingsScreen
 import com.example.skycast.ui.settings.SettingsViewModel
 import com.example.skycast.ui.theme.*
@@ -54,7 +56,7 @@ fun MainScreen(
     val currentRoute = navBackStackEntry?.destination?.route
 
     // Routes where we hide the bottom nav (detail/add screens)
-    val hideNavRoutes = setOf("add_favorite", "favorite_detail")
+    val hideNavRoutes = setOf("add_favorite", "favorite_detail", "map_location_picker")
     val showBottomNav = currentRoute !in hideNavRoutes
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -81,7 +83,10 @@ fun MainScreen(
                     AlertsScreen(viewModel = alertsViewModel)
                 }
                 composable(BottomNavItem.Settings.route) {
-                    SettingsScreen(viewModel = SettingsViewModel)
+                    SettingsScreen(
+                        viewModel = SettingsViewModel,
+                        onOpenMap = { navController.navigate("map_location_picker") }
+                    )
                 }
                 composable("add_favorite") {
                     AddFavoriteScreen(
@@ -101,6 +106,21 @@ fun MainScreen(
                             onNavigateBack = { navController.popBackStack() }
                         )
                     }
+                }
+                composable("map_location_picker") {
+                    val coroutineScope = androidx.compose.runtime.rememberCoroutineScope()
+                    val apiKey = com.example.skycast.BuildConfig.API_KEY
+                    MapLocationPickerScreen(
+                        viewModel = SettingsViewModel,
+                        onNavigateBack = { navController.popBackStack() },
+                        onLocationSet = { lat, lon, city ->
+                            coroutineScope.launch {
+                                SettingsViewModel.saveMapLocation(lat, lon)
+                            }
+                            homeViewModel.getWeatherData(lat, lon, apiKey)
+                            navController.popBackStack()
+                        }
+                    )
                 }
         }
 

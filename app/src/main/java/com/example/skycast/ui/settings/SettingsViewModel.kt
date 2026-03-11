@@ -18,4 +18,5 @@ class SettingsViewModel(private val settingsManager: SettingsManager) : ViewMode
     fun saveWindUnit(unit: String) = viewModelScope.launch { settingsManager.saveWindUnit(unit) }
     fun saveLanguage(lang: String) = viewModelScope.launch { settingsManager.saveLanguage(lang) }
     fun saveLocationMethod(method: String) = viewModelScope.launch { settingsManager.saveLocationMethod(method) }
+    fun saveMapLocation(lat: Double, lon: Double) = viewModelScope.launch { settingsManager.saveMapLocation(lat, lon) }
 }
