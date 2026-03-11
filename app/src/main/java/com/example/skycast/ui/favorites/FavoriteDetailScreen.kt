@@ -23,6 +23,8 @@ import com.example.skycast.ui.home.DailyForecastRow
 import com.example.skycast.ui.theme.*
 import com.example.skycast.utils.Resource
 import androidx.compose.foundation.lazy.items
+import androidx.compose.ui.res.stringResource
+import com.example.skycast.R
 
 private const val API_KEY = "59ea0a0dbe5f3beceb5f818d109328ec"
 
@@ -90,7 +92,7 @@ fun FavoriteDetailScreen(
                             CircularProgressIndicator(color = SkyBlueBright, strokeWidth = 3.dp)
                             Spacer(modifier = Modifier.height(16.dp))
                             Text(
-                                "Loading forecast for ${location.cityName}…",
+                                stringResource(R.string.loading_weather),
                                 color = CloudGrey,
                                 style = MaterialTheme.typography.bodyMedium
                             )
@@ -116,9 +118,9 @@ fun FavoriteDetailScreen(
                                 item { HeroSection(data = data, currentWeather = currentWeather) }
                                 item { WeatherDetailsCard(currentWeather = currentWeather) }
                             }
-                            item { SectionHeader(title = "Today's Forecast") }
+                            item { SectionHeader(title = stringResource(R.string.today_forecast)) }
                             item { HourlyForecastRow(hourlyItems = hourlyToday) }
-                            item { SectionHeader(title = "5-Day Forecast") }
+                            item { SectionHeader(title = stringResource(R.string.five_day_forecast)) }
                             items(dailyForecasts) { day ->
                                 DailyForecastRow(forecast = day)
                             }
@@ -139,7 +141,7 @@ fun FavoriteDetailScreen(
                             Text("⚠️", fontSize = 48.sp)
                             Spacer(modifier = Modifier.height(12.dp))
                             Text(
-                                text = (weatherState as Resource.Error).message ?: "Failed to load weather",
+                                text = (weatherState as Resource.Error).message ?: stringResource(R.string.failed_load),
                                 color = StormRed,
                                 style = MaterialTheme.typography.bodyLarge,
                                 textAlign = TextAlign.Center

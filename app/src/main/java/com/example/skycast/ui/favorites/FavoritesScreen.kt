@@ -22,10 +22,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.skycast.R
 import com.example.skycast.data.model.FavoriteLocation
 import com.example.skycast.ui.theme.*
 
@@ -53,7 +55,7 @@ fun FavoritesScreen(
                     .padding(horizontal = 24.dp, vertical = 20.dp)
             ) {
                 Text(
-                    text = "Favorites",
+                    text = stringResource(R.string.favorites_title),
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.W600,
                     color = CloudWhite
@@ -156,14 +158,14 @@ fun EmptyFavoritesContent() {
             Text("🌍", fontSize = 64.sp)
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "No Favorites Yet",
+                text = stringResource(R.string.no_favorites),
                 style = MaterialTheme.typography.titleLarge,
                 color = CloudWhite,
                 fontWeight = FontWeight.W600
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Tap the + button to add a favorite location",
+                text = stringResource(R.string.add_favorite_hint),
                 style = MaterialTheme.typography.bodyMedium,
                 color = CloudGrey,
                 textAlign = TextAlign.Center

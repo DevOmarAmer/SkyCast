@@ -22,6 +22,8 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
 import java.util.Locale
+import androidx.compose.ui.res.stringResource
+import com.example.skycast.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,10 +54,10 @@ fun AddFavoriteScreen(
                 searchError = ""
                 cameraPositionState.position = CameraPosition.fromLatLngZoom(newLatLng, 10f)
             } else {
-                searchError = "Location not found"
+                searchError = context.getString(R.string.location_not_found)
             }
         } catch (e: Exception) {
-            searchError = "Search failed – check your connection"
+            searchError = context.getString(R.string.search_failed)
         }
     }
 
@@ -73,11 +75,12 @@ fun AddFavoriteScreen(
                 try {
                     val geocoder = Geocoder(context, Locale.getDefault())
                     val addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
+                    val fallback = context.getString(R.string.selected_location)
                     cityName = if (!addresses.isNullOrEmpty())
-                        addresses[0].locality ?: addresses[0].subAdminArea ?: "Selected location"
-                    else "Selected location"
+                        addresses[0].locality ?: addresses[0].subAdminArea ?: fallback
+                    else fallback
                 } catch (e: Exception) {
-                    cityName = "Selected location"
+                    cityName = context.getString(R.string.selected_location)
                 }
             }
         ) {
@@ -113,7 +116,7 @@ fun AddFavoriteScreen(
                         value = searchQuery,
                         onValueChange = { searchQuery = it; searchError = "" },
                         placeholder = {
-                            Text("Search city…", color = CloudGrey)
+                            Text(stringResource(R.string.search_city), color = CloudGrey)
                         },
                         modifier = Modifier.weight(1f),
                         colors = TextFieldDefaults.colors(
@@ -188,7 +191,7 @@ fun AddFavoriteScreen(
                             colors = ButtonDefaults.buttonColors(containerColor = SkyBlueBright)
                         ) {
                             Text(
-                                "Save to Favorites",
+                                stringResource(R.string.save_favorite),
                                 style = MaterialTheme.typography.titleSmall,
                                 fontWeight = FontWeight.W600,
                                 modifier = Modifier.padding(vertical = 4.dp)

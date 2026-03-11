@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SkyCast</string>
+
+    <!-- Bottom Navigation -->
+    <string name="nav_home">الرئيسية</string>
+    <string name="nav_favorites">المفضلة</string>
+    <string name="nav_alerts">التنبيهات</string>
+    <string name="nav_settings">الإعدادات</string>
+
+    <!-- Home Screen -->
+    <string name="humidity">الرطوبة</string>
+    <string name="wind">الرياح</string>
+    <string name="pressure">الضغط</string>
+    <string name="today_forecast">توقعات اليوم</string>
+    <string name="five_day_forecast">توقعات 5 أيام</string>
+    <string name="loading_weather">جاري تحميل الطقس…</string>
+    <string name="failed_load">فشل في تحميل الطقس</string>
+    <string name="feels_like">الإحساس %1$s</string>
+
+    <!-- Settings Screen -->
+    <string name="settings_title">الإعدادات</string>
+    <string name="location_method">طريقة تحديد الموقع</string>
+    <string name="gps">نظام تحديد المواقع (GPS)</string>
+    <string name="map">الخريطة</string>
+    <string name="temperature_unit">وحدة الحرارة</string>
+    <string name="celsius">مئوية (°C)</string>
+    <string name="fahrenheit">فهرنهايت (°F)</string>
+    <string name="kelvin">كلفن (K)</string>
+    <string name="wind_speed_unit">وحدة سرعة الرياح</string>
+    <string name="meter_sec">متر/ثانية</string>
+    <string name="miles_hour">ميل/ساعة</string>
+    <string name="language">اللغة</string>
+    <string name="english">English</string>
+    <string name="arabic">العربية</string>
+    <string name="app_info">SkyCast v1.0\nمطور لصالح ITI</string>
+
+    <!-- Favorites / Add Place -->
+    <string name="favorites_title">المواقع المحفوظة</string>
+    <string name="no_favorites">لا توجد مواقع محفوظة</string>
+    <string name="add_favorite_hint">اضغط على زر + للبحث عن مدينة</string>
+    <string name="search_city">ابحث عن مدينة…</string>
+    <string name="save_favorite">حفظ في المفضلة</string>
+    <string name="location_not_found">الموقع غير موجود</string>
+    <string name="search_failed">فشل البحث – تحقق من اتصالك</string>
+    <string name="selected_location">الموقع المحدد</string>
+
+    <!-- Alerts -->
+    <string name="alerts_title">التنبيهات</string>
+    <string name="no_alerts">لا توجد تنبيهات نشطة</string>
+    <string name="add_alert_hint">اضغط على زر + لجدولة تنبيه للطقس</string>
+    <string name="new_alert">تنبيه طقس جديد</string>
+    <string name="notify_after">تبليغ بعد</string>
+    <string name="alert_type">نوع التنبيه</string>
+    <string name="notification">إشعار</string>
+    <string name="alarm">منبه</string>
+    <string name="cancel">إلغاء</string>
+    <string name="save_alert">حفظ التنبيه</string>
+    <string name="alert_scheduled">تمت جدولة التنبيه!</string>
+    <string name="alert_removed">تمت إزالة التنبيه</string>
+    <string name="notification_type">إشعار صامت</string>
+    <string name="alarm_type">صوت المنبه</string>
+    <string name="set_at">ضُبط في</string>
+
+    <!-- Time Formatting -->
+    <string name="min_15">15 دقيقة</string>
+    <string name="min_30">30 دقيقة</string>
+    <string name="hour_1">1 ساعة</string>
+    <string name="hour_2">2 ساعات</string>
+</resources>

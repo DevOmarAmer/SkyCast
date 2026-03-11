@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,10 +59,18 @@ class MainActivity : ComponentActivity() {
         val favoritesFactory = FavoritesViewModelFactory(repository)
 
         setContent {
+            val settingsViewModel: SettingsViewModel = viewModel(factory = settingsFactory)
+            val currentLang by settingsViewModel.language.collectAsState()
+
+            LaunchedEffect(currentLang) {
+                if (currentLang.isNotEmpty()) {
+                    com.example.skycast.utils.LocaleHelper.setLocale(this@MainActivity, currentLang)
+                }
+            }
+
             SkyCastTheme {
                 val homeViewModel: HomeViewModel = viewModel(factory = homeFactory)
                 val favoritesViewModel: FavoritesViewModel = viewModel(factory = favoritesFactory)
-                val settingsViewModel: SettingsViewModel = viewModel(factory = settingsFactory)
                 var locationFetched by remember { mutableStateOf(false) }
 
                 val permissionLauncher = rememberLauncherForActivityResult(

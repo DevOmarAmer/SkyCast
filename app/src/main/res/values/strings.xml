@@ -1,3 +1,69 @@
 <resources>
     <string name="app_name">SkyCast</string>
+
+    <!-- Bottom Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_favorites">Favorites</string>
+    <string name="nav_alerts">Alerts</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Home Screen -->
+    <string name="humidity">Humidity</string>
+    <string name="wind">Wind</string>
+    <string name="pressure">Pressure</string>
+    <string name="today_forecast">Today\'s Forecast</string>
+    <string name="five_day_forecast">5-Day Forecast</string>
+    <string name="loading_weather">Loading weather…</string>
+    <string name="failed_load">Failed to load weather</string>
+    <string name="feels_like">Feels like %1$s</string>
+
+    <!-- Settings Screen -->
+    <string name="settings_title">Settings</string>
+    <string name="location_method">Location Method</string>
+    <string name="gps">GPS</string>
+    <string name="map">Map</string>
+    <string name="temperature_unit">Temperature Unit</string>
+    <string name="celsius">Celsius (°C)</string>
+    <string name="fahrenheit">Fahrenheit (°F)</string>
+    <string name="kelvin">Kelvin (K)</string>
+    <string name="wind_speed_unit">Wind Speed Unit</string>
+    <string name="meter_sec">Meter/sec</string>
+    <string name="miles_hour">Miles/hour</string>
+    <string name="language">Language</string>
+    <string name="english">English</string>
+    <string name="arabic">العربية</string>
+    <string name="app_info">SkyCast v1.0\nDeveloped for ITI</string>
+
+    <!-- Favorites / Add Place -->
+    <string name="favorites_title">Saved Locations</string>
+    <string name="no_favorites">No locations saved</string>
+    <string name="add_favorite_hint">Tap the + button to search a city</string>
+    <string name="search_city">Search city…</string>
+    <string name="save_favorite">Save to Favorites</string>
+    <string name="location_not_found">Location not found</string>
+    <string name="search_failed">Search failed – check your connection</string>
+    <string name="selected_location">Selected location</string>
+
+    <!-- Alerts -->
+    <string name="alerts_title">Alerts</string>
+    <string name="no_alerts">No Active Alerts</string>
+    <string name="add_alert_hint">Tap the + button to schedule a weather alert</string>
+    <string name="new_alert">New Weather Alert</string>
+    <string name="notify_after">Notify after</string>
+    <string name="alert_type">Alert type</string>
+    <string name="notification">Notification</string>
+    <string name="alarm">Alarm</string>
+    <string name="cancel">Cancel</string>
+    <string name="save_alert">Save Alert</string>
+    <string name="alert_scheduled">Alert scheduled!</string>
+    <string name="alert_removed">Alert removed</string>
+    <string name="notification_type">Silent notification</string>
+    <string name="alarm_type">Alarm sound</string>
+    <string name="set_at">set at</string>
+
+    <!-- Time Formatting (if needed) -->
+    <string name="min_15">15 min</string>
+    <string name="min_30">30 min</string>
+    <string name="hour_1">1 hour</string>
+    <string name="hour_2">2 hours</string>
 </resources>

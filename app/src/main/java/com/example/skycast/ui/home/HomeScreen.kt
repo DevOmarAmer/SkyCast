@@ -21,11 +21,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.skycast.R
 import com.example.skycast.data.model.ForecastItem
 import com.example.skycast.data.model.WeatherResponse
 import com.example.skycast.ui.theme.*
@@ -212,8 +214,10 @@ fun HeroSection(data: WeatherResponse, currentWeather: ForecastItem) {
 
             Spacer(modifier = Modifier.height(8.dp))
             // Feels-like / min-max placeholder
+            val humidityRes = stringResource(R.string.humidity)
+            val windRes = stringResource(R.string.wind)
             Text(
-                text = "Humidity ${currentWeather.main.humidity}%  ·  Wind ${currentWeather.wind.speed} m/s",
+                text = "${humidityRes} ${currentWeather.main.humidity}%  ·  ${windRes} ${currentWeather.wind.speed} m/s",
                 style = MaterialTheme.typography.bodySmall,
                 color = CloudGrey
             )
@@ -238,11 +242,11 @@ fun WeatherDetailsCard(currentWeather: ForecastItem) {
                 .padding(vertical = 20.dp, horizontal = 8.dp),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            WeatherStatItem(emoji = "💧", label = "Humidity", value = "${currentWeather.main.humidity}%")
+            WeatherStatItem(emoji = "💧", label = stringResource(R.string.humidity), value = "${currentWeather.main.humidity}%")
             VerticalDivider()
-            WeatherStatItem(emoji = "💨", label = "Wind", value = "${currentWeather.wind.speed} m/s")
+            WeatherStatItem(emoji = "💨", label = stringResource(R.string.wind), value = "${currentWeather.wind.speed} m/s")
             VerticalDivider()
-            WeatherStatItem(emoji = "🌡️", label = "Pressure", value = "${currentWeather.main.pressure} hPa")
+            WeatherStatItem(emoji = "🌡️", label = stringResource(R.string.pressure), value = "${currentWeather.main.pressure} hPa")
         }
     }
 }

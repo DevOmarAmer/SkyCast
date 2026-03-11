@@ -22,9 +22,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.skycast.R
 import com.example.skycast.ui.theme.*
 
 @Composable
@@ -54,7 +56,7 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
                     .padding(horizontal = 24.dp, vertical = 20.dp)
             ) {
                 Text(
-                    text = "Settings",
+                    text = stringResource(R.string.settings_title),
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.W600,
                     color = CloudWhite
@@ -63,49 +65,45 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // ── Location Method ───────────────────────────────────────────────
             SettingsSection(
                 icon = Icons.Outlined.LocationOn,
-                title = "Location Method"
+                title = stringResource(R.string.location_method)
             ) {
                 SegmentedOptions(
-                    options = listOf("GPS" to "gps", "Map" to "map"),
+                    options = listOf(stringResource(R.string.gps) to "gps", stringResource(R.string.map) to "map"),
                     selected = currentLocMethod,
                     onSelect = { viewModel.saveLocationMethod(it) }
                 )
             }
 
-            // ── Temperature Unit ──────────────────────────────────────────────
             SettingsSection(
                 icon = Icons.Outlined.Thermostat,
-                title = "Temperature Unit"
+                title = stringResource(R.string.temperature_unit)
             ) {
                 SegmentedOptions(
-                    options = listOf("°C" to "metric", "°F" to "imperial", "K" to "standard"),
+                    options = listOf(stringResource(R.string.celsius) to "metric", stringResource(R.string.fahrenheit) to "imperial", stringResource(R.string.kelvin) to "standard"),
                     selected = currentTempUnit,
                     onSelect = { viewModel.saveTempUnit(it) }
                 )
             }
 
-            // ── Wind Speed Unit ───────────────────────────────────────────────
             SettingsSection(
                 icon = Icons.Outlined.Air,
-                title = "Wind Speed"
+                title = stringResource(R.string.wind_speed_unit)
             ) {
                 SegmentedOptions(
-                    options = listOf("m/s" to "m/s", "mph" to "mph"),
+                    options = listOf(stringResource(R.string.meter_sec) to "m/s", stringResource(R.string.miles_hour) to "mph"),
                     selected = currentWindUnit,
                     onSelect = { viewModel.saveWindUnit(it) }
                 )
             }
 
-            // ── Language ──────────────────────────────────────────────────────
             SettingsSection(
                 icon = Icons.Outlined.Language,
-                title = "Language"
+                title = stringResource(R.string.language)
             ) {
                 SegmentedOptions(
-                    options = listOf("English" to "en", "العربية" to "ar"),
+                    options = listOf(stringResource(R.string.english) to "en", stringResource(R.string.arabic) to "ar"),
                     selected = currentLang,
                     onSelect = { viewModel.saveLanguage(it) }
                 )

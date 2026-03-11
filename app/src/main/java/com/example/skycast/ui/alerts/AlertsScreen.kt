@@ -24,10 +24,12 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.work.*
+import com.example.skycast.R
 import com.example.skycast.ui.theme.*
 import com.example.skycast.utils.WeatherWorker
 import java.text.SimpleDateFormat
@@ -63,7 +65,7 @@ fun AlertsScreen() {
                     .padding(horizontal = 24.dp, vertical = 20.dp)
             ) {
                 Text(
-                    text = "Alerts",
+                    text = stringResource(R.string.alerts_title),
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.W600,
                     color = CloudWhite
@@ -77,13 +79,13 @@ fun AlertsScreen() {
                         Text("🔔", fontSize = 64.sp)
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
-                            text = "No Active Alerts",
+                            text = stringResource(R.string.no_alerts),
                             style = MaterialTheme.typography.titleLarge,
                             color = CloudWhite, fontWeight = FontWeight.W600
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "Tap the + button to schedule a weather alert",
+                            text = stringResource(R.string.add_alert_hint),
                             style = MaterialTheme.typography.bodyMedium,
                             color = CloudGrey, textAlign = TextAlign.Center
                         )
@@ -111,7 +113,8 @@ fun AlertsScreen() {
                                 onDelete = {
                                     WorkManager.getInstance(context).cancelWorkById(UUID.fromString(alert.id))
                                     alerts.remove(alert)
-                                    Toast.makeText(context, "Alert removed", Toast.LENGTH_SHORT).show()
+                                    val alertRemovedMsg = context.getString(R.string.alert_removed)
+                                    Toast.makeText(context, alertRemovedMsg, Toast.LENGTH_SHORT).show()
                                 }
                             )
                         }
@@ -158,7 +161,8 @@ fun AlertsScreen() {
                 )
                 alerts.add(item)
                 showDialog = false
-                Toast.makeText(context, "Alert scheduled!", Toast.LENGTH_SHORT).show()
+                val scheduledMsg = context.getString(R.string.alert_scheduled)
+                Toast.makeText(context, scheduledMsg, Toast.LENGTH_SHORT).show()
             }
         )
     }
@@ -168,7 +172,7 @@ fun AlertsScreen() {
 @Composable
 fun AlertCard(alert: AlertItem, onDelete: () -> Unit) {
     val emoji = if (alert.type == "notification") "🔔" else "⏰"
-    val typeLabel = if (alert.type == "notification") "Silent notification" else "Alarm sound"
+    val typeLabel = if (alert.type == "notification") stringResource(R.string.notification_type) else stringResource(R.string.alarm_type)
     val timeLabel = when {
         alert.delayMinutes < 60 -> "In ${alert.delayMinutes} min"
         alert.delayMinutes == 60L -> "In 1 hour"
@@ -211,7 +215,7 @@ fun AlertCard(alert: AlertItem, onDelete: () -> Unit) {
                     color = CloudWhite
                 )
                 Text(
-                    text = "$typeLabel · set at $createdLabel",
+                    text = "$typeLabel · ${stringResource(R.string.set_at)} $createdLabel",
                     style = MaterialTheme.typography.labelSmall,
                     color = CloudGrey
                 )
@@ -243,7 +247,12 @@ fun AddAlertDialog(
     onDismiss: () -> Unit,
     onConfirm: (Long, String) -> Unit
 ) {
-    val durationOptions = listOf(15L to "15 min", 30L to "30 min", 60L to "1 hour", 120L to "2 hours")
+    val durationOptions = listOf(
+        15L to stringResource(R.string.min_15),
+        30L to stringResource(R.string.min_30),
+        60L to stringResource(R.string.hour_1),
+        120L to stringResource(R.string.hour_2)
+    )
     var selectedDuration by remember { mutableStateOf(15L) }
     var selectedType by remember { mutableStateOf("notification") }
 
@@ -255,7 +264,7 @@ fun AddAlertDialog(
         ) {
             Column(modifier = Modifier.padding(24.dp)) {
                 Text(
-                    text = "New Weather Alert",
+                    text = stringResource(R.string.new_alert),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.W700,
                     color = CloudWhite
@@ -264,7 +273,7 @@ fun AddAlertDialog(
                 Spacer(modifier = Modifier.height(20.dp))
 
                 // Duration
-                Text("Notify after", style = MaterialTheme.typography.labelLarge, color = SkyBluePale)
+                Text(stringResource(R.string.notify_after), style = MaterialTheme.typography.labelLarge, color = SkyBluePale)
                 Spacer(modifier = Modifier.height(10.dp))
 
                 // 2x2 grid of duration chips
@@ -299,10 +308,10 @@ fun AddAlertDialog(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 // Alert type
-                Text("Alert type", style = MaterialTheme.typography.labelLarge, color = SkyBluePale)
+                Text(stringResource(R.string.alert_type), style = MaterialTheme.typography.labelLarge, color = SkyBluePale)
                 Spacer(modifier = Modifier.height(10.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    listOf("notification" to "🔔 Notification", "alarm" to "⏰ Alarm").forEach { (value, label) ->
+                    listOf("notification" to "🔔 ${stringResource(R.string.notification)}", "alarm" to "⏰ ${stringResource(R.string.alarm)}").forEach { (value, label) ->
                         val isSelected = selectedType == value
                         FilterChip(
                             selected = isSelected,
@@ -334,14 +343,14 @@ fun AddAlertDialog(
                         modifier = Modifier.weight(1f),
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.outlinedButtonColors(contentColor = CloudGrey)
-                    ) { Text("Cancel") }
+                    ) { Text(stringResource(R.string.cancel)) }
 
                     Button(
                         onClick = { onConfirm(selectedDuration, selectedType) },
                         modifier = Modifier.weight(1f),
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = SkyBlueBright)
-                    ) { Text("Save Alert") }
+                    ) { Text(stringResource(R.string.save_alert)) }
                 }
             }
         }

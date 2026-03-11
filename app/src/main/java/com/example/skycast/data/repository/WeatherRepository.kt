@@ -31,16 +31,16 @@ class WeatherRepository(
             if (response.isSuccessful) {
                 response.body()?.let { weatherData ->
                     emit(Resource.Success(weatherData))
-                } ?: emit(Resource.Error("حدث خطأ: البيانات فارغة"))
+                } ?: emit(Resource.Error("Data is empty"))
             } else {
-                emit(Resource.Error("خطأ في السيرفر: ${response.message()}"))
+                emit(Resource.Error("Server error: ${response.message()}"))
             }
         } catch (e: HttpException) {
-            emit(Resource.Error("خطأ في الاتصال: ${e.localizedMessage}"))
+            emit(Resource.Error("HTTP Error: ${e.localizedMessage}"))
         } catch (e: IOException) {
-            emit(Resource.Error("تأكد من اتصالك بالإنترنت."))
+            emit(Resource.Error("Check your internet connection."))
         } catch (e: Exception) {
-            emit(Resource.Error("حدث خطأ غير متوقع: ${e.localizedMessage}"))
+            emit(Resource.Error("Unexpected error: ${e.localizedMessage}"))
         }
 
     }

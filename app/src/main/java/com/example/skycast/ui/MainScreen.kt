@@ -20,12 +20,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.skycast.R
 import com.example.skycast.data.model.FavoriteLocation
 import com.example.skycast.navigation.BottomNavItem
 import com.example.skycast.ui.alerts.AlertsScreen
@@ -135,14 +137,21 @@ fun SkyCastBottomNav(navController: NavHostController) {
     ) {
         items.forEach { item ->
             val isSelected = currentRoute == item.route
+            val itemTitle = when(item.title) {
+                "Home" -> stringResource(R.string.nav_home)
+                "Favorites" -> stringResource(R.string.nav_favorites)
+                "Alerts" -> stringResource(R.string.nav_alerts)
+                "Settings" -> stringResource(R.string.nav_settings)
+                else -> item.title
+            }
             NavigationBarItem(
                 icon = {
                     Icon(
                         imageVector = item.icon,
-                        contentDescription = item.title
+                        contentDescription = itemTitle
                     )
                 },
-                label = { Text(item.title, style = MaterialTheme.typography.labelSmall) },
+                label = { Text(itemTitle, style = MaterialTheme.typography.labelSmall) },
                 selected = isSelected,
                 onClick = {
                     navController.navigate(item.route) {
