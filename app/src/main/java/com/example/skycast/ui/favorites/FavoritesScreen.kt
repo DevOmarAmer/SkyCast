@@ -1,64 +1,172 @@
 package com.example.skycast.ui.favorites
 
-import androidx.compose.foundation.clickable
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.material3.SwipeToDismissBoxValue
+import androidx.compose.material3.rememberSwipeToDismissBoxState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.skycast.data.model.FavoriteLocation
+import com.example.skycast.ui.theme.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoritesScreen(
     viewModel: FavoritesViewModel,
-    onNavigateToAddPlace: () -> Unit // TODO Add Place Screen
+    onNavigateToAddPlace: () -> Unit,
+    onNavigateToDetail: (FavoriteLocation) -> Unit = {}
 ) {
     val favorites by viewModel.favoritesList.collectAsState()
 
-    Scaffold(
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = onNavigateToAddPlace,
-                containerColor = MaterialTheme.colorScheme.primary
-            ) {
-                Icon(Icons.Default.Add, contentDescription = "Add Favorite", tint = Color.White)
-            }
-        }
-    ) { paddingValues ->
-        if (favorites.isEmpty()) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Brush.verticalGradient(listOf(SkyDeepNavy, DarkSurface)))
+    ) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            // ── Top Bar ──────────────────────────────────────────────────────
             Box(
-                modifier = Modifier.fillMaxSize().padding(paddingValues),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(text = "لا توجد أماكن مفضلة حتى الآن", fontSize = 18.sp, color = Color.Gray)
-            }
-        } else {
-            LazyColumn(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                    .fillMaxWidth()
+                    .background(Brush.verticalGradient(listOf(SkyBlue.copy(alpha = 0.25f), SkyDeepNavy.copy(alpha = 0f))))
+                    .statusBarsPadding()
+                    .padding(horizontal = 24.dp, vertical = 20.dp)
             ) {
-                items(favorites) { location ->
-                    FavoriteItemCard(
-                        location = location,
-                        onDeleteClick = { viewModel.deleteLocation(location) },
-                        onItemClick = {  }
-                    )
+                Text(
+                    text = "Favorites",
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.W600,
+                    color = CloudWhite
+                )
+            }
+
+            // ── Content ───────────────────────────────────────────────────────
+            if (favorites.isEmpty()) {
+                EmptyFavoritesContent()
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    contentPadding = PaddingValues(bottom = 100.dp)
+                ) {
+                    itemsIndexed(
+                        items = favorites,
+                        key = { _, loc -> loc.id }
+                    ) { index, location ->
+                        var visible by remember { mutableStateOf(false) }
+                        LaunchedEffect(Unit) { visible = true }
+
+                        AnimatedVisibility(
+                            visible = visible,
+                            enter = fadeIn(tween(300 + index * 60)) +
+                                    slideInVertically(tween(300 + index * 60)) { it / 2 }
+                        ) {
+                            SwipeToDeleteWrapper(
+                                onDelete = { viewModel.deleteLocation(location) }
+                            ) {
+                                FavoriteItemCard(
+                                    location = location,
+                                    onDeleteClick = { viewModel.deleteLocation(location) },
+                                    onItemClick = { onNavigateToDetail(location) }
+                                )
+                            }
+                        }
+                    }
                 }
             }
+        }
+
+        // ── FAB ───────────────────────────────────────────────────────────────
+        FloatingActionButton(
+            onClick = onNavigateToAddPlace,
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(24.dp),
+            containerColor = SkyBlueBright,
+            contentColor = CloudWhite,
+            shape = CircleShape,
+            elevation = FloatingActionButtonDefaults.elevation(8.dp)
+        ) {
+            Icon(Icons.Default.Add, contentDescription = "Add Favorite")
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SwipeToDeleteWrapper(
+    onDelete: () -> Unit,
+    content: @Composable () -> Unit
+) {
+    val state = rememberSwipeToDismissBoxState(
+        confirmValueChange = {
+            if (it == SwipeToDismissBoxValue.EndToStart) { onDelete(); true }
+            else false
+        }
+    )
+    SwipeToDismissBox(
+        state = state,
+        backgroundContent = {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(StormRed),
+                contentAlignment = Alignment.CenterEnd
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Delete",
+                    tint = CloudWhite,
+                    modifier = Modifier.padding(end = 24.dp)
+                )
+            }
+        },
+        content = { content() }
+    )
+}
+
+@Composable
+fun EmptyFavoritesContent() {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(32.dp)) {
+            Text("🌍", fontSize = 64.sp)
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "No Favorites Yet",
+                style = MaterialTheme.typography.titleLarge,
+                color = CloudWhite,
+                fontWeight = FontWeight.W600
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Tap the + button to add a favorite location",
+                style = MaterialTheme.typography.bodyMedium,
+                color = CloudGrey,
+                textAlign = TextAlign.Center
+            )
         }
     }
 }
@@ -70,24 +178,67 @@ fun FavoriteItemCard(
     onItemClick: () -> Unit
 ) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onItemClick() },
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        onClick = onItemClick,
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = Frost),
+        border = androidx.compose.foundation.BorderStroke(1.dp, FrostStrong),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(horizontal = 20.dp, vertical = 18.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column {
-                Text(text = location.cityName, fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                Text(text = "Lat: ${location.latitude}, Lon: ${location.longitude}", fontSize = 12.sp, color = Color.Gray)
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
+                // Location icon badge
+                Box(
+                    modifier = Modifier
+                        .size(44.dp)
+                        .clip(CircleShape)
+                        .background(SkyBlueBright.copy(alpha = 0.2f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.LocationOn,
+                        contentDescription = null,
+                        tint = SkyBlueBright,
+                        modifier = Modifier.size(22.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.width(14.dp))
+                Column {
+                    Text(
+                        text = location.cityName,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.W600,
+                        color = CloudWhite
+                    )
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = "${"%.2f".format(location.latitude)}°N, ${"%.2f".format(location.longitude)}°E",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = CloudGrey
+                    )
+                }
             }
             IconButton(onClick = onDeleteClick) {
-                Icon(Icons.Default.Delete, contentDescription = "Delete", tint = Color.Red)
+                Box(
+                    modifier = Modifier
+                        .size(36.dp)
+                        .clip(CircleShape)
+                        .background(StormRed.copy(alpha = 0.15f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Delete",
+                        tint = StormRed,
+                        modifier = Modifier.size(18.dp)
+                    )
+                }
             }
         }
     }
