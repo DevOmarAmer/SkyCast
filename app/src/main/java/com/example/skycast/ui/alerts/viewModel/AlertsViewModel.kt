@@ -1,4 +1,4 @@
-package com.example.skycast.ui.alerts
+package com.example.skycast.ui.alerts.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

@@ -1,10 +1,11 @@
-package com.example.skycast.ui.alerts
+package com.example.skycast.ui.alerts.view
 
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -30,6 +31,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.work.*
 import com.example.skycast.R
 import com.example.skycast.data.model.WeatherAlert
+import com.example.skycast.ui.alerts.viewModel.AlertsViewModel
 import com.example.skycast.ui.theme.*
 import com.example.skycast.utils.WeatherWorker
 import java.text.SimpleDateFormat
@@ -183,7 +185,7 @@ fun AlertCard(alert: WeatherAlert, onDelete: () -> Unit) {
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = Frost),
-        border = androidx.compose.foundation.BorderStroke(1.dp, FrostStrong)
+        border = BorderStroke(1.dp, FrostStrong)
     ) {
         Row(
             modifier = Modifier
@@ -256,7 +258,7 @@ fun AddAlertDialog(
         Card(
             shape = RoundedCornerShape(24.dp),
             colors = CardDefaults.cardColors(containerColor = SkyNavy),
-            border = androidx.compose.foundation.BorderStroke(1.dp, FrostStrong)
+            border = BorderStroke(1.dp, FrostStrong)
         ) {
             Column(modifier = Modifier.padding(24.dp)) {
                 Text(

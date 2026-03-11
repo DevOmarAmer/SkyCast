@@ -7,7 +7,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import kotlinx.coroutines.launch
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,7 +19,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -31,8 +29,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.skycast.R
 import com.example.skycast.data.model.FavoriteLocation
 import com.example.skycast.navigation.BottomNavItem
-import com.example.skycast.ui.alerts.AlertsScreen
-import com.example.skycast.ui.alerts.AlertsViewModel
+import com.example.skycast.ui.alerts.view.AlertsScreen
+import com.example.skycast.ui.alerts.viewModel.AlertsViewModel
 import com.example.skycast.ui.favorites.AddFavoriteScreen
 import com.example.skycast.ui.favorites.FavoriteDetailScreen
 import com.example.skycast.ui.favorites.FavoritesScreen
