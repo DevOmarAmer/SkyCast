@@ -125,7 +125,7 @@ fun AlertsScreen() {
             onClick = { showDialog = true },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(24.dp),
+                .padding(24.dp, 24.dp,24.dp, 120.dp),
             containerColor = SkyBlueBright,
             contentColor = CloudWhite,
             shape = CircleShape,

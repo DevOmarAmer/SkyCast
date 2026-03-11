@@ -98,12 +98,13 @@ fun FavoritesScreen(
             }
         }
 
-        // ── FAB ───────────────────────────────────────────────────────────────
+        // ── FAB
         FloatingActionButton(
             onClick = onNavigateToAddPlace,
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(24.dp),
+                .padding(24.dp, 24.dp,24.dp, 120.dp)
+                .size(64.dp ),
             containerColor = SkyBlueBright,
             contentColor = CloudWhite,
             shape = CircleShape,
