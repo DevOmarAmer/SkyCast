@@ -106,7 +106,10 @@ fun WeatherContent(data: WeatherResponse) {
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = WindowInsets.statusBars.asPaddingValues()
+        contentPadding = PaddingValues(
+            top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding(),
+            bottom = 100.dp
+        )
     ) {
         // ── Hero Section ──────────────────────────────────────────────────────
         item {

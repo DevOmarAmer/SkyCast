@@ -8,12 +8,15 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -51,23 +54,11 @@ fun MainScreen(
     val showBottomNav = currentRoute !in hideNavRoutes
 
     Box(modifier = Modifier.fillMaxSize()) {
-        Scaffold(
-            containerColor = Color.Transparent,
-            bottomBar = {
-                AnimatedVisibility(
-                    visible = showBottomNav,
-                    enter = slideInVertically(tween(250)) { it } + fadeIn(tween(250)),
-                    exit = slideOutVertically(tween(200)) { it } + fadeOut(tween(200))
-                ) {
-                    SkyCastBottomNav(navController = navController)
-                }
-            }
-        ) { innerPadding ->
-            NavHost(
-                navController = navController,
-                startDestination = BottomNavItem.Home.route,
-                modifier = Modifier.padding(innerPadding)
-            ) {
+        NavHost(
+            navController = navController,
+            startDestination = BottomNavItem.Home.route,
+            modifier = Modifier.fillMaxSize()
+        ) {
                 composable(BottomNavItem.Home.route) {
                     HomeScreen(viewModel = homeViewModel)
                 }
@@ -107,7 +98,18 @@ fun MainScreen(
                         )
                     }
                 }
-            }
+        }
+
+        AnimatedVisibility(
+            visible = showBottomNav,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(horizontal = 24.dp, vertical = 24.dp)
+                .navigationBarsPadding(),
+            enter = slideInVertically(tween(250)) { it } + fadeIn(tween(250)),
+            exit = slideOutVertically(tween(200)) { it } + fadeOut(tween(200))
+        ) {
+            SkyCastBottomNav(navController = navController)
         }
     }
 }
@@ -125,10 +127,11 @@ fun SkyCastBottomNav(navController: NavHostController) {
 
     NavigationBar(
         modifier = Modifier
-            .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
-            .background(SkyNavy),
-        containerColor = SkyNavy,
-        tonalElevation = 0.dp
+            .height(64.dp)
+            .clip(RoundedCornerShape(32.dp)),
+        containerColor = SkyNavy.copy(alpha = 0.95f),
+        tonalElevation = 0.dp,
+        windowInsets = WindowInsets(0.dp)
     ) {
         items.forEach { item ->
             val isSelected = currentRoute == item.route

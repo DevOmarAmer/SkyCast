@@ -43,6 +43,7 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
+                .padding(bottom = 100.dp)
         ) {
             // ── Top Bar ───────────────────────────────────────────────────────
             Box(
