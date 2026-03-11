@@ -18,7 +18,6 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        // 2. كود لفتح ملف local.properties وقراءة المفتاح منه
         val localProperties = Properties()
         val localPropertiesFile = rootProject.file("local.properties")
         if (localPropertiesFile.exists()) {
@@ -26,8 +25,11 @@ android {
         }
         val apiKey = localProperties.getProperty("WEATHER_API_KEY") ?: "\"\""
 
-        // 3. حقن المفتاح كمتغير String يمكننا استخدامه في أي مكان في الكود
         buildConfigField("String", "API_KEY", apiKey)
+
+        val mapsKey = localProperties.getProperty("MAPS_API_KEY") ?: ""
+
+        manifestPlaceholders["MAPS_API_KEY"] = mapsKey
     }
 
     buildTypes {
