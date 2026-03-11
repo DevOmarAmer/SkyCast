@@ -15,11 +15,20 @@ object LocationHelper {
     ) {
         val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
-        fusedLocationClient.getCurrentLocation(
-            Priority.PRIORITY_HIGH_ACCURACY,
-            CancellationTokenSource().token
-        ).addOnSuccessListener { location: Location? ->
-            onLocationReceived(location)
+        fusedLocationClient.lastLocation.addOnSuccessListener { cachedLocation: Location? ->
+            if (cachedLocation != null) {
+                onLocationReceived(cachedLocation)
+            } else {
+                // Fallback to fetch current location using balanced power block to prevent hanging
+                fusedLocationClient.getCurrentLocation(
+                    Priority.PRIORITY_BALANCED_POWER_ACCURACY,
+                    CancellationTokenSource().token
+                ).addOnSuccessListener { location: Location? ->
+                    onLocationReceived(location)
+                }.addOnFailureListener {
+                    onLocationReceived(null)
+                }
+            }
         }.addOnFailureListener {
             onLocationReceived(null)
         }

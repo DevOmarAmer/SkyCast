@@ -15,6 +15,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
@@ -26,6 +27,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Brush
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.skycast.data.local.WeatherDatabase
 import com.example.skycast.data.remote.RetrofitClient
@@ -38,8 +41,10 @@ import com.example.skycast.ui.favorites.SettingsViewModelFactory
 import com.example.skycast.ui.home.HomeViewModel
 import com.example.skycast.ui.home.HomeViewModelFactory
 import com.example.skycast.ui.settings.SettingsViewModel
+import com.example.skycast.ui.theme.DarkSurface
 import com.example.skycast.ui.theme.SkyCastTheme
 import com.example.skycast.ui.theme.SkyBlueBright
+import com.example.skycast.ui.theme.SkyDeepNavy
 import com.example.skycast.utils.LocationHelper
 import com.example.skycast.utils.SettingsManager
 
@@ -139,8 +144,13 @@ class MainActivity : ComponentActivity() {
                 }
 
                 if (!locationFetched) {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator(color = SkyBlueBright)
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Brush.verticalGradient(listOf(SkyDeepNavy, DarkSurface))), 
+                        contentAlignment = Alignment.Center
+                    ) {
+                        // Waiting for fast location fetch before entering MainScreen
                     }
                 } else {
                     MainScreen(
