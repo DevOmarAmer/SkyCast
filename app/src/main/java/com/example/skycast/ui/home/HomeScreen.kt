@@ -21,19 +21,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.example.skycast.R
 import com.example.skycast.data.model.ForecastItem
 import com.example.skycast.data.model.WeatherResponse
 import com.example.skycast.ui.theme.*
 import com.example.skycast.utils.Resource
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 @Composable
 fun HomeScreen(viewModel: HomeViewModel) {

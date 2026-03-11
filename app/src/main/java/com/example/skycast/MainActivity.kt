@@ -7,12 +7,11 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -20,10 +19,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.skycast.data.local.WeatherDatabase
-import com.example.skycast.data.remote.RetrofitClient // بافتراض أنك أنشأت RetrofitClient سابقاً
+import com.example.skycast.data.remote.RetrofitClient
 import com.example.skycast.data.repository.WeatherRepository
 import com.example.skycast.ui.MainScreen
 import com.example.skycast.ui.favorites.FavoritesViewModel
@@ -33,6 +32,7 @@ import com.example.skycast.ui.home.HomeViewModel
 import com.example.skycast.ui.home.HomeViewModelFactory
 import com.example.skycast.ui.settings.SettingsViewModel
 import com.example.skycast.ui.theme.SkyCastTheme
+import com.example.skycast.ui.theme.SkyBlueBright
 import com.example.skycast.utils.LocationHelper
 import com.example.skycast.utils.SettingsManager
 
@@ -40,94 +40,80 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val API_KEY : String  = "59ea0a0dbe5f3beceb5f818d109328ec"
+        // Enable edge-to-edge so content goes under status & navigation bars
+        enableEdgeToEdge()
 
-        // 1. (Local)
+        val apiKey = "59ea0a0dbe5f3beceb5f818d109328ec"
+
+        // Data layer
         val database = WeatherDatabase.getDatabase(applicationContext)
         val favoriteDao = database.favoriteLocationDao()
-
-        // 2. (Remote)
         val apiService = RetrofitClient.apiService
         val repository = WeatherRepository(apiService, favoriteDao)
 
-        // settings
+        // Settings
         val settingsManager = SettingsManager(applicationContext)
         val settingsFactory = SettingsViewModelFactory(settingsManager)
-
-
-        val homeFactory = HomeViewModelFactory(repository, settingsManager )
-
+        val homeFactory = HomeViewModelFactory(repository, settingsManager)
         val favoritesFactory = FavoritesViewModelFactory(repository)
-
-
 
         setContent {
             SkyCastTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    val context = LocalContext.current
-                    val homeViewModel: HomeViewModel = viewModel(factory = homeFactory)
-                    val favoritesViewModel: FavoritesViewModel = viewModel(factory = favoritesFactory)
-                    val settingsViewModel: SettingsViewModel = viewModel(factory = settingsFactory)
-                    var locationFetched by remember { mutableStateOf(false) }
+                val homeViewModel: HomeViewModel = viewModel(factory = homeFactory)
+                val favoritesViewModel: FavoritesViewModel = viewModel(factory = favoritesFactory)
+                val settingsViewModel: SettingsViewModel = viewModel(factory = settingsFactory)
+                var locationFetched by remember { mutableStateOf(false) }
 
-                    val permissionLauncher = rememberLauncherForActivityResult(
-                        contract = ActivityResultContracts.RequestMultiplePermissions()
-                    ) { permissions ->
-
-                        // location permission
-                        val isLocationGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
+                val permissionLauncher = rememberLauncherForActivityResult(
+                    contract = ActivityResultContracts.RequestMultiplePermissions()
+                ) { permissions ->
+                    val locationGranted =
+                        permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
                                 permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
 
-                        // noti per for +13v
-                        val isNotificationGranted = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                            permissions[Manifest.permission.POST_NOTIFICATIONS] == true
-                        } else {
-                            true
-                        }
-
-
-                        if (isLocationGranted) {
-                            LocationHelper.getCurrentLocation(context) { location ->
-                                if (location != null) {
-                                    homeViewModel.getWeatherData(
-                                        lat = location.latitude,
-                                        lon = location.longitude,
-                                        apiKey = API_KEY
-                                    )
-                                } else {
-                                    homeViewModel.getWeatherData(30.0444, 31.2357, API_KEY)
-                                }
-                                locationFetched = true
+                    if (locationGranted) {
+                        LocationHelper.getCurrentLocation(this) { location ->
+                            if (location != null) {
+                                homeViewModel.getWeatherData(location.latitude, location.longitude, apiKey)
+                            } else {
+                                homeViewModel.getWeatherData(30.0444, 31.2357, apiKey)
                             }
-                        } else {
-                            homeViewModel.getWeatherData(30.0444, 31.2357, API_KEY)
                             locationFetched = true
                         }
-
-
-                        if (!isNotificationGranted) {
-                            Toast.makeText(context, "Please grant notification permission", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-
-                    LaunchedEffect(Unit) {
-                        permissionLauncher.launch(
-                            arrayOf(
-                                Manifest.permission.ACCESS_FINE_LOCATION,
-                                Manifest.permission.ACCESS_COARSE_LOCATION
-                            )
-                        )
-                    }
-
-                    if (!locationFetched) {
-                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            CircularProgressIndicator()
-                        }
                     } else {
-                        MainScreen(homeViewModel = homeViewModel, favoritesViewModel = favoritesViewModel, SettingsViewModel = settingsViewModel )                    }
+                        homeViewModel.getWeatherData(30.0444, 31.2357, apiKey)
+                        locationFetched = true
+                        Toast.makeText(this, "Using default location (Cairo)", Toast.LENGTH_SHORT).show()
+                    }
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                        permissions[Manifest.permission.POST_NOTIFICATIONS] != true
+                    ) {
+                        Toast.makeText(this, "Grant notification permission for alerts", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                LaunchedEffect(Unit) {
+                    val perms = mutableListOf(
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    )
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        perms.add(Manifest.permission.POST_NOTIFICATIONS)
+                    }
+                    permissionLauncher.launch(perms.toTypedArray())
+                }
+
+                if (!locationFetched) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator(color = SkyBlueBright)
+                    }
+                } else {
+                    MainScreen(
+                        homeViewModel = homeViewModel,
+                        favoritesViewModel = favoritesViewModel,
+                        SettingsViewModel = settingsViewModel
+                    )
                 }
             }
         }

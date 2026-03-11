@@ -22,10 +22,10 @@ import com.example.skycast.ui.home.WeatherDetailsCard
 import com.example.skycast.ui.home.DailyForecastRow
 import com.example.skycast.ui.theme.*
 import com.example.skycast.utils.Resource
+import androidx.compose.foundation.lazy.items
 
 private const val API_KEY = "59ea0a0dbe5f3beceb5f818d109328ec"
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoriteDetailScreen(
     location: FavoriteLocation,
@@ -119,8 +119,8 @@ fun FavoriteDetailScreen(
                             item { SectionHeader(title = "Today's Forecast") }
                             item { HourlyForecastRow(hourlyItems = hourlyToday) }
                             item { SectionHeader(title = "5-Day Forecast") }
-                            items(dailyForecasts.size) { idx ->
-                                DailyForecastRow(forecast = dailyForecasts[idx])
+                            items(dailyForecasts) { day ->
+                                DailyForecastRow(forecast = day)
                             }
                             item { Spacer(modifier = Modifier.height(24.dp)) }
                         }

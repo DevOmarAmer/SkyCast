@@ -2,6 +2,7 @@ package com.example.skycast.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.io.Serializable
 
 @Entity(tableName = "favorite_locations")
 data class FavoriteLocation(
@@ -10,4 +11,4 @@ data class FavoriteLocation(
     val cityName: String,
     val latitude: Double,
     val longitude: Double
-)
+) : Serializable
