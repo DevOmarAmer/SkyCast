@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <!-- Set the splash screen background -->
+        <item name="windowSplashScreenBackground">#0A1628</item>
+        <!-- Use an animated icon or a simple icon -->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_logo</item>
+        <!-- Set the theme of the Activity that follows your splash screen. -->
+        <item name="postSplashScreenTheme">@style/Theme.SkyCast</item>
+    </style>
+
     <style name="Theme.SkyCast" parent="android:Theme.Material.Light.NoActionBar" />
 </resources>
