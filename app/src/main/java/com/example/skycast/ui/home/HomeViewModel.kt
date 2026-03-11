@@ -33,13 +33,36 @@ class HomeViewModel(
         viewModelScope.launch {
             combine(
                 settingsManager.tempUnitFlow,
-                settingsManager.langFlow
-            ) { unit, lang ->
-                Pair(unit, lang)
-            }.collectLatest { (unit, lang) ->
-                // Re-fetch if location exists
-                if (currentLat != null && currentLon != null && currentApiKey != null) {
-                    fetchWeatherInternal(currentLat!!, currentLon!!, currentApiKey!!, unit, lang)
+                settingsManager.langFlow,
+                settingsManager.locationMethodFlow,
+                settingsManager.mapLatFlow,
+                settingsManager.mapLonFlow
+            ) { unit, lang, locMode, mapLat, mapLon ->
+                // Return a data class or map to hold these 5 values
+                SettingsData(unit, lang, locMode, mapLat, mapLon)
+            }.collectLatest { settings ->
+                if (settings.locMode == "map") {
+                    // Mode is Map: Fetch immediately using saved coordinates
+                    if (settings.mapLat != 0.0 && settings.mapLon != 0.0 && currentApiKey != null) {
+                        fetchWeatherInternal(
+                            settings.mapLat,
+                            settings.mapLon,
+                            currentApiKey!!,
+                            settings.unit,
+                            settings.lang
+                        )
+                    }
+                } else {
+                    // Mode is GPS: Fetch only if we received GPS coordinates from UI
+                    if (currentLat != null && currentLon != null && currentApiKey != null) {
+                        fetchWeatherInternal(
+                            currentLat!!,
+                            currentLon!!,
+                            currentApiKey!!,
+                            settings.unit,
+                            settings.lang
+                        )
+                    }
                 }
             }
         }
@@ -69,3 +92,10 @@ class HomeViewModel(
         }
     }
 }
+data class SettingsData(
+    val unit: String,
+    val lang: String,
+    val locMode: String,
+    val mapLat: Double,
+    val mapLon: Double
+)
