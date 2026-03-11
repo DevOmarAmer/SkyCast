@@ -89,21 +89,27 @@ class MainActivity : ComponentActivity() {
             }
 
             SkyCastTheme {
-                var splashDone by remember { mutableStateOf(false) }
+                val homeViewModel: HomeViewModel = viewModel(factory = homeFactory)
+                val favoritesViewModel: FavoritesViewModel = viewModel(factory = favoritesFactory)
+                val weatherState by homeViewModel.weatherState.collectAsState()
+                
+                var minSplashTimeMatured by remember { mutableStateOf(false) }
+                var locationFetched by remember { mutableStateOf(false) }
+                var isSplashDismissed by remember { mutableStateOf(false) }
 
-                AnimatedContent(
-                    targetState = splashDone,
-                    transitionSpec = {
-                        fadeIn(tween(600)) togetherWith fadeOut(tween(400))
-                    },
-                    label = "splashContent"
-                ) { done ->
-                    if (!done) {
-                        SplashScreen(onSplashComplete = { splashDone = true })
-                    } else {
-                        val homeViewModel: HomeViewModel = viewModel(factory = homeFactory)
-                        val favoritesViewModel: FavoritesViewModel = viewModel(factory = favoritesFactory)
-                        var locationFetched by remember { mutableStateOf(false) }
+                // 1. Ensure splash animations play for at least 2.5s
+                LaunchedEffect(Unit) {
+                    kotlinx.coroutines.delay(2500)
+                    minSplashTimeMatured = true
+                }
+
+                // 2. The splash is only "done" when the animation finishes AND the initial data arrives.
+                // Once dismissed, it will never reappear.
+                LaunchedEffect(minSplashTimeMatured, locationFetched, weatherState) {
+                    if (minSplashTimeMatured && locationFetched && weatherState !is com.example.skycast.utils.Resource.Loading) {
+                        isSplashDismissed = true
+                    }
+                }
 
                 val permissionLauncher = rememberLauncherForActivityResult(
                     contract = ActivityResultContracts.RequestMultiplePermissions()
@@ -145,24 +151,23 @@ class MainActivity : ComponentActivity() {
                     permissionLauncher.launch(perms.toTypedArray())
                 }
 
-                if (!locationFetched) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(Brush.verticalGradient(listOf(SkyDeepNavy, DarkSurface))), 
-                        contentAlignment = Alignment.Center
-                    ) {
-                        // Waiting for fast location fetch before entering MainScreen
+                AnimatedContent(
+                    targetState = isSplashDismissed,
+                    transitionSpec = {
+                        fadeIn(tween(600)) togetherWith fadeOut(tween(400))
+                    },
+                    label = "splashContent"
+                ) { done ->
+                    if (!done) {
+                        SplashScreen(onSplashComplete = { /* Now driven entirely by state */ })
+                    } else {
+                        MainScreen(
+                            homeViewModel = homeViewModel,
+                            favoritesViewModel = favoritesViewModel,
+                            SettingsViewModel = settingsViewModel
+                        )
                     }
-                } else {
-                    MainScreen(
-                        homeViewModel = homeViewModel,
-                        favoritesViewModel = favoritesViewModel,
-                        SettingsViewModel = settingsViewModel
-                    )
-                    } // end if locationFetched
-                    } // end else (splashDone)
-                } // end AnimatedContent
+                }
             } // end SkyCastTheme
         }
     }
