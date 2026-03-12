@@ -85,7 +85,9 @@ fun MapPickerScreen(
                                 ?.replaceFirstChar { it.titlecase(Locale.getDefault()) } ?: "",
                             icon = first.weatherInfo.firstOrNull()?.icon ?: "",
                             humidity = first.main.humidity,
-                            windSpeed = first.wind.speed
+                            windSpeed = first.wind.speed,
+                            conditionId = first.weatherInfo.firstOrNull()?.id ?: 800,
+                            cloudsPct = first.clouds.all
                         )
                     }
                 }
@@ -139,32 +141,56 @@ fun MapPickerScreen(
         }
     }
 
-    /* ── UI ────────────────────────────────────────────────────────────────── */
-    Box(modifier = Modifier.fillMaxSize().background(SkyDeepNavy)) {
+    /* ── Derive dynamic colors ─────────────────────────────────────────────── */
+    val rawColors = if (weatherPreview != null) {
+        deriveWeatherColors(
+            tempCelsius = weatherPreview!!.temp.toDouble(),
+            cloudPct = weatherPreview!!.cloudsPct,
+            conditionId = weatherPreview!!.conditionId
+        )
+    } else {
+        DefaultWeatherColors
+    }
 
-        if (isMapReady) {
-            // Full-screen map
-            GoogleMap(
-                modifier = Modifier.fillMaxSize(),
-                cameraPositionState = cameraPositionState,
-                onMapClick = { pickLocation(it) },
-                uiSettings = MapUiSettings(
-                    zoomControlsEnabled = false,
-                    myLocationButtonEnabled = false,
-                    compassEnabled = true
-                )
-            ) {
-                selectedLocation?.let { Marker(state = MarkerState(position = it), title = cityName) }
+    val animSpec = tween<androidx.compose.ui.graphics.Color>(durationMillis = 800, easing = FastOutSlowInEasing)
+    val bgTop by animateColorAsState(rawColors.bgTop, animSpec, label = "bgTop")
+    val bgBottom by animateColorAsState(rawColors.bgBottom, animSpec, label = "bgBottom")
+    val heroGlow by animateColorAsState(rawColors.heroGlow, animSpec, label = "heroGlow")
+    val accent by animateColorAsState(rawColors.accent, animSpec, label = "accent")
+    val surface by animateColorAsState(rawColors.cardSurface, animSpec, label = "surface")
+
+    val animatedColors = WeatherColors(
+        bgTop = bgTop, bgBottom = bgBottom, heroGlow = heroGlow, accent = accent, cardSurface = surface
+    )
+
+    /* ── UI ────────────────────────────────────────────────────────────────── */
+    CompositionLocalProvider(LocalWeatherColors provides animatedColors) {
+        val wc = LocalWeatherColors.current
+        Box(modifier = Modifier.fillMaxSize().background(wc.bgTop)) {
+
+            if (isMapReady) {
+                // Full-screen map
+                GoogleMap(
+                    modifier = Modifier.fillMaxSize(),
+                    cameraPositionState = cameraPositionState,
+                    onMapClick = { pickLocation(it) },
+                    uiSettings = MapUiSettings(
+                        zoomControlsEnabled = false,
+                        myLocationButtonEnabled = false,
+                        compassEnabled = true
+                    )
+                ) {
+                    selectedLocation?.let { Marker(state = MarkerState(position = it), title = cityName) }
+                }
+            } else {
+                // Placeholder map skeleton while navigation transitioning
+                Box(
+                    modifier = Modifier.fillMaxSize().background(wc.bgTop),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = wc.accent)
+                }
             }
-        } else {
-            // Placeholder map skeleton while navigation transitioning
-            Box(
-                modifier = Modifier.fillMaxSize().background(SkyDeepNavy),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator(color = SkyBlueBright)
-            }
-        }
 
         // ── Search bar (autocomplete) ──────────────────────────────────────────
         MapSearchBar(
@@ -195,13 +221,13 @@ fun MapPickerScreen(
                     bottom = if (selectedLocation != null) 290.dp else 110.dp
                 )
                 .size(52.dp),
-            containerColor = SkyNavy,
-            contentColor = SkyBlueBright,
+            containerColor = wc.bgBottom.copy(alpha = 0.95f),
+            contentColor = wc.accent,
             shape = RoundedCornerShape(16.dp)
         ) {
             if (isLocatingMe) {
                 CircularProgressIndicator(
-                    color = SkyBlueBright,
+                    color = wc.accent,
                     strokeWidth = 2.dp,
                     modifier = Modifier.size(22.dp)
                 )
@@ -229,6 +255,7 @@ fun MapPickerScreen(
                         onConfirm(latLng.latitude, latLng.longitude, cityName.ifEmpty { "Unknown" })
                     }
                 )
+            }
             }
         }
     }

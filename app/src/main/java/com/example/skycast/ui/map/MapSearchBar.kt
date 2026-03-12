@@ -44,6 +44,8 @@ fun MapSearchBar(
 ) {
     val context = LocalContext.current
 
+    val wc = LocalWeatherColors.current
+
     var query by remember { mutableStateOf("") }
     var suggestions by remember { mutableStateOf<List<PlaceSuggestion>>(emptyList()) }
     var isSearching by remember { mutableStateOf(false) }
@@ -99,7 +101,7 @@ fun MapSearchBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(18.dp))
-                .background(SkyNavy.copy(alpha = 0.97f)),
+                .background(wc.bgBottom.copy(alpha = 0.97f)),
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(onClick = onBack) {
@@ -119,14 +121,14 @@ fun MapSearchBar(
                     unfocusedTextColor = CloudWhite,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
-                    cursorColor = SkyBlueBright
+                    cursorColor = wc.accent
                 )
             )
 
             // Trailing icon: spinner → clear → search
             when {
                 isSearching -> CircularProgressIndicator(
-                    color = SkyBlueBright,
+                    color = wc.accent,
                     strokeWidth = 2.dp,
                     modifier = Modifier
                         .padding(end = 12.dp)
@@ -136,7 +138,7 @@ fun MapSearchBar(
                     Icon(Icons.Default.Clear, contentDescription = "Clear", tint = CloudGrey)
                 }
                 else -> IconButton(onClick = {}) {
-                    Icon(Icons.Default.Search, contentDescription = "Search", tint = SkyBlueBright)
+                    Icon(Icons.Default.Search, contentDescription = "Search", tint = wc.accent)
                 }
             }
         }
@@ -152,8 +154,8 @@ fun MapSearchBar(
                     .fillMaxWidth()
                     .padding(top = 6.dp),
                 shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = SkyNavy.copy(alpha = 0.97f)),
-                border = androidx.compose.foundation.BorderStroke(1.dp, FrostStrong)
+                colors = CardDefaults.cardColors(containerColor = wc.bgBottom.copy(alpha = 0.97f)),
+                border = androidx.compose.foundation.BorderStroke(1.dp, wc.accent.copy(alpha = 0.2f))
             ) {
                 LazyColumn(modifier = Modifier.fillMaxWidth()) {
                     items(suggestions, key = { it.primaryText + it.latLng.latitude }) { suggestion ->
@@ -180,6 +182,7 @@ private fun SuggestionItem(
     isLast: Boolean,
     onClick: () -> Unit
 ) {
+    val wc = LocalWeatherColors.current
     Column {
         Row(
             modifier = Modifier
@@ -191,13 +194,13 @@ private fun SuggestionItem(
             Box(
                 modifier = Modifier
                     .size(34.dp)
-                    .background(SkyBlueBright.copy(alpha = 0.12f), RoundedCornerShape(10.dp)),
+                    .background(wc.heroGlow.copy(alpha = 0.12f), RoundedCornerShape(10.dp)),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     Icons.Default.LocationOn,
                     contentDescription = null,
-                    tint = SkyBluePale,
+                    tint = wc.accent,
                     modifier = Modifier.size(18.dp)
                 )
             }
@@ -224,7 +227,7 @@ private fun SuggestionItem(
         if (!isLast) {
             HorizontalDivider(
                 modifier = Modifier.padding(horizontal = 16.dp),
-                color = FrostStrong,
+                color = wc.accent.copy(alpha = 0.2f),
                 thickness = 0.5.dp
             )
         }

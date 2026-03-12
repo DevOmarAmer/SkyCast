@@ -1,5 +1,6 @@
 package com.example.skycast.ui.favorites
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -49,25 +50,57 @@ fun FavoriteDetailScreen(
         viewModel.loadFavoriteWeather(location.latitude, location.longitude, API_KEY)
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Brush.verticalGradient(listOf(SkyDeepNavy, DarkSurface, SkyNavy)))
-    ) {
-        when (weatherState) {
-            is Resource.Loading -> DetailLoadingState(location, onNavigateBack)
+    // ── Derive dynamic colors from current weather data ────────────────────────
+    val rawColors: WeatherColors = when (weatherState) {
+        is Resource.Success -> {
+            val first = (weatherState as Resource.Success<WeatherResponse>).data
+                ?.forecastList?.firstOrNull()
+            if (first != null) {
+                deriveWeatherColors(
+                    tempCelsius  = first.main.temp,
+                    cloudPct     = first.clouds.all,
+                    conditionId  = first.weatherInfo.firstOrNull()?.id ?: 800
+                )
+            } else DefaultWeatherColors
+        }
+        else -> DefaultWeatherColors
+    }
 
-            is Resource.Success -> {
-                val data = (weatherState as Resource.Success).data
-                if (data != null) {
-                    DetailSuccessContent(data, location, onNavigateBack)
+    // ── Animate all color transitions smoothly ────────────────────────────────
+    val animSpec = tween<Color>(durationMillis = 1200, easing = FastOutSlowInEasing)
+    val bgTop     by animateColorAsState(rawColors.bgTop,       animSpec, label = "bgTop")
+    val bgBottom  by animateColorAsState(rawColors.bgBottom,    animSpec, label = "bgBottom")
+    val heroGlow  by animateColorAsState(rawColors.heroGlow,    animSpec, label = "heroGlow")
+    val accent    by animateColorAsState(rawColors.accent,      animSpec, label = "accent")
+    val surface   by animateColorAsState(rawColors.cardSurface, animSpec, label = "surface")
+
+    val animatedColors = WeatherColors(
+        bgTop       = bgTop,
+        bgBottom    = bgBottom,
+        heroGlow    = heroGlow,
+        accent      = accent,
+        cardSurface = surface
+    )
+
+    CompositionLocalProvider(LocalWeatherColors provides animatedColors) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Brush.verticalGradient(listOf(bgTop, bgBottom)))
+        ) {
+            when (weatherState) {
+                is Resource.Loading -> DetailLoadingState(location, onNavigateBack)
+                is Resource.Success -> {
+                    val data = (weatherState as Resource.Success<WeatherResponse>).data
+                    if (data != null) {
+                        DetailSuccessContent(data, location, onNavigateBack)
+                    }
                 }
+                is Resource.Error -> DetailErrorState(
+                    message = (weatherState as Resource.Error).message,
+                    onNavigateBack = onNavigateBack
+                )
             }
-
-            is Resource.Error -> DetailErrorState(
-                message = (weatherState as Resource.Error).message,
-                onNavigateBack = onNavigateBack
-            )
         }
     }
 }
@@ -86,6 +119,8 @@ private fun DetailSuccessContent(
         .groupBy { it.dateText.substring(0, 10) }
         .entries.take(5)
         .map { it.value.first() }
+
+    val wc = LocalWeatherColors.current
 
     // Pulsing glow behind the hero icon
     val infiniteTransition = rememberInfiniteTransition(label = "detail")
@@ -111,7 +146,7 @@ private fun DetailSuccessContent(
                     .fillMaxWidth()
                     .background(
                         Brush.verticalGradient(
-                            listOf(SkyBlue.copy(alpha = 0.35f), Color.Transparent)
+                            listOf(wc.heroGlow.copy(alpha = 0.22f), Color.Transparent)
                         )
                     )
                     .statusBarsPadding()
@@ -179,7 +214,7 @@ private fun DetailSuccessContent(
                                 .scale(glowScale)
                                 .background(
                                     Brush.radialGradient(
-                                        listOf(SkyBlueBright.copy(alpha = 0.25f), Color.Transparent)
+                                        listOf(wc.heroGlow.copy(alpha = 0.35f), Color.Transparent)
                                     ),
                                     CircleShape
                                 )
@@ -210,7 +245,7 @@ private fun DetailSuccessContent(
                         text = current.weatherInfo.firstOrNull()?.description
                             ?.replaceFirstChar { it.titlecase(Locale.getDefault()) } ?: "",
                         style = MaterialTheme.typography.titleMedium,
-                        color = SkyBluePale,
+                        color = wc.accent.copy(alpha = 0.9f),
                         fontWeight = FontWeight.W400
                     )
 
@@ -221,7 +256,7 @@ private fun DetailSuccessContent(
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        TemperaturePill(label = "Feels", value = "${current.main.feelsLike.toInt()}°", color = SunGold)
+                        TemperaturePill(label = "Feels", value = "${current.main.feelsLike.toInt()}°", color = wc.accent)
                         Box(Modifier.size(4.dp).background(FrostStrong, CircleShape))
                         TemperaturePill(label = "Min", value = "${current.main.tempMin.toInt()}°", color = RainBlue)
                         Box(Modifier.size(4.dp).background(FrostStrong, CircleShape))
@@ -269,13 +304,14 @@ private fun TemperaturePill(label: String, value: String, color: Color) {
 // ── Stats grid row ────────────────────────────────────────────────────────────
 @Composable
 private fun DetailStatsRow(current: ForecastItem) {
+    val wc = LocalWeatherColors.current
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 12.dp),
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = Frost),
-        border = androidx.compose.foundation.BorderStroke(1.dp, FrostStrong)
+        colors = CardDefaults.cardColors(containerColor = wc.cardSurface),
+        border = androidx.compose.foundation.BorderStroke(1.dp, wc.accent.copy(alpha = 0.25f))
     ) {
         Column(modifier = Modifier.padding(vertical = 20.dp)) {
             Row(
@@ -290,7 +326,7 @@ private fun DetailStatsRow(current: ForecastItem) {
             }
             HorizontalDivider(
                 modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp),
-                color = FrostStrong
+                color = wc.accent.copy(alpha = 0.2f)
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -336,11 +372,12 @@ private fun DetailSectionHeader(title: String) {
 // ── Hourly card ───────────────────────────────────────────────────────────────
 @Composable
 private fun DetailHourlyCard(forecast: ForecastItem) {
+    val wc = LocalWeatherColors.current
     val iconCode = forecast.weatherInfo.firstOrNull()?.icon
     Card(
         shape = RoundedCornerShape(18.dp),
-        colors = CardDefaults.cardColors(containerColor = SkyNavy),
-        border = androidx.compose.foundation.BorderStroke(1.dp, FrostStrong)
+        colors = CardDefaults.cardColors(containerColor = wc.cardSurface),
+        border = androidx.compose.foundation.BorderStroke(1.dp, wc.accent.copy(alpha = 0.2f))
     ) {
         Column(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
@@ -367,7 +404,7 @@ private fun DetailHourlyCard(forecast: ForecastItem) {
             Text(
                 text = "${forecast.main.humidity}%",
                 style = MaterialTheme.typography.labelSmall,
-                color = RainBlue
+                color = wc.accent.copy(alpha = 0.8f)
             )
         }
     }
@@ -376,6 +413,7 @@ private fun DetailHourlyCard(forecast: ForecastItem) {
 // ── Daily forecast card ───────────────────────────────────────────────────────
 @Composable
 private fun DetailDailyCard(forecast: ForecastItem) {
+    val wc = LocalWeatherColors.current
     val dayName = try {
         val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         val date = sdf.parse(forecast.dateText.substring(0, 10))
@@ -395,8 +433,8 @@ private fun DetailDailyCard(forecast: ForecastItem) {
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 5.dp),
         shape = RoundedCornerShape(18.dp),
-        colors = CardDefaults.cardColors(containerColor = SkyNavy),
-        border = androidx.compose.foundation.BorderStroke(1.dp, FrostStrong)
+        colors = CardDefaults.cardColors(containerColor = wc.cardSurface),
+        border = androidx.compose.foundation.BorderStroke(1.dp, wc.accent.copy(alpha = 0.2f))
     ) {
         Row(
             modifier = Modifier
@@ -425,7 +463,7 @@ private fun DetailDailyCard(forecast: ForecastItem) {
                     text = "${forecast.main.tempMax.toInt()}°",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.W700,
-                    color = SunGold
+                    color = wc.accent
                 )
                 Text(
                     text = "${forecast.main.tempMin.toInt()}°",

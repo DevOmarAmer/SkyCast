@@ -23,7 +23,9 @@ data class WeatherPreview(
     val description: String,
     val icon: String,
     val humidity: Int,
-    val windSpeed: Double
+    val windSpeed: Double,
+    val conditionId: Int,
+    val cloudsPct: Int
 )
 
 
@@ -37,13 +39,14 @@ fun MapLocationBottomSheet(
     confirmLabel: String,
     onConfirm: () -> Unit
 ) {
+        val wc = LocalWeatherColors.current
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .navigationBarsPadding(),
         shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
-        colors = CardDefaults.cardColors(containerColor = SkyNavy),
-        border = androidx.compose.foundation.BorderStroke(1.dp, FrostStrong)
+        colors = CardDefaults.cardColors(containerColor = wc.bgBottom),
+        border = androidx.compose.foundation.BorderStroke(1.dp, wc.accent.copy(alpha = 0.2f))
     ) {
         Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = 20.dp)) {
 
@@ -64,7 +67,7 @@ fun MapLocationBottomSheet(
                 Box(
                     modifier = Modifier
                         .size(46.dp)
-                        .background(SkyBlueBright.copy(alpha = 0.15f), RoundedCornerShape(14.dp)),
+                        .background(wc.heroGlow.copy(alpha = 0.15f), RoundedCornerShape(14.dp)),
                     contentAlignment = Alignment.Center
                 ) {
                     Text("📍", fontSize = 20.sp)
@@ -84,7 +87,7 @@ fun MapLocationBottomSheet(
                         Text(
                             text = countryName,
                             style = MaterialTheme.typography.bodySmall,
-                            color = SkyBluePale
+                            color = wc.accent.copy(alpha = 0.8f)
                         )
                     }
                 }
@@ -115,7 +118,7 @@ fun MapLocationBottomSheet(
                     .fillMaxWidth()
                     .height(54.dp),
                 shape = RoundedCornerShape(16.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = SkyBlueBright)
+                colors = ButtonDefaults.buttonColors(containerColor = wc.accent)
             ) {
                 Text(
                     text = confirmLabel,
@@ -142,17 +145,18 @@ private fun CoordLabel(text: String) {
 private fun WeatherPreviewSection(isLoading: Boolean, preview: WeatherPreview?) {
     when {
         isLoading -> {
+            val wc = LocalWeatherColors.current
             // Skeleton / loading row
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Frost, RoundedCornerShape(16.dp))
+                    .background(wc.cardSurface, RoundedCornerShape(16.dp))
                     .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
                 CircularProgressIndicator(
-                    color = SkyBlueBright,
+                    color = wc.accent,
                     strokeWidth = 2.dp,
                     modifier = Modifier.size(18.dp)
                 )
@@ -166,13 +170,12 @@ private fun WeatherPreviewSection(isLoading: Boolean, preview: WeatherPreview?) 
         }
 
         preview != null -> {
+            val wc = LocalWeatherColors.current
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        Brush.horizontalGradient(
-                            listOf(SkyBlue.copy(alpha = 0.35f), SkyNavy)
-                        ),
+                        wc.cardSurface,
                         RoundedCornerShape(18.dp)
                     )
                     .padding(horizontal = 16.dp, vertical = 14.dp),
@@ -198,7 +201,7 @@ private fun WeatherPreviewSection(isLoading: Boolean, preview: WeatherPreview?) 
                     Text(
                         text = preview.description,
                         style = MaterialTheme.typography.bodySmall,
-                        color = SkyBluePale
+                        color = wc.accent.copy(alpha = 0.9f)
                     )
                 }
 
@@ -214,11 +217,12 @@ private fun WeatherPreviewSection(isLoading: Boolean, preview: WeatherPreview?) 
         }
 
         else -> {
+            val wc = LocalWeatherColors.current
             // No selection yet — empty state
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Frost, RoundedCornerShape(16.dp))
+                    .background(wc.cardSurface, RoundedCornerShape(16.dp))
                     .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
