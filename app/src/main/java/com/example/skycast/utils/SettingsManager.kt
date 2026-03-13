@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.map
 // App-wide DataStore instance
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
-class SettingsManager(private val context: Context) {
+class SettingsManager(val context: Context) {
 
     companion object {
         val TEMP_UNIT_KEY = stringPreferencesKey("temp_unit") // celsius, fahrenheit , kelvin

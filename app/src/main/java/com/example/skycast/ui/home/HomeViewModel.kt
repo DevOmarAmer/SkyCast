@@ -89,6 +89,21 @@ class HomeViewModel(
         _weatherState.value = Resource.Loading()
         repository.getWeatherForecast(lat, lon, apiKey, unit, lang).collect { result ->
             _weatherState.value = result
+            if (result is Resource.Success) {
+                result.data?.let { data ->
+                    val firstItem = data.forecastList.firstOrNull()
+                    val tempValue = firstItem?.main?.temp?.toInt()?.toString()?.plus("°") ?: "--°"
+                    val cityValue = data.city.name
+                    val descValue = firstItem?.weatherInfo?.firstOrNull()?.description ?: ""
+                    
+                    com.example.skycast.widget.WeatherWidget.updateWidget(
+                        settingsManager.context,
+                        tempValue,
+                        cityValue,
+                        descValue
+                    )
+                }
+            }
         }
     }
 }
