@@ -96,7 +96,7 @@ class HomeViewModel(
                     val cityValue = data.city.name
                     val descValue = firstItem?.weatherInfo?.firstOrNull()?.description ?: ""
                     
-                    com.example.skycast.widget.WeatherWidget.updateWidget(
+                    com.example.skycast.widget.WidgetUpdater.updateWidget(
                         settingsManager.context,
                         tempValue,
                         cityValue,

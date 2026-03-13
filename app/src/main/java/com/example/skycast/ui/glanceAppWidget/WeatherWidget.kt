@@ -37,19 +37,6 @@ class WeatherWidget : GlanceAppWidget() {
         val tempKey = stringPreferencesKey("widget_temp")
         val cityKey = stringPreferencesKey("widget_city")
         val descKey = stringPreferencesKey("widget_desc")
-
-        suspend fun updateWidget(context: Context, temp: String, city: String, desc: String) {
-            val manager = GlanceAppWidgetManager(context)
-            val glanceIds = manager.getGlanceIds(WeatherWidget::class.java)
-            glanceIds.forEach { glanceId ->
-                updateAppWidgetState(context, glanceId) { prefs ->
-                    prefs[tempKey] = temp
-                    prefs[cityKey] = city
-                    prefs[descKey] = desc
-                }
-                WeatherWidget().update(context, glanceId)
-            }
-        }
     }
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
