@@ -18,8 +18,8 @@ import androidx.compose.material.icons.outlined.Thermostat
 import androidx.compose.material.icons.outlined.Air
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,10 +36,10 @@ import com.example.skycast.ui.theme.*
 
 @Composable
 fun SettingsScreen(viewModel: SettingsViewModel, onOpenMap: () -> Unit = {}) {
-    val currentTempUnit    by viewModel.tempUnit.collectAsState()
-    val currentWindUnit    by viewModel.windUnit.collectAsState()
-    val currentLang        by viewModel.language.collectAsState()
-    val currentLocMethod   by viewModel.locationMethod.collectAsState()
+    val currentTempUnit    by viewModel.tempUnit.collectAsStateWithLifecycle()
+    val currentWindUnit    by viewModel.windUnit.collectAsStateWithLifecycle()
+    val currentLang        by viewModel.language.collectAsStateWithLifecycle()
+    val currentLocMethod   by viewModel.locationMethod.collectAsStateWithLifecycle()
 
     Box(
         modifier = Modifier

@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -45,7 +46,7 @@ fun FavoriteDetailScreen(
     viewModel: FavoritesViewModel,
     onNavigateBack: () -> Unit
 ) {
-    val weatherState by viewModel.selectedFavoriteWeather.collectAsState()
+    val weatherState by viewModel.selectedFavoriteWeather.collectAsStateWithLifecycle()
 
     LaunchedEffect(location) {
         viewModel.loadFavoriteWeather(location.latitude, location.longitude, API_KEY)

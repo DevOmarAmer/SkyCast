@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,13 +28,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.work.*
-import com.example.skycast.R
-import com.example.skycast.data.model.WeatherAlert
 import com.example.skycast.ui.alerts.viewModel.AlertsViewModel
 import com.example.skycast.ui.theme.*
-import com.example.skycast.utils.WeatherWorker
+import com.example.skycast.R
+import com.example.skycast.data.model.WeatherAlert
+import androidx.compose.ui.window.Dialog
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -41,7 +40,7 @@ import java.util.concurrent.TimeUnit
 @Composable
 fun AlertsScreen(viewModel: AlertsViewModel) {
     val context = LocalContext.current
-    val alerts by viewModel.alertsList.collectAsState()
+    val alerts by viewModel.alertsList.collectAsStateWithLifecycle()
     var showDialog by remember { mutableStateOf(false) }
 
     Box(
@@ -105,11 +104,7 @@ fun AlertsScreen(viewModel: AlertsViewModel) {
                             AlertCard(
                                 alert = alert,
                                 onDelete = {
-                                    // 1 cancel
-                                    WorkManager.getInstance(context).cancelWorkById(UUID.fromString(alert.workerId))
-                                    // 2 delete
                                     viewModel.deleteAlert(alert)
-
                                     Toast.makeText(context, context.getString(R.string.alert_removed), Toast.LENGTH_SHORT).show()
                                 }
                             )
@@ -139,29 +134,7 @@ fun AlertsScreen(viewModel: AlertsViewModel) {
         AddAlertDialog(
             onDismiss = { showDialog = false },
             onConfirm = { delayMinutes, type ->
-                val inputData = Data.Builder()
-                    .putString("alert_type", type)
-                    .build()
-
-                val request = OneTimeWorkRequestBuilder<WeatherWorker>()
-                    .setInitialDelay(delayMinutes, TimeUnit.MINUTES)
-                    .setInputData(inputData)
-                    .build()
-
-                WorkManager.getInstance(context).enqueue(request)
-
-                val currentTime = System.currentTimeMillis()
-                val triggerTime = currentTime + TimeUnit.MINUTES.toMillis(delayMinutes)
-
-                val newAlert = WeatherAlert(
-                    startTime = currentTime,
-                    endTime = triggerTime,
-                    alertType = type,
-                    workerId = request.id.toString()
-                )
-
-                viewModel.addAlert(newAlert)
-
+                viewModel.scheduleAlert(delayMinutes, type)
                 showDialog = false
                 Toast.makeText(context, context.getString(R.string.alert_scheduled), Toast.LENGTH_SHORT).show()
             }

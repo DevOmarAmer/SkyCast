@@ -6,18 +6,19 @@ import com.example.skycast.data.model.WeatherResponse
 import com.example.skycast.data.repository.IWeatherRepository
 import com.example.skycast.utils.Resource
 import com.example.skycast.utils.SettingsManager
-import com.example.skycast.widget.WidgetUpdater
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
     private val repository: IWeatherRepository,
-    private val settingsManager: SettingsManager
+    private val settingsManager: SettingsManager,
+    private val widgetUpdaterService: com.example.skycast.utils.IWidgetUpdaterService
 ) : ViewModel() {
 
     private val _weatherState = MutableStateFlow<Resource<WeatherResponse>>(Resource.Loading())
@@ -86,25 +87,23 @@ class HomeViewModel(
         unit: String,
         lang: String
     ) {
-        _weatherState.value = Resource.Loading()
-        repository.getWeatherForecast(lat, lon, apiKey, unit, lang).collect { result ->
-            _weatherState.value = result
-            if (result is Resource.Success) {
-                result.data?.let { data ->
-                    val firstItem = data.forecastList.firstOrNull()
-                    val tempValue = firstItem?.main?.temp?.toInt()?.toString()?.plus("°") ?: "--°"
-                    val cityValue = data.city.name
-                    val descValue = firstItem?.weatherInfo?.firstOrNull()?.description ?: ""
-                    
-                    WidgetUpdater.updateWidget(
-                        settingsManager.context,
-                        tempValue,
-                        cityValue,
-                        descValue
-                    )
+        repository.getWeatherForecast(lat, lon, apiKey, unit, lang)
+            .onStart { _weatherState.value = Resource.Loading() }
+            .collect { result ->
+                _weatherState.value = result
+                if (result is Resource.Success) {
+                    result.data?.let { data ->
+                        val firstItem = data.forecastList.firstOrNull()
+                        val tempValue = firstItem?.main?.temp?.toInt()?.toString()?.plus("°") ?: "--°"
+                        val cityValue = data.city.name
+                        val descValue = firstItem?.weatherInfo?.firstOrNull()?.description ?: ""
+                        
+                        widgetUpdaterService.updateWidget(
+                            tempValue, cityValue, descValue
+                        )
+                    }
                 }
             }
-        }
     }
 }
 data class SettingsData(

@@ -16,8 +16,8 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -58,15 +58,18 @@ class MainActivity : ComponentActivity() {
 
         // Settings
         val settingsManager = SettingsManager(applicationContext)
+        val widgetUpdaterService = com.example.skycast.utils.WidgetUpdaterServiceImpl(applicationContext)
+        val alertScheduler = com.example.skycast.utils.WorkManagerAlertScheduler(applicationContext)
+        
         val settingsFactory = SettingsViewModelFactory(settingsManager)
-        val homeFactory = HomeViewModelFactory(repository, settingsManager)
+        val homeFactory = HomeViewModelFactory(repository, settingsManager, widgetUpdaterService)
         val favoritesFactory = FavoritesViewModelFactory(repository)
 
-        val alertsFactory = AlertsViewModelFactory(repository)
+        val alertsFactory = AlertsViewModelFactory(repository, alertScheduler)
 
         setContent {
             val settingsViewModel: SettingsViewModel = viewModel(factory = settingsFactory)
-            val currentLang by settingsViewModel.language.collectAsState()
+            val currentLang by settingsViewModel.language.collectAsStateWithLifecycle()
             var initialLang by remember { mutableStateOf("") }
 
             LaunchedEffect(currentLang) {
@@ -84,7 +87,7 @@ class MainActivity : ComponentActivity() {
             SkyCastTheme {
                 val homeViewModel: HomeViewModel = viewModel(factory = homeFactory)
                 val favoritesViewModel: FavoritesViewModel = viewModel(factory = favoritesFactory)
-                val weatherState by homeViewModel.weatherState.collectAsState()
+                val weatherState by homeViewModel.weatherState.collectAsStateWithLifecycle()
                 val alertsViewModel: AlertsViewModel = viewModel(factory = alertsFactory)
 
                 var minSplashTimeMatured by remember { mutableStateOf(false) }

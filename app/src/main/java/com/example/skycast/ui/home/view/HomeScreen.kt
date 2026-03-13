@@ -16,8 +16,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -42,7 +42,7 @@ import java.util.*
 
 @Composable
 fun HomeScreen(viewModel: HomeViewModel) {
-    val weatherState by viewModel.weatherState.collectAsState()
+    val weatherState by viewModel.weatherState.collectAsStateWithLifecycle()
 
     Box(
         modifier = Modifier
