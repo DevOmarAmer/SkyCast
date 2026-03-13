@@ -52,17 +52,19 @@ class MainActivity : ComponentActivity() {
         // Data layer
         val database = WeatherDatabase.getDatabase(applicationContext)
         val favoriteDao = database.favoriteLocationDao()
+        val weatherDao = database.weatherDao()
         val apiService = RetrofitClient.apiService
         val alertDao = database.alertDao()
-        val repository = WeatherRepository(apiService, favoriteDao, alertDao)
+        val repository = WeatherRepository(apiService, favoriteDao, alertDao, weatherDao)
 
         // Settings
         val settingsManager = SettingsManager(applicationContext)
         val widgetUpdaterService = com.example.skycast.utils.WidgetUpdaterServiceImpl(applicationContext)
         val alertScheduler = com.example.skycast.utils.WorkManagerAlertScheduler(applicationContext)
+        val connectivityObserver = com.example.skycast.utils.NetworkConnectivityObserver(applicationContext)
         
         val settingsFactory = SettingsViewModelFactory(settingsManager)
-        val homeFactory = HomeViewModelFactory(repository, settingsManager, widgetUpdaterService)
+        val homeFactory = HomeViewModelFactory(repository, settingsManager, widgetUpdaterService, connectivityObserver)
         val favoritesFactory = FavoritesViewModelFactory(repository)
 
         val alertsFactory = AlertsViewModelFactory(repository, alertScheduler)

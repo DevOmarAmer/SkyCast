@@ -13,10 +13,14 @@ import kotlinx.coroutines.flow.flow
 import okio.IOException
 import retrofit2.HttpException
 
+import com.example.skycast.data.local.WeatherDao
+import com.example.skycast.data.local.CachedWeather
+
 class WeatherRepository(
     private val apiService: WeatherApiService,
     private val favoriteDao: FavoriteLocationDao,
-    private val alertDao: AlertDao
+    private val alertDao: AlertDao,
+    private val weatherDao: WeatherDao
 ): IWeatherRepository {
 
     // (Remote) responsibality
@@ -33,6 +37,8 @@ class WeatherRepository(
             val response = apiService.getWeatherForecast(lat, lon, apiKey, units, lang)
             if (response.isSuccessful) {
                 response.body()?.let { weatherData ->
+                    // Cache the successful network response for offline use
+                    weatherDao.insertWeather(CachedWeather(1, weatherData))
                     emit(Resource.Success(weatherData))
                 } ?: emit(Resource.Error("Data is empty"))
             } else {
@@ -41,7 +47,13 @@ class WeatherRepository(
         } catch (e: HttpException) {
             emit(Resource.Error("HTTP Error: ${e.localizedMessage}"))
         } catch (e: IOException) {
-            emit(Resource.Error("Check your internet connection."))
+            // No internet connection, attempt to fetch from local cache
+            val localCache = weatherDao.getCachedWeather()
+            if (localCache != null) {
+                emit(Resource.Success(localCache.weatherResponse))
+            } else {
+                emit(Resource.Error("Check your internet connection."))
+            }
         } catch (e: Exception) {
             emit(Resource.Error("Unexpected error: ${e.localizedMessage}"))
         }

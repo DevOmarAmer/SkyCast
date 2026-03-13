@@ -9,7 +9,7 @@ plugins {
 
 android {
     namespace = "com.example.skycast"
-    compileSdk = 36 // تم تعديلها لتكون رقماً مباشراً لتجنب أي مشاكل مع release()
+    compileSdk = 36
     defaultConfig {
         applicationId = "com.example.skycast"
         minSdk = 24

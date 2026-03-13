@@ -40,9 +40,15 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import com.example.skycast.utils.ConnectivityObserver
+
 @Composable
 fun HomeScreen(viewModel: HomeViewModel) {
     val weatherState by viewModel.weatherState.collectAsStateWithLifecycle()
+    val networkStatus by viewModel.networkStatus.collectAsStateWithLifecycle()
 
     Box(
         modifier = Modifier
@@ -91,6 +97,30 @@ fun HomeScreen(viewModel: HomeViewModel) {
                         )
                     }
                 }
+            }
+        }
+
+        // ── Offline Banner ────────────────────────────────────────────────────────
+        AnimatedVisibility(
+            visible = networkStatus == ConnectivityObserver.Status.Unavailable || networkStatus == ConnectivityObserver.Status.Lost,
+            enter = slideInVertically(initialOffsetY = { -it }),
+            exit = slideOutVertically(targetOffsetY = { -it }),
+            modifier = Modifier.align(Alignment.TopCenter)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.Red.copy(alpha = 0.8f))
+                    .padding(WindowInsets.statusBars.asPaddingValues())
+                    .padding(vertical = 8.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Offline Mode - Showing Cached Data",
+                    color = Color.White,
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
     }

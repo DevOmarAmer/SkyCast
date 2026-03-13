@@ -4,13 +4,15 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.example.skycast.data.model.FavoriteLocation
 import com.example.skycast.data.model.WeatherAlert
 
-
-@Database(entities = [FavoriteLocation::class, WeatherAlert::class], version = 2, exportSchema = false)
+@Database(entities = [FavoriteLocation::class, WeatherAlert::class, CachedWeather::class], version = 3, exportSchema = false)
+@TypeConverters(Converters::class)
 abstract class WeatherDatabase : RoomDatabase() {
 
+    abstract fun weatherDao(): WeatherDao
     abstract fun favoriteLocationDao(): FavoriteLocationDao
     abstract fun alertDao(): AlertDao
 
