@@ -103,6 +103,9 @@ dependencies {
     //native splash
     implementation("androidx.core:core-splashscreen:1.0.1")
 
+    // Jetpack Glance for App Widgets
+    implementation("androidx.glance:glance-appwidget:1.1.0")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
