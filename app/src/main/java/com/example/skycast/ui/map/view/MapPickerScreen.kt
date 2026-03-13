@@ -1,4 +1,4 @@
-package com.example.skycast.ui
+package com.example.skycast.ui.map.view
 
 import android.annotation.SuppressLint
 import android.location.Geocoder
@@ -14,14 +14,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.skycast.BuildConfig
 import com.example.skycast.data.remote.RetrofitClient
-import com.example.skycast.ui.map.MapLocationBottomSheet
-import com.example.skycast.ui.map.MapSearchBar
-import com.example.skycast.ui.map.PlaceSuggestion
-import com.example.skycast.ui.map.WeatherPreview
 import com.example.skycast.ui.theme.*
 import com.example.skycast.utils.LocationHelper
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -29,6 +26,7 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Locale
@@ -132,7 +130,7 @@ fun MapPickerScreen(
     LaunchedEffect(Unit) {
         // Defer map inflation slightly so the Compose Navigation animation 
         // doesn't stutter because of heavy GoogleMap View initialization on main thread.
-        kotlinx.coroutines.delay(400)
+        delay(400)
         isMapReady = true
         
         LocationHelper.getCurrentLocation(context) { loc ->
@@ -152,7 +150,7 @@ fun MapPickerScreen(
         DefaultWeatherColors
     }
 
-    val animSpec = tween<androidx.compose.ui.graphics.Color>(durationMillis = 800, easing = FastOutSlowInEasing)
+    val animSpec = tween<Color>(durationMillis = 800, easing = FastOutSlowInEasing)
     val bgTop by animateColorAsState(rawColors.bgTop, animSpec, label = "bgTop")
     val bgBottom by animateColorAsState(rawColors.bgBottom, animSpec, label = "bgBottom")
     val heroGlow by animateColorAsState(rawColors.heroGlow, animSpec, label = "heroGlow")

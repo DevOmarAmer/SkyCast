@@ -1,8 +1,9 @@
-package com.example.skycast.ui.favorites
+package com.example.skycast.ui.favorites.view
 
 import androidx.compose.runtime.Composable
 import com.example.skycast.data.model.FavoriteLocation
-import com.example.skycast.ui.MapPickerScreen
+import com.example.skycast.ui.map.view.MapPickerScreen
+import com.example.skycast.ui.favorites.viewModel.FavoritesViewModel
 
 @Composable
 fun AddFavoriteScreen(

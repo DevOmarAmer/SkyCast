@@ -1,10 +1,11 @@
-package com.example.skycast.ui.settings
+package com.example.skycast.ui.settings.view
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -30,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.skycast.R
+import com.example.skycast.ui.settings.viewModel.SettingsViewModel
 import com.example.skycast.ui.theme.*
 
 @Composable
@@ -193,7 +195,7 @@ fun SettingsSection(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(20.dp),
             colors = CardDefaults.cardColors(containerColor = Frost),
-            border = androidx.compose.foundation.BorderStroke(1.dp, FrostStrong)
+            border = BorderStroke(1.dp, FrostStrong)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 content()

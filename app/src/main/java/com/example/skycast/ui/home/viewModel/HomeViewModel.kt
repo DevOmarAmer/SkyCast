@@ -1,12 +1,12 @@
-package com.example.skycast.ui.home
+package com.example.skycast.ui.home.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.skycast.data.model.WeatherResponse
 import com.example.skycast.data.repository.IWeatherRepository
-import com.example.skycast.data.repository.WeatherRepository
 import com.example.skycast.utils.Resource
 import com.example.skycast.utils.SettingsManager
+import com.example.skycast.widget.WidgetUpdater
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -96,7 +96,7 @@ class HomeViewModel(
                     val cityValue = data.city.name
                     val descValue = firstItem?.weatherInfo?.firstOrNull()?.description ?: ""
                     
-                    com.example.skycast.widget.WidgetUpdater.updateWidget(
+                    WidgetUpdater.updateWidget(
                         settingsManager.context,
                         tempValue,
                         cityValue,

@@ -1,8 +1,9 @@
-package com.example.skycast.ui.map
+package com.example.skycast.ui.map.view
 
 import android.location.Geocoder
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -155,7 +156,7 @@ fun MapSearchBar(
                     .padding(top = 6.dp),
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(containerColor = wc.bgBottom.copy(alpha = 0.97f)),
-                border = androidx.compose.foundation.BorderStroke(1.dp, wc.accent.copy(alpha = 0.2f))
+                border = BorderStroke(1.dp, wc.accent.copy(alpha = 0.2f))
             ) {
                 LazyColumn(modifier = Modifier.fillMaxWidth()) {
                     items(suggestions, key = { it.primaryText + it.latLng.latitude }) { suggestion ->

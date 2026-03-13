@@ -1,7 +1,8 @@
-package com.example.skycast.ui.favorites
+package com.example.skycast.ui.favorites.view
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,7 +18,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -31,6 +31,7 @@ import com.example.skycast.R
 import com.example.skycast.data.model.FavoriteLocation
 import com.example.skycast.data.model.ForecastItem
 import com.example.skycast.data.model.WeatherResponse
+import com.example.skycast.ui.favorites.viewModel.FavoritesViewModel
 import com.example.skycast.ui.theme.*
 import com.example.skycast.utils.Resource
 import java.text.SimpleDateFormat
@@ -311,7 +312,7 @@ private fun DetailStatsRow(current: ForecastItem) {
             .padding(horizontal = 16.dp, vertical = 12.dp),
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(containerColor = wc.cardSurface),
-        border = androidx.compose.foundation.BorderStroke(1.dp, wc.accent.copy(alpha = 0.25f))
+        border = BorderStroke(1.dp, wc.accent.copy(alpha = 0.25f))
     ) {
         Column(modifier = Modifier.padding(vertical = 20.dp)) {
             Row(
@@ -377,7 +378,7 @@ private fun DetailHourlyCard(forecast: ForecastItem) {
     Card(
         shape = RoundedCornerShape(18.dp),
         colors = CardDefaults.cardColors(containerColor = wc.cardSurface),
-        border = androidx.compose.foundation.BorderStroke(1.dp, wc.accent.copy(alpha = 0.2f))
+        border = BorderStroke(1.dp, wc.accent.copy(alpha = 0.2f))
     ) {
         Column(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
@@ -434,7 +435,7 @@ private fun DetailDailyCard(forecast: ForecastItem) {
             .padding(horizontal = 16.dp, vertical = 5.dp),
         shape = RoundedCornerShape(18.dp),
         colors = CardDefaults.cardColors(containerColor = wc.cardSurface),
-        border = androidx.compose.foundation.BorderStroke(1.dp, wc.accent.copy(alpha = 0.2f))
+        border = BorderStroke(1.dp, wc.accent.copy(alpha = 0.2f))
     ) {
         Row(
             modifier = Modifier

@@ -1,9 +1,10 @@
-package com.example.skycast.ui.favorites
+package com.example.skycast.ui.favorites.view
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -29,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.skycast.R
 import com.example.skycast.data.model.FavoriteLocation
+import com.example.skycast.ui.favorites.viewModel.FavoritesViewModel
 import com.example.skycast.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -185,7 +187,7 @@ fun FavoriteItemCard(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = SkyNavy),
-        border = androidx.compose.foundation.BorderStroke(1.dp, FrostStrong),
+        border = BorderStroke(1.dp, FrostStrong),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Row(

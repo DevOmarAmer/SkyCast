@@ -1,4 +1,4 @@
-package com.example.skycast.ui.favorites
+package com.example.skycast.ui.favorites.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

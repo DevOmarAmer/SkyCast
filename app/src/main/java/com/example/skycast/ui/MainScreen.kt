@@ -31,15 +31,15 @@ import com.example.skycast.data.model.FavoriteLocation
 import com.example.skycast.navigation.BottomNavItem
 import com.example.skycast.ui.alerts.view.AlertsScreen
 import com.example.skycast.ui.alerts.viewModel.AlertsViewModel
-import com.example.skycast.ui.favorites.AddFavoriteScreen
-import com.example.skycast.ui.favorites.FavoriteDetailScreen
-import com.example.skycast.ui.favorites.FavoritesScreen
-import com.example.skycast.ui.favorites.FavoritesViewModel
-import com.example.skycast.ui.home.HomeScreen
-import com.example.skycast.ui.home.HomeViewModel
-import com.example.skycast.ui.settings.MapLocationPickerScreen
-import com.example.skycast.ui.settings.SettingsScreen
-import com.example.skycast.ui.settings.SettingsViewModel
+import com.example.skycast.ui.favorites.view.AddFavoriteScreen
+import com.example.skycast.ui.favorites.view.FavoriteDetailScreen
+import com.example.skycast.ui.favorites.view.FavoritesScreen
+import com.example.skycast.ui.favorites.viewModel.FavoritesViewModel
+import com.example.skycast.ui.home.view.HomeScreen
+import com.example.skycast.ui.home.viewModel.HomeViewModel
+import com.example.skycast.ui.settings.view.MapLocationPickerScreen
+import com.example.skycast.ui.settings.view.SettingsScreen
+import com.example.skycast.ui.settings.viewModel.SettingsViewModel
 import com.example.skycast.ui.theme.*
 
 @Composable

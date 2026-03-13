@@ -1,7 +1,6 @@
-package com.example.skycast.ui.map
+package com.example.skycast.ui.map.view
 
-import androidx.compose.animation.*
-import androidx.compose.animation.core.*
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -10,7 +9,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,7 +44,7 @@ fun MapLocationBottomSheet(
             .navigationBarsPadding(),
         shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
         colors = CardDefaults.cardColors(containerColor = wc.bgBottom),
-        border = androidx.compose.foundation.BorderStroke(1.dp, wc.accent.copy(alpha = 0.2f))
+        border = BorderStroke(1.dp, wc.accent.copy(alpha = 0.2f))
     ) {
         Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = 20.dp)) {
 

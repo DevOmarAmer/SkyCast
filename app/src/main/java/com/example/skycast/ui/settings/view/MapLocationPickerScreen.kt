@@ -1,7 +1,8 @@
-package com.example.skycast.ui.settings
+package com.example.skycast.ui.settings.view
 
 import androidx.compose.runtime.Composable
-import com.example.skycast.ui.MapPickerScreen
+import com.example.skycast.ui.map.view.MapPickerScreen
+import com.example.skycast.ui.settings.viewModel.SettingsViewModel
 
 @Composable
 fun MapLocationPickerScreen(

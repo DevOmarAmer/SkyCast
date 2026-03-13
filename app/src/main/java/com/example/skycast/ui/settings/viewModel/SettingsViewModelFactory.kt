@@ -2,7 +2,7 @@ package com.example.skycast.ui.favorites
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.skycast.ui.settings.SettingsViewModel
+import com.example.skycast.ui.settings.viewModel.SettingsViewModel
 import com.example.skycast.utils.SettingsManager
 
 class SettingsViewModelFactory(

@@ -1,4 +1,4 @@
-package com.example.skycast.ui.settings
+package com.example.skycast.ui.settings.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
