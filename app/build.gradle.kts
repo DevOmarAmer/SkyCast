@@ -30,6 +30,7 @@ android {
         val mapsKey = localProperties.getProperty("MAPS_API_KEY") ?: ""
 
         manifestPlaceholders["MAPS_API_KEY"] = mapsKey
+        buildConfigField("String", "GEMINI_API_KEY", "\"${project.findProperty("GEMINI_API_KEY")}\"")
     }
 
     buildTypes {
@@ -106,6 +107,9 @@ dependencies {
 
     // Jetpack Glance for App Widgets
     implementation("androidx.glance:glance-appwidget:1.1.0")
+
+    // Google Generative AI (Gemini)
+    implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
