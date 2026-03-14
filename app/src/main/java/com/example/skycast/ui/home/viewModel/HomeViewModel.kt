@@ -45,6 +45,11 @@ class HomeViewModel(
     private val _currentApiKey = MutableStateFlow("")
     val exposedApiKey: StateFlow<String> = _currentApiKey.asStateFlow()
 
+    // Cache to prevent redundant AI calls and save quota
+    private var lastFetchedWeatherKey: String? = null
+    private var lastFetchedLang: String? = null
+    private var aiJob: kotlinx.coroutines.Job? = null
+
 
     init {
         // Observe network changes
@@ -148,7 +153,20 @@ class HomeViewModel(
 
     private fun fetchAiSummary(firstItem: com.example.skycast.data.model.ForecastItem?, lang: String) {
         if (firstItem == null) return
-        viewModelScope.launch {
+        
+        // 1. If already loading, don't trigger another one
+        if (_aiSummaryState.value == AiState.Loading) return
+
+        // 2. Simple deduplication: don't fetch if temp/condition/lang hasn't changed
+        val weatherKey = "${firstItem.main.temp.toInt()}_${firstItem.weatherInfo.firstOrNull()?.description}_${firstItem.wind.speed.toInt()}"
+        if (weatherKey == lastFetchedWeatherKey && lang == lastFetchedLang && _aiSummaryState.value is AiState.Success) {
+            return 
+        }
+
+        // 3. Cancel any existing job to be safe
+        aiJob?.cancel()
+        
+        aiJob = viewModelScope.launch {
             _aiSummaryState.value = AiState.Loading
             
             val tempC = firstItem.main.temp.toInt()
@@ -158,6 +176,8 @@ class HomeViewModel(
 
             val summary = aiRepository.getWeatherSummary(tempC, desc, windSpeed, isRainy, lang)
             if (!summary.isNullOrBlank()) {
+                lastFetchedWeatherKey = weatherKey
+                lastFetchedLang = lang
                 _aiSummaryState.value = AiState.Success(summary.trim())
             } else {
                 _aiSummaryState.value = AiState.Error

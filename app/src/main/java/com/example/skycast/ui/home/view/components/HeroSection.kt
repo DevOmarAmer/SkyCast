@@ -49,79 +49,95 @@ fun HeroSection(data: WeatherResponse, currentWeather: ForecastItem) {
         modifier = Modifier
             .fillMaxWidth()
             .background(
-                Brush.verticalGradient(listOf(SkyBlue.copy(alpha = 0.3f), Color.Transparent))
+                Brush.verticalGradient(listOf(SkyBlue.copy(alpha = 0.2f), Color.Transparent))
             )
             .padding(horizontal = 24.dp, vertical = 24.dp)
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
-            // City name
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            // City name and Date
             Text(
                 text = data.city.name,
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.W600,
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.W700,
                 color = CloudWhite
             )
-            Spacer(modifier = Modifier.height(4.dp))
-            // Date
+            Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = formatFullDate(currentWeather.dateText),
                 style = MaterialTheme.typography.bodyMedium,
                 color = CloudGrey
             )
-            Spacer(modifier = Modifier.height(24.dp))
 
-            // Glowing icon
-            Box(contentAlignment = Alignment.Center) {
-                // Ambient glow
-                Box(
-                    modifier = Modifier
-                        .size((120 * glowScale).dp)
-                        .scale(glowScale)
-                        .background(
-                            Brush.radialGradient(
-                                listOf(SkyBlueBright.copy(alpha = 0.25f), Color.Transparent)
-                            ),
-                            CircleShape
-                        )
-                        .blur(20.dp)
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Main Weather Info: Temp and Icon
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                // Temperature
+                Text(
+                    text = "${currentWeather.main.temp.toInt()}°",
+                    fontSize = 86.sp,
+                    fontWeight = FontWeight.W300,
+                    color = CloudWhite,
+                    lineHeight = 86.sp
                 )
-                val iconCode = currentWeather.weatherInfo.firstOrNull()?.icon
-                AsyncImage(
-                    model = "https://openweathermap.org/img/wn/${iconCode}@4x.png",
-                    contentDescription = "Weather Icon",
-                    modifier = Modifier
-                        .size(130.dp)
-                        .offset(y = float.dp)
-                )
+                
+                Spacer(modifier = Modifier.width(16.dp))
+
+                // Glowing icon
+                Box(contentAlignment = Alignment.Center) {
+                    // Ambient glow
+                    Box(
+                        modifier = Modifier
+                            .size((100 * glowScale).dp)
+                            .scale(glowScale)
+                            .background(
+                                Brush.radialGradient(
+                                    listOf(SkyBlueBright.copy(alpha = 0.3f), Color.Transparent)
+                                ),
+                                CircleShape
+                            )
+                            .blur(20.dp)
+                    )
+                    val iconCode = currentWeather.weatherInfo.firstOrNull()?.icon
+                    AsyncImage(
+                        model = "https://openweathermap.org/img/wn/${iconCode}@4x.png",
+                        contentDescription = "Weather Icon",
+                        modifier = Modifier
+                            .size(110.dp)
+                            .offset(y = float.dp)
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Temperature
-            Text(
-                text = "${currentWeather.main.temp.toInt()}°",
-                fontSize = 80.sp,
-                fontWeight = FontWeight.W200,
-                color = CloudWhite,
-                lineHeight = 80.sp
-            )
             Text(
                 text = currentWeather.weatherInfo.firstOrNull()?.description?.replaceFirstChar {
                     it.titlecase(Locale.getDefault())
                 } ?: "",
                 style = MaterialTheme.typography.titleMedium,
                 color = SkyBluePale,
-                fontWeight = FontWeight.W400
+                fontWeight = FontWeight.W500
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             // Min / Max pill
             Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalAlignment = Alignment.CenterVertically
+                horizontalArrangement = Arrangement.spacedBy(24.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .background(Color.White.copy(alpha = 0.05f), androidx.compose.foundation.shape.RoundedCornerShape(16.dp))
+                    .padding(horizontal = 24.dp, vertical = 12.dp)
             ) {
-                TemperaturePill(label = "Feels", value = "${currentWeather.main.feelsLike.toInt()}°", color = SunGold)
+                TemperaturePill(label = "Feels Like", value = "${currentWeather.main.feelsLike.toInt()}°", color = SunGold)
                 Box(Modifier.size(4.dp).background(FrostStrong, CircleShape))
                 TemperaturePill(label = "Min", value = "${currentWeather.main.tempMin.toInt()}°", color = RainBlue)
                 Box(Modifier.size(4.dp).background(FrostStrong, CircleShape))

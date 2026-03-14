@@ -12,7 +12,7 @@ class AIAssistantRepositoryImpl : IAIAssistantRepository {
     // تهيئة نموذج Gemini (نستخدم flash لأنه الأسرع والأخف للموبايل)
     private val generativeModel by lazy {
         GenerativeModel(
-            modelName = "gemini-1.5-flash",
+            modelName = "gemini-flash-latest",
             apiKey = BuildConfig.GEMINI_API_KEY
         )
     }
@@ -40,8 +40,12 @@ class AIAssistantRepositoryImpl : IAIAssistantRepository {
                 """.trimIndent()
 
                 val response = generativeModel.generateContent(prompt)
-                response.text?.takeIf { it.isNotBlank() }
+                val result = response.text?.takeIf { it.isNotBlank() }
+                android.util.Log.d("AIAssistant", "AI generated: $result")
+                result
             } catch (e: Exception) {
+                android.util.Log.e("AIAssistant", "Error generating AI summary: ${e.message}", e)
+                e.printStackTrace()
                 null
             }
         }

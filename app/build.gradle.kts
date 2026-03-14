@@ -28,9 +28,10 @@ android {
         buildConfigField("String", "API_KEY", apiKey)
 
         val mapsKey = localProperties.getProperty("MAPS_API_KEY") ?: ""
-
         manifestPlaceholders["MAPS_API_KEY"] = mapsKey
-        buildConfigField("String", "GEMINI_API_KEY", "\"${project.findProperty("GEMINI_API_KEY")}\"")
+
+        val geminiKey = localProperties.getProperty("GEMINI_API_KEY") ?: "\"\""
+        buildConfigField("String", "GEMINI_API_KEY", geminiKey)
     }
 
     buildTypes {
