@@ -110,6 +110,7 @@
     <string name="outfit_cool">🧥 ارتدِ ملابس ثقيلة، الجو بارد في الخارج.</string>
     <string name="outfit_cold">🥶 الجو بارد جدًا – ارتدِ ملابس دافئة!</string>
     <string name="morning_brief_message_format">صباح الخير، %1$s! درجة الحرارة اليوم %2$d°C والطقس %3$s. الرطوبة: %4$d%% · الرياح: %5$d م/ث. %6$s</string>
+    <string name="ai_error_disclaimer">(🤖 الذكاء الاصطناعي في استراحة، إليك الملخص القياسي)\n\n</string>
 
     <!-- Weather Alert Messages -->
     <string name="alert_title_format">⚠️ %1$s</string>

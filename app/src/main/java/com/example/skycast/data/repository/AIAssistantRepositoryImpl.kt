@@ -10,39 +10,39 @@ import kotlinx.coroutines.withContext
 class AIAssistantRepositoryImpl : IAIAssistantRepository {
 
     // تهيئة نموذج Gemini (نستخدم flash لأنه الأسرع والأخف للموبايل)
-    private val generativeModel = GenerativeModel(
-        modelName = "gemini-1.5-flash",
-        apiKey = BuildConfig.GEMINI_API_KEY
-    )
+    private val generativeModel by lazy {
+        GenerativeModel(
+            modelName = "gemini-1.5-flash",
+            apiKey = BuildConfig.GEMINI_API_KEY
+        )
+    }
 
     override suspend fun getWeatherSummary(
         tempC: Int,
         condition: String,
         windSpeed: Int,
-        isRainy: Boolean
-    ): String {
+        isRainy: Boolean,
+        language: String
+    ): String? {
         return withContext(Dispatchers.IO) {
             try {
-                // هندسة الأوامر (Prompt Engineering) للحصول على أفضل رد
+                val langName = if (language.lowercase().startsWith("ar")) "Arabic" else "English"
                 val prompt = """
-                    أنت مساعد طقس محلي ذكي وودود. بناءً على بيانات الطقس الحالية التالية:
-                    - درجة الحرارة: $tempC درجة مئوية
-                    - حالة الجو: $condition
-                    - سرعة الرياح: $windSpeed متر/ثانية
-                    - احتمالية المطر: ${if (isRainy) "نعم" else "لا"}
+                    You are a smart and friendly local weather assistant. Based on the following current weather data:
+                    - Temperature: $tempC °C
+                    - Condition: $condition
+                    - Wind Speed: $windSpeed m/s
+                    - Rain Expected: ${if (isRainy) "Yes" else "No"}
                     
-                    اكتب ملخصاً قصيراً (حد أقصى 3 سطور) باللغة العربية، بأسلوب محادثة لطيف. 
-                    انصحني بماذا أرتدي وكيف أستعد لليوم. لا تستخدم تنسيقات معقدة، فقط نص عادي ومريح للقراءة.
+                    Write a short morning brief (max 3 sentences) in $langName, using a friendly conversational tone. 
+                    Advise me on what to wear and how to prepare for the day. Do not use complex formatting (e.g. asterisks); just plain text that is easy to read.
+                    Add a couple of suitable emojis for a nice presentation.
                 """.trimIndent()
 
-                // إرسال الطلب لـ Gemini
                 val response = generativeModel.generateContent(prompt)
-
-                // إرجاع النص أو رسالة بديلة في حال كان الرد فارغاً
-                response.text ?: "أتمنى لك يوماً سعيداً! الجو يبدو متقلباً، فكن مستعداً."
+                response.text?.takeIf { it.isNotBlank() }
             } catch (e: Exception) {
-                // معالجة الأخطاء (مثل انقطاع الإنترنت أثناء سؤال الـ AI)
-                "عذراً، لم أتمكن من جلب نصيحة الذكاء الاصطناعي حالياً. راقب درجات الحرارة!"
+                null
             }
         }
     }

@@ -5,6 +5,7 @@ interface IAIAssistantRepository {
         tempC: Int,
         condition: String,
         windSpeed: Int,
-        isRainy: Boolean
-    ): String
+        isRainy: Boolean,
+        language: String
+    ): String?
 }

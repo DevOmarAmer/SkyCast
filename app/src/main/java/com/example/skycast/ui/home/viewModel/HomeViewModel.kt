@@ -3,6 +3,7 @@ package com.example.skycast.ui.home.viewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.skycast.data.model.WeatherResponse
+import com.example.skycast.data.repository.IAIAssistantRepository
 import com.example.skycast.data.repository.IWeatherRepository
 import com.example.skycast.utils.Resource
 import com.example.skycast.utils.SettingsManager
@@ -18,6 +19,7 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel(
     private val repository: IWeatherRepository,
+    private val aiRepository: IAIAssistantRepository,
     private val settingsManager: SettingsManager,
     private val widgetUpdaterService: com.example.skycast.utils.IWidgetUpdaterService,
     private val connectivityObserver: ConnectivityObserver
@@ -25,6 +27,9 @@ class HomeViewModel(
 
     private val _weatherState = MutableStateFlow<Resource<WeatherResponse>>(Resource.Loading())
     val weatherState: StateFlow<Resource<WeatherResponse>> = _weatherState.asStateFlow()
+
+    private val _aiSummaryState = MutableStateFlow<AiState>(AiState.Idle)
+    val aiSummaryState: StateFlow<AiState> = _aiSummaryState.asStateFlow()
 
     private val _networkStatus = MutableStateFlow(ConnectivityObserver.Status.Available)
     val networkStatus: StateFlow<ConnectivityObserver.Status> = _networkStatus.asStateFlow()
@@ -135,11 +140,39 @@ class HomeViewModel(
                         widgetUpdaterService.updateWidget(
                             tempValue, cityValue, descValue
                         )
+                        fetchAiSummary(firstItem, lang)
                     }
                 }
             }
     }
+
+    private fun fetchAiSummary(firstItem: com.example.skycast.data.model.ForecastItem?, lang: String) {
+        if (firstItem == null) return
+        viewModelScope.launch {
+            _aiSummaryState.value = AiState.Loading
+            
+            val tempC = firstItem.main.temp.toInt()
+            val desc = firstItem.weatherInfo.firstOrNull()?.description ?: "Clear"
+            val windSpeed = firstItem.wind.speed.toInt()
+            val isRainy = desc.contains("Rain", true) || desc.contains("Drizzle", true) || desc.contains("Thunderstorm", true)
+
+            val summary = aiRepository.getWeatherSummary(tempC, desc, windSpeed, isRainy, lang)
+            if (!summary.isNullOrBlank()) {
+                _aiSummaryState.value = AiState.Success(summary.trim())
+            } else {
+                _aiSummaryState.value = AiState.Error
+            }
+        }
+    }
 }
+
+sealed class AiState {
+    object Idle : AiState()
+    object Loading : AiState()
+    data class Success(val text: String) : AiState()
+    object Error : AiState()
+}
+
 data class SettingsData(
     val unit: String,
     val lang: String,

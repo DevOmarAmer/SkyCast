@@ -5,6 +5,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.example.skycast.R
 import com.example.skycast.data.remote.RetrofitClient
+import com.example.skycast.data.repository.AIAssistantRepositoryImpl
 import com.example.skycast.utils.NotificationHelper
 import java.util.Calendar
 
@@ -47,7 +48,14 @@ class MorningBriefWorker(
             val humidity  = todayItem.main.humidity
             val windSpeed = todayItem.wind.speed.toInt()
 
-            val message = buildGreeting(cityName, tempC, desc, humidity, windSpeed)
+            val isRainy = (desc.contains("Rain", true) || desc.contains("Drizzle", true) || desc.contains("Thunderstorm", true))
+
+            val aiRepo = AIAssistantRepositoryImpl()
+            val lang = context.resources.configuration.locales.get(0).language
+            val aiSummary = aiRepo.getWeatherSummary(tempC, desc, windSpeed, isRainy, lang)
+
+            val message = aiSummary?.trim() ?: (context.getString(R.string.ai_error_disclaimer) + buildGreeting(cityName, tempC, desc, humidity, windSpeed))
+
             NotificationHelper.showMorningBrief(context, message)
             Result.success()
         } catch (e: Exception) {

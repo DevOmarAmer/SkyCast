@@ -109,6 +109,7 @@
     <string name="outfit_cool">🧥 Bundle up, it\'s chilly out there.</string>
     <string name="outfit_cold">🥶 It\'s very cold – dress warmly!</string>
     <string name="morning_brief_message_format">Good morning, %1$s! Today is %2$d°C and %3$s. Humidity: %4$d%% · Wind: %5$d m/s. %6$s</string>
+    <string name="ai_error_disclaimer">(🤖 AI is resting, here is your standard brief)\n\n</string>
 
     <!-- Weather Alert Messages -->
     <string name="alert_title_format">⚠️ %1$s</string>

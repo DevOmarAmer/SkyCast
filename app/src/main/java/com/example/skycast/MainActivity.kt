@@ -63,9 +63,10 @@ class MainActivity : ComponentActivity() {
         val widgetUpdaterService = com.example.skycast.utils.WidgetUpdaterServiceImpl(applicationContext)
         val alertScheduler = com.example.skycast.utils.WorkManagerAlertScheduler(applicationContext)
         val connectivityObserver = com.example.skycast.utils.NetworkConnectivityObserver(applicationContext)
+        val aiRepository = com.example.skycast.data.repository.AIAssistantRepositoryImpl()
         
         val settingsFactory = SettingsViewModelFactory(settingsManager)
-        val homeFactory = HomeViewModelFactory(repository, settingsManager, widgetUpdaterService, connectivityObserver)
+        val homeFactory = HomeViewModelFactory(repository, aiRepository, settingsManager, widgetUpdaterService, connectivityObserver)
         val favoritesFactory = FavoritesViewModelFactory(repository)
 
         val alertsFactory = AlertsViewModelFactory(repository, alertScheduler, settingsManager)
