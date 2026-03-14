@@ -8,7 +8,7 @@ import androidx.room.TypeConverters
 import com.example.skycast.data.model.FavoriteLocation
 import com.example.skycast.data.model.WeatherAlert
 
-@Database(entities = [FavoriteLocation::class, WeatherAlert::class, CachedWeather::class], version = 3, exportSchema = false)
+@Database(entities = [FavoriteLocation::class, WeatherAlert::class, CachedWeather::class], version = 5, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class WeatherDatabase : RoomDatabase() {
 

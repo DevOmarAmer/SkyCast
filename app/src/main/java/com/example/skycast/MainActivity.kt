@@ -20,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.skycast.data.local.WeatherDatabase
@@ -67,7 +68,7 @@ class MainActivity : ComponentActivity() {
         val homeFactory = HomeViewModelFactory(repository, settingsManager, widgetUpdaterService, connectivityObserver)
         val favoritesFactory = FavoritesViewModelFactory(repository)
 
-        val alertsFactory = AlertsViewModelFactory(repository, alertScheduler)
+        val alertsFactory = AlertsViewModelFactory(repository, alertScheduler, settingsManager)
 
         setContent {
             val settingsViewModel: SettingsViewModel = viewModel(factory = settingsFactory)
@@ -92,9 +93,9 @@ class MainActivity : ComponentActivity() {
                 val weatherState by homeViewModel.weatherState.collectAsStateWithLifecycle()
                 val alertsViewModel: AlertsViewModel = viewModel(factory = alertsFactory)
 
-                var minSplashTimeMatured by remember { mutableStateOf(false) }
-                var locationFetched by remember { mutableStateOf(false) }
-                var isSplashDismissed by remember { mutableStateOf(false) }
+                var minSplashTimeMatured by rememberSaveable { mutableStateOf(false) }
+                var locationFetched by rememberSaveable { mutableStateOf(false) }
+                var isSplashDismissed by rememberSaveable { mutableStateOf(false) }
 
                 // 1. Ensure splash animations play for at least 2.5s
                 LaunchedEffect(Unit) {
@@ -150,7 +151,6 @@ class MainActivity : ComponentActivity() {
                     }
                     permissionLauncher.launch(perms.toTypedArray())
                 }
-
                 AnimatedContent(
                     targetState = isSplashDismissed,
                     transitionSpec = {

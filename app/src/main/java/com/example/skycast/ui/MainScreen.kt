@@ -78,7 +78,7 @@ fun MainScreen(
                     )
                 }
                 composable(BottomNavItem.Alerts.route) {
-                    AlertsScreen(viewModel = alertsViewModel)
+                    AlertsScreen(viewModel = alertsViewModel, homeViewModel = homeViewModel)
                 }
                 composable(BottomNavItem.Settings.route) {
                     SettingsScreen(

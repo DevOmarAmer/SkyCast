@@ -44,26 +44,78 @@
     <string name="search_failed">Search failed – check your connection</string>
     <string name="selected_location">Selected location</string>
 
-    <!-- Alerts -->
+    <!-- Alerts – General -->
     <string name="alerts_title">Alerts</string>
-    <string name="no_alerts">No Active Alerts</string>
-    <string name="add_alert_hint">Tap the + button to schedule a weather alert</string>
-    <string name="new_alert">New Weather Alert</string>
-    <string name="notify_after">Notify after</string>
+    <string name="no_alerts">No Condition Alerts</string>
+    <string name="add_alert_hint">Tap + to add a weather condition alert</string>
+    <string name="add_alert">Add Alert</string>
+    <string name="delete">Delete</string>
+    <string name="alert_scheduled">Alert scheduled!</string>
+    <string name="alert_removed">Alert removed</string>
+    <string name="new_alert">New Condition Alert</string>
+    <string name="save_alert">Save Alert</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
+
+    <!-- Alerts – Condition Types -->
+    <string name="condition_alerts_title">Condition Alerts</string>
+    <string name="condition_type_label">Weather Condition</string>
+    <string name="cond_temp_above">🌡️ High Temperature</string>
+    <string name="cond_temp_below">🥶 Low Temperature</string>
+    <string name="cond_wind_above">💨 Strong Wind</string>
+    <string name="cond_rain_expected">🌧️ Rain Expected</string>
+    <string name="cond_very_cloudy">☁️ Very Cloudy</string>
+    <string name="threshold_label">Threshold</string>
+
+    <!-- Alerts – Types -->
     <string name="alert_type">Alert type</string>
     <string name="notification">Notification</string>
     <string name="alarm">Alarm</string>
-    <string name="cancel">Cancel</string>
-    <string name="save_alert">Save Alert</string>
-    <string name="alert_scheduled">Alert scheduled!</string>
-    <string name="alert_removed">Alert removed</string>
     <string name="notification_type">Silent notification</string>
     <string name="alarm_type">Alarm sound</string>
+
+    <!-- Alerts – Time Range -->
+    <string name="time_range">Active Time Range</string>
+    <string name="start_time">Start</string>
+    <string name="end_time">End</string>
+    <string name="select_date">Select Date</string>
+    <string name="select_time">Select Time</string>
+    <string name="until">until</string>
+
+    <!-- Morning Brief -->
+    <string name="morning_brief_title">Daily Morning Brief</string>
+    <string name="morning_brief_subtitle">Get a daily weather summary every morning</string>
+    <string name="morning_brief_time_label">Delivery time</string>
+    <string name="brief_enabled">Morning brief enabled ☀️</string>
+    <string name="brief_disabled">Morning brief disabled</string>
+    <string name="brief_time_updated">Brief time updated!</string>
+    <string name="pick_brief_time">Pick a time</string>
     <string name="set_at">set at</string>
 
-    <!-- Time Formatting (if needed) -->
-    <string name="min_15">15 min</string>
-    <string name="min_30">30 min</string>
-    <string name="hour_1">1 hour</string>
-    <string name="hour_2">2 hours</string>
+    <!-- Notification Channels -->
+    <string name="channel_weather_alarms">Weather Alarms</string>
+    <string name="channel_weather_alarms_desc">Loud alarm for critical weather conditions</string>
+    <string name="channel_weather_alerts">Weather Alerts</string>
+    <string name="channel_weather_alerts_desc">Smart condition-based weather notifications</string>
+    <string name="channel_morning_brief_name">Morning Brief</string>
+    <string name="channel_morning_brief_desc">Daily morning weather summary</string>
+
+    <string name="morning_brief_notification_title">☀️ Good Morning!</string>
+
+    <!-- Morning Brief Messages -->
+    <string name="outfit_hot">🌞 Stay hydrated and wear light clothes!</string>
+    <string name="outfit_warm">😊 Perfect weather to go outside.</string>
+    <string name="outfit_mild">🌤️ A light jacket might be handy.</string>
+    <string name="outfit_cool">🧥 Bundle up, it\'s chilly out there.</string>
+    <string name="outfit_cold">🥶 It\'s very cold – dress warmly!</string>
+    <string name="morning_brief_message_format">Good morning, %1$s! Today is %2$d°C and %3$s. Humidity: %4$d%% · Wind: %5$d m/s. %6$s</string>
+
+    <!-- Weather Alert Messages -->
+    <string name="alert_title_format">⚠️ %1$s</string>
+    <string name="alert_msg_temp_above">It is %1$d°C right now, above %2$d°C. Condition: %3$s</string>
+    <string name="alert_msg_temp_below">It is %1$d°C right now, below %2$d°C. Condition: %3$s</string>
+    <string name="alert_msg_wind_above">Wind speed exceeds %1$d m/s. Condition: %2$s</string>
+    <string name="alert_msg_rain_expected">Rain is expected! Current condition: %1$s</string>
+    <string name="alert_msg_very_cloudy">Very cloudy skies ahead. Current condition: %1$s</string>
+    <string name="alert_msg_default">Weather condition matched. Current condition: %1$s</string>
 </resources>

@@ -34,6 +34,13 @@ class HomeViewModel(
     private var currentLon: Double? = null
     private var currentApiKey: String? = null
 
+    private val _currentLocation = MutableStateFlow<Pair<Double, Double>?>(null)
+    val currentLocation: StateFlow<Pair<Double, Double>?> = _currentLocation.asStateFlow()
+
+    private val _currentApiKey = MutableStateFlow("")
+    val exposedApiKey: StateFlow<String> = _currentApiKey.asStateFlow()
+
+
     init {
         // Observe network changes
         viewModelScope.launch {
@@ -97,6 +104,8 @@ class HomeViewModel(
         currentLat = lat
         currentLon = lon
         currentApiKey = apiKey
+        _currentLocation.value = Pair(lat, lon)
+        _currentApiKey.value = apiKey
 
         viewModelScope.launch {
             val unit = settingsManager.tempUnitFlow.first()

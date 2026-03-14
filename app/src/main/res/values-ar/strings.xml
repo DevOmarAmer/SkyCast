@@ -45,26 +45,78 @@
     <string name="search_failed">فشل البحث – تحقق من اتصالك</string>
     <string name="selected_location">الموقع المحدد</string>
 
-    <!-- Alerts -->
+    <!-- Alerts – General -->
     <string name="alerts_title">التنبيهات</string>
     <string name="no_alerts">لا توجد تنبيهات نشطة</string>
-    <string name="add_alert_hint">اضغط على زر + لجدولة تنبيه للطقس</string>
+    <string name="add_alert_hint">اضغط + لإضافة تنبيه حالة طقس</string>
+    <string name="add_alert">إضافة تنبيه</string>
+    <string name="delete">حذف</string>
+    <string name="alert_scheduled">تمت جدولة التنبيه!</string>
+    <string name="alert_removed">تمت إزالة التنبيه</string>
     <string name="new_alert">تنبيه طقس جديد</string>
-    <string name="notify_after">تبليغ بعد</string>
+    <string name="save_alert">حفظ التنبيه</string>
+    <string name="cancel">إلغاء</string>
+    <string name="confirm">تأكيد</string>
+
+    <!-- Alerts – Condition Types -->
+    <string name="condition_alerts_title">تنبيهات الحالة</string>
+    <string name="condition_type_label">حالة الطقس</string>
+    <string name="cond_temp_above">🌡️ حرارة مرتفعة</string>
+    <string name="cond_temp_below">🥶 حرارة منخفضة</string>
+    <string name="cond_wind_above">💨 رياح قوية</string>
+    <string name="cond_rain_expected">🌧️ مطر متوقع</string>
+    <string name="cond_very_cloudy">☁️ غائم جداً</string>
+    <string name="threshold_label">الحد</string>
+
+    <!-- Alerts – Types -->
     <string name="alert_type">نوع التنبيه</string>
     <string name="notification">إشعار</string>
     <string name="alarm">منبه</string>
-    <string name="cancel">إلغاء</string>
-    <string name="save_alert">حفظ التنبيه</string>
-    <string name="alert_scheduled">تمت جدولة التنبيه!</string>
-    <string name="alert_removed">تمت إزالة التنبيه</string>
     <string name="notification_type">إشعار صامت</string>
     <string name="alarm_type">صوت المنبه</string>
+
+    <!-- Alerts – Time Range -->
+    <string name="time_range">الفترة الزمنية النشطة</string>
+    <string name="start_time">البداية</string>
+    <string name="end_time">النهاية</string>
+    <string name="select_date">اختر التاريخ</string>
+    <string name="select_time">اختر الوقت</string>
+    <string name="until">إلى</string>
+
+    <!-- Morning Brief -->
+    <string name="morning_brief_title">ملخص الصباح اليومي</string>
+    <string name="morning_brief_subtitle">احصل على ملخص يومي للطقس كل صباح</string>
+    <string name="morning_brief_time_label">وقت الإرسال</string>
+    <string name="brief_enabled">تم تفعيل ملخص الصباح ☀️</string>
+    <string name="brief_disabled">تم إيقاف ملخص الصباح</string>
+    <string name="brief_time_updated">تم تحديث وقت الملخص!</string>
+    <string name="pick_brief_time">اختر وقتاً</string>
     <string name="set_at">ضُبط في</string>
 
-    <!-- Time Formatting -->
-    <string name="min_15">15 دقيقة</string>
-    <string name="min_30">30 دقيقة</string>
-    <string name="hour_1">1 ساعة</string>
-    <string name="hour_2">2 ساعات</string>
+    <!-- Notification Channels -->
+    <string name="channel_weather_alarms">منبهات الطقس</string>
+    <string name="channel_weather_alarms_desc">منبه بصوت عالٍ لحالات الطقس الحرجة</string>
+    <string name="channel_weather_alerts">تنبيهات الطقس</string>
+    <string name="channel_weather_alerts_desc">إشعارات ذكية لحالة الطقس</string>
+    <string name="channel_morning_brief_name">ملخص الصباح</string>
+    <string name="channel_morning_brief_desc">ملخص يومي للطقس كل صباح</string>
+
+    <string name="morning_brief_notification_title">☀️ صباح الخير!</string>
+
+    <!-- Morning Brief Messages -->
+    <string name="outfit_hot">🌞 ابقَ رطبًا وارتدِ ملابس خفيفة!</string>
+    <string name="outfit_warm">😊 طقس مثالي للخروج.</string>
+    <string name="outfit_mild">🌤️ قد يكون من المفيد ارتداء سترة خفيفة.</string>
+    <string name="outfit_cool">🧥 ارتدِ ملابس ثقيلة، الجو بارد في الخارج.</string>
+    <string name="outfit_cold">🥶 الجو بارد جدًا – ارتدِ ملابس دافئة!</string>
+    <string name="morning_brief_message_format">صباح الخير، %1$s! درجة الحرارة اليوم %2$d°C والطقس %3$s. الرطوبة: %4$d%% · الرياح: %5$d م/ث. %6$s</string>
+
+    <!-- Weather Alert Messages -->
+    <string name="alert_title_format">⚠️ %1$s</string>
+    <string name="alert_msg_temp_above">درجة الحرارة الآن %1$d°C، أعلى من %2$d°C. الحالة: %3$s</string>
+    <string name="alert_msg_temp_below">درجة الحرارة الآن %1$d°C، أقل من %2$d°C. الحالة: %3$s</string>
+    <string name="alert_msg_wind_above">سرعة الرياح تتجاوز %1$d م/ث. الحالة: %2$s</string>
+    <string name="alert_msg_rain_expected">من المتوقع هطول المطر! الحالة الحالية: %1$s</string>
+    <string name="alert_msg_very_cloudy">سماء غائمة جداً في الانتظار. الحالة الحالية: %1$s</string>
+    <string name="alert_msg_default">تطابقت حالة الطقس. الحالة الحالية: %1$s</string>
 </resources>
