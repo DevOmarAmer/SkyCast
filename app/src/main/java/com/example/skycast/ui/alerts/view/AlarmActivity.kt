@@ -199,7 +199,7 @@ fun AlarmScreen(title: String, message: String, onDismiss: () -> Unit) {
             ) {
                 Icon(
                     imageVector = Icons.Default.Close,
-                    contentDescription = "Dismiss Alarm",
+                    contentDescription = stringResource(R.string.dismiss_alarm),
                     modifier = Modifier.size(40.dp)
                 )
             }

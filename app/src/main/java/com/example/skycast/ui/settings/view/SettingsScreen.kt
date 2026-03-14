@@ -16,6 +16,7 @@ import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Thermostat
 import androidx.compose.material.icons.outlined.Air
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -103,10 +104,16 @@ fun SettingsScreen(viewModel: SettingsViewModel, onOpenMap: () -> Unit = {}) {
                             )
                             Spacer(Modifier.width(8.dp))
                             Text(
-                                text = "Open Map to Set Location →",
+                                text = stringResource(R.string.open_map_to_set_location),
                                 style = MaterialTheme.typography.labelLarge,
                                 fontWeight = FontWeight.W600,
                                 modifier = Modifier.padding(vertical = 4.dp)
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            Icon(
+                                Icons.AutoMirrored.Filled.ArrowForward,
+                                contentDescription = null,
+                                modifier = Modifier.size(16.dp)
                             )
                         }
                     }
@@ -150,7 +157,7 @@ fun SettingsScreen(viewModel: SettingsViewModel, onOpenMap: () -> Unit = {}) {
 
             // App info footer
             Text(
-                text = "SkyCast v1.0  ·  Powered by OpenWeatherMap",
+                text = stringResource(R.string.footer_info),
                 style = MaterialTheme.typography.labelSmall,
                 color = CloudGrey.copy(alpha = 0.6f),
                 modifier = Modifier

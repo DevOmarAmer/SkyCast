@@ -15,6 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import com.example.skycast.R
 import com.example.skycast.data.model.FavoriteLocation
 import com.example.skycast.ui.theme.*
 
@@ -81,7 +83,7 @@ fun FavoriteItemCard(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = "Delete",
+                        contentDescription = stringResource(R.string.delete),
                         tint = StormRed,
                         modifier = Modifier.size(18.dp)
                     )

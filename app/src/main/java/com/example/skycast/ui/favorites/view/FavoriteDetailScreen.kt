@@ -11,7 +11,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -173,8 +173,8 @@ private fun DetailSuccessContent(
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            Icons.Default.ArrowBack,
-                            contentDescription = "Back",
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.back),
                             tint = CloudWhite,
                             modifier = Modifier.size(20.dp)
                         )
@@ -231,7 +231,7 @@ private fun DetailSuccessContent(
                         val iconCode = current.weatherInfo.firstOrNull()?.icon
                         AsyncImage(
                             model = "https://openweathermap.org/img/wn/${iconCode}@4x.png",
-                            contentDescription = "Weather icon",
+                            contentDescription = stringResource(R.string.weather_icon),
                             modifier = Modifier
                                 .size(130.dp)
                                 .offset(y = float.dp)

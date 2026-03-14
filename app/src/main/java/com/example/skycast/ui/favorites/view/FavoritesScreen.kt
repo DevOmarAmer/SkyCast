@@ -118,7 +118,7 @@ fun FavoritesScreen(
             shape = CircleShape,
             elevation = FloatingActionButtonDefaults.elevation(8.dp)
         ) {
-            Icon(Icons.Default.Add, contentDescription = "Add Favorite")
+            Icon(Icons.Default.Add, contentDescription = stringResource(R.string.add_favorite))
         }
     }
 }

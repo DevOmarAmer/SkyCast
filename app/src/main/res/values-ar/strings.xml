@@ -127,4 +127,19 @@
     <string name="morning_analysis_hero_ready">تقريرك الصباحي الذكي جاهز ✨</string>
     <string name="morning_analysis_error_title">عذراً، حدث خطأ أثناء التحليل</string>
     <string name="back_to_home">العودة</string>
+
+    <!-- Missing Strings -->
+    <string name="search_city_or_place">بحث عن مدينة أو مكان…</string>
+    <string name="ok_button">موافق</string>
+    <string name="go_back">العودة</string>
+    <string name="my_location">موقعي</string>
+    <string name="back">رجوع</string>
+    <string name="clear">مسح</string>
+    <string name="search">بحث</string>
+    <string name="weather_icon">أيقونة الطقس</string>
+    <string name="add_favorite">إضافة مفضلة</string>
+    <string name="ai">الذكاء الاصطناعي</string>
+    <string name="dismiss_alarm">إيقاف المنبه</string>
+    <string name="open_map_to_set_location">افتح الخريطة لتعيين الموقع</string>
+    <string name="footer_info">SkyCast v1.0  ·  مدعوم بواسطة OpenWeatherMap</string>
 </resources>

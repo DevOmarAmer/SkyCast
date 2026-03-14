@@ -60,7 +60,7 @@ fun AiBriefCard(aiState: AiState, currentWeather: ForecastItem, cityName: String
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         imageVector = Icons.Rounded.AutoAwesome,
-                        contentDescription = "AI",
+                        contentDescription = stringResource(R.string.ai),
                         tint = SunGold,
                         modifier = Modifier.size(20.dp)
                     )

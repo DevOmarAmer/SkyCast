@@ -23,6 +23,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import androidx.compose.ui.res.stringResource
+import com.example.skycast.R
 import com.example.skycast.data.model.ForecastItem
 import com.example.skycast.data.model.WeatherResponse
 import com.example.skycast.ui.theme.*
@@ -108,7 +110,7 @@ fun HeroSection(data: WeatherResponse, currentWeather: ForecastItem) {
                     val iconCode = currentWeather.weatherInfo.firstOrNull()?.icon
                     AsyncImage(
                         model = "https://openweathermap.org/img/wn/${iconCode}@4x.png",
-                        contentDescription = "Weather Icon",
+                        contentDescription = stringResource(R.string.weather_icon),
                         modifier = Modifier
                             .size(110.dp)
                             .offset(y = float.dp)

@@ -282,7 +282,7 @@ fun AddConditionAlertDialog(
                 TextButton(onClick = {
                     datePickerState.selectedDateMillis?.let { startCal.timeInMillis = it }
                     showStartDatePicker = false
-                }) { Text("OK", color = SkyBlueBright) }
+                }) { Text(stringResource(R.string.ok_button), color = SkyBlueBright) }
             }
         ) { DatePicker(state = datePickerState) }
     }
@@ -296,7 +296,7 @@ fun AddConditionAlertDialog(
                         startCal.set(Calendar.HOUR_OF_DAY, timePickerState.hour)
                         startCal.set(Calendar.MINUTE, timePickerState.minute)
                         showStartTimePicker = false
-                    }, colors = ButtonDefaults.buttonColors(containerColor = SkyBlueBright)) { Text("OK") }
+                    }, colors = ButtonDefaults.buttonColors(containerColor = SkyBlueBright)) { Text(stringResource(R.string.ok_button)) }
                 }
             }
         }
@@ -309,7 +309,7 @@ fun AddConditionAlertDialog(
                 TextButton(onClick = {
                     datePickerState.selectedDateMillis?.let { endCal.timeInMillis = it }
                     showEndDatePicker = false
-                }) { Text("OK", color = SkyBlueBright) }
+                }) { Text(stringResource(R.string.ok_button), color = SkyBlueBright) }
             }
         ) { DatePicker(state = datePickerState) }
     }
@@ -323,7 +323,7 @@ fun AddConditionAlertDialog(
                         endCal.set(Calendar.HOUR_OF_DAY, timePickerState.hour)
                         endCal.set(Calendar.MINUTE, timePickerState.minute)
                         showEndTimePicker = false
-                    }, colors = ButtonDefaults.buttonColors(containerColor = SkyBlueBright)) { Text("OK") }
+                    }, colors = ButtonDefaults.buttonColors(containerColor = SkyBlueBright)) { Text(stringResource(R.string.ok_button)) }
                 }
             }
         }

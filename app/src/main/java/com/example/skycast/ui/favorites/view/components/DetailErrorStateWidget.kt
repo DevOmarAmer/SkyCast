@@ -2,8 +2,11 @@ package com.example.skycast.ui.favorites.view.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,7 +37,9 @@ fun DetailErrorState(message: String?, onNavigateBack: () -> Unit) {
                 colors = ButtonDefaults.buttonColors(containerColor = SkyBlueBright),
                 shape = RoundedCornerShape(16.dp)
             ) {
-                Text("← Go Back", color = CloudWhite)
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.go_back), tint = CloudWhite)
+                Spacer(Modifier.width(8.dp))
+                Text(stringResource(R.string.go_back), color = CloudWhite)
             }
         }
     }

@@ -17,6 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import com.example.skycast.R
 import com.example.skycast.BuildConfig
 import com.example.skycast.data.remote.RetrofitClient
 import com.example.skycast.ui.theme.*
@@ -230,7 +232,7 @@ fun MapPickerScreen(
                     modifier = Modifier.size(22.dp)
                 )
             } else {
-                Icon(Icons.Default.MyLocation, contentDescription = "My Location")
+                Icon(Icons.Default.MyLocation, contentDescription = stringResource(R.string.my_location))
             }
         }
 

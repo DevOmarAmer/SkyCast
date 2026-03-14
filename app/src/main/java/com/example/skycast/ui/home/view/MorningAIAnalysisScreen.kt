@@ -7,6 +7,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -43,7 +44,7 @@ fun MorningAIAnalysisScreen(
                 title = { Text(stringResource(com.example.skycast.R.string.morning_analysis_title), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Rounded.ArrowBack, contentDescription = stringResource(com.example.skycast.R.string.back_to_home))
+                        Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = stringResource(com.example.skycast.R.string.back_to_home))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(

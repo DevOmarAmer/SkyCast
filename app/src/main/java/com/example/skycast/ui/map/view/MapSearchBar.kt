@@ -11,7 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Search
@@ -24,6 +24,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import com.example.skycast.R
 import com.example.skycast.ui.theme.*
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.Dispatchers
@@ -106,13 +108,13 @@ fun MapSearchBar(
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(onClick = onBack) {
-                Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = CloudWhite)
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back), tint = CloudWhite)
             }
 
             TextField(
                 value = query,
                 onValueChange = { query = it },
-                placeholder = { Text("Search city or place…", color = CloudGrey) },
+                placeholder = { Text(stringResource(R.string.search_city_or_place), color = CloudGrey) },
                 modifier = Modifier.weight(1f),
                 singleLine = true,
                 colors = TextFieldDefaults.colors(
@@ -136,10 +138,10 @@ fun MapSearchBar(
                         .size(20.dp)
                 )
                 query.isNotEmpty() -> IconButton(onClick = { query = ""; suggestions = emptyList() }) {
-                    Icon(Icons.Default.Clear, contentDescription = "Clear", tint = CloudGrey)
+                    Icon(Icons.Default.Clear, contentDescription = stringResource(R.string.clear), tint = CloudGrey)
                 }
                 else -> IconButton(onClick = {}) {
-                    Icon(Icons.Default.Search, contentDescription = "Search", tint = wc.accent)
+                    Icon(Icons.Default.Search, contentDescription = stringResource(R.string.search), tint = wc.accent)
                 }
             }
         }

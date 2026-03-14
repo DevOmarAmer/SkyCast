@@ -126,4 +126,19 @@
     <string name="morning_analysis_hero_ready">Your Smart Morning Report is Ready ✨</string>
     <string name="morning_analysis_error_title">Sorry, an analysis error occurred</string>
     <string name="back_to_home">Back</string>
+
+    <!-- Missing Strings -->
+    <string name="search_city_or_place">Search city or place…</string>
+    <string name="ok_button">OK</string>
+    <string name="go_back">Go Back</string>
+    <string name="my_location">My Location</string>
+    <string name="back">Back</string>
+    <string name="clear">Clear</string>
+    <string name="search">Search</string>
+    <string name="weather_icon">Weather icon</string>
+    <string name="add_favorite">Add Favorite</string>
+    <string name="ai">AI</string>
+    <string name="dismiss_alarm">Dismiss Alarm</string>
+    <string name="open_map_to_set_location">Open Map to Set Location</string>
+    <string name="footer_info">SkyCast v1.0  ·  Powered by OpenWeatherMap</string>
 </resources>
