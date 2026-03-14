@@ -120,4 +120,11 @@
     <string name="alert_msg_rain_expected">من المتوقع هطول المطر! الحالة الحالية: %1$s</string>
     <string name="alert_msg_very_cloudy">سماء غائمة جداً في الانتظار. الحالة الحالية: %1$s</string>
     <string name="alert_msg_default">تطابقت حالة الطقس. الحالة الحالية: %1$s</string>
+
+    <!-- AI Morning Analysis Screen -->
+    <string name="morning_analysis_title">تحليل ذكاء سكاي كاست</string>
+    <string name="morning_analysis_loading">جارٍ تحليل بيانات الطقس بدقة...</string>
+    <string name="morning_analysis_hero_ready">تقريرك الصباحي الذكي جاهز ✨</string>
+    <string name="morning_analysis_error_title">عذراً، حدث خطأ أثناء التحليل</string>
+    <string name="back_to_home">العودة</string>
 </resources>

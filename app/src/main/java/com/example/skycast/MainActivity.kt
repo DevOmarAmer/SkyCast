@@ -93,6 +93,7 @@ class MainActivity : ComponentActivity() {
                 val favoritesViewModel: FavoritesViewModel = viewModel(factory = favoritesFactory)
                 val weatherState by homeViewModel.weatherState.collectAsStateWithLifecycle()
                 val alertsViewModel: AlertsViewModel = viewModel(factory = alertsFactory)
+                val morningAnalysisViewModel: com.example.skycast.ui.home.viewModel.MorningAnalysisViewModel = viewModel(factory = homeFactory)
 
                 var minSplashTimeMatured by rememberSaveable { mutableStateOf(false) }
                 var locationFetched by rememberSaveable { mutableStateOf(false) }
@@ -166,8 +167,8 @@ class MainActivity : ComponentActivity() {
                             homeViewModel = homeViewModel,
                             favoritesViewModel = favoritesViewModel,
                             SettingsViewModel = settingsViewModel,
-                            alertsViewModel = alertsViewModel
-
+                            alertsViewModel = alertsViewModel,
+                            morningAnalysisViewModel = morningAnalysisViewModel
                         )
                     }
                 }

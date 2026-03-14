@@ -22,6 +22,9 @@ class HomeViewModelFactory(
         if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
             return HomeViewModel(repository, aiRepository, settingsManager, widgetUpdaterService, connectivityObserver) as T
         }
+        if (modelClass.isAssignableFrom(MorningAnalysisViewModel::class.java)) {
+            return MorningAnalysisViewModel(aiRepository, settingsManager) as T
+        }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

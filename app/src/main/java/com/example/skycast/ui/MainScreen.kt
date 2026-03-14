@@ -47,14 +47,15 @@ fun MainScreen(
     homeViewModel: HomeViewModel,
     favoritesViewModel: FavoritesViewModel,
     SettingsViewModel: SettingsViewModel,
-    alertsViewModel: AlertsViewModel
+    alertsViewModel: AlertsViewModel,
+    morningAnalysisViewModel: com.example.skycast.ui.home.viewModel.MorningAnalysisViewModel
 ) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
     // Routes where we hide the bottom nav (detail/add screens)
-    val hideNavRoutes = setOf("add_favorite", "favorite_detail", "map_location_picker")
+    val hideNavRoutes = setOf("add_favorite", "favorite_detail", "map_location_picker", "morning_analysis")
     val showBottomNav = currentRoute !in hideNavRoutes
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -63,63 +64,83 @@ fun MainScreen(
             startDestination = BottomNavItem.Home.route,
             modifier = Modifier.fillMaxSize()
         ) {
-                composable(BottomNavItem.Home.route) {
-                    HomeScreen(viewModel = homeViewModel)
-                }
-                composable(BottomNavItem.Favorites.route) {
-                    FavoritesScreen(
-                        viewModel = favoritesViewModel,
-                        onNavigateToAddPlace = { navController.navigate("add_favorite") },
-                        onNavigateToDetail = { location ->
-                            // Encode city name as nav arg
-                            navController.currentBackStackEntry?.savedStateHandle?.set("fav_location", location)
-                            navController.navigate("favorite_detail")
-                        }
-                    )
-                }
-                composable(BottomNavItem.Alerts.route) {
-                    AlertsScreen(viewModel = alertsViewModel, homeViewModel = homeViewModel)
-                }
-                composable(BottomNavItem.Settings.route) {
-                    SettingsScreen(
-                        viewModel = SettingsViewModel,
-                        onOpenMap = { navController.navigate("map_location_picker") }
-                    )
-                }
-                composable("add_favorite") {
-                    AddFavoriteScreen(
+            composable(BottomNavItem.Home.route) {
+                HomeScreen(
+                    viewModel = homeViewModel,
+                    onNavigateToAnalysis = {
+                        navController.navigate("morning_analysis")
+                    }
+                )
+            }
+            composable(BottomNavItem.Favorites.route) {
+                FavoritesScreen(
+                    viewModel = favoritesViewModel,
+                    onNavigateToAddPlace = { navController.navigate("add_favorite") },
+                    onNavigateToDetail = { location ->
+                        // Encode city name as nav arg
+                        navController.currentBackStackEntry?.savedStateHandle?.set("fav_location", location)
+                        navController.navigate("favorite_detail")
+                    }
+                )
+            }
+            composable(BottomNavItem.Alerts.route) {
+                AlertsScreen(viewModel = alertsViewModel, homeViewModel = homeViewModel)
+            }
+            composable(BottomNavItem.Settings.route) {
+                SettingsScreen(
+                    viewModel = SettingsViewModel,
+                    onOpenMap = { navController.navigate("map_location_picker") }
+                )
+            }
+            composable("add_favorite") {
+                AddFavoriteScreen(
+                    viewModel = favoritesViewModel,
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+            composable("favorite_detail") {
+                val location = navController.previousBackStackEntry
+                    ?.savedStateHandle
+                    ?.get<FavoriteLocation>("fav_location")
+
+                if (location != null) {
+                    FavoriteDetailScreen(
+                        location = location,
                         viewModel = favoritesViewModel,
                         onNavigateBack = { navController.popBackStack() }
                     )
                 }
-                composable("favorite_detail") {
-                    val location = navController.previousBackStackEntry
-                        ?.savedStateHandle
-                        ?.get<FavoriteLocation>("fav_location")
-
-                    if (location != null) {
-                        FavoriteDetailScreen(
-                            location = location,
-                            viewModel = favoritesViewModel,
-                            onNavigateBack = { navController.popBackStack() }
-                        )
-                    }
-                }
-                composable("map_location_picker") {
-                    val coroutineScope = androidx.compose.runtime.rememberCoroutineScope()
-                    val apiKey = com.example.skycast.BuildConfig.API_KEY
-                    MapLocationPickerScreen(
-                        viewModel = SettingsViewModel,
-                        onNavigateBack = { navController.popBackStack() },
-                        onLocationSet = { lat, lon, city ->
-                            coroutineScope.launch {
-                                SettingsViewModel.saveMapLocation(lat, lon)
-                            }
-                            homeViewModel.getWeatherData(lat, lon, apiKey)
-                            navController.popBackStack()
+            }
+            composable("map_location_picker") {
+                val coroutineScope = androidx.compose.runtime.rememberCoroutineScope()
+                val apiKey = com.example.skycast.BuildConfig.API_KEY
+                MapLocationPickerScreen(
+                    viewModel = SettingsViewModel,
+                    onNavigateBack = { navController.popBackStack() },
+                    onLocationSet = { lat, lon, city ->
+                        coroutineScope.launch {
+                            SettingsViewModel.saveMapLocation(lat, lon)
                         }
+                        homeViewModel.getWeatherData(lat, lon, apiKey)
+                        navController.popBackStack()
+                    }
+                )
+            }
+            composable("morning_analysis") {
+                val weatherState by homeViewModel.weatherState.collectAsState()
+                val data = (weatherState as? com.example.skycast.utils.Resource.Success)?.data
+
+                if (data != null) {
+                    LaunchedEffect(Unit) {
+                        morningAnalysisViewModel.fetchDetailedAnalysis(data.city.name, data.forecastList)
+                    }
+                    com.example.skycast.ui.home.view.MorningAIAnalysisScreen(
+                        viewModel = morningAnalysisViewModel,
+                        cityName = data.city.name,
+                        onBack = { navController.popBackStack() }
                     )
                 }
+            }
         }
 
         AnimatedVisibility(

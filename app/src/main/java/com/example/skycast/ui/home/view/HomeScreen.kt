@@ -48,7 +48,7 @@ import com.example.skycast.utils.ConnectivityObserver
 import com.example.skycast.ui.home.view.components.*
 
 @Composable
-fun HomeScreen(viewModel: HomeViewModel) {
+fun HomeScreen(viewModel: HomeViewModel, onNavigateToAnalysis: () -> Unit) {
     val weatherState by viewModel.weatherState.collectAsStateWithLifecycle()
     val networkStatus by viewModel.networkStatus.collectAsStateWithLifecycle()
 
@@ -79,7 +79,7 @@ fun HomeScreen(viewModel: HomeViewModel) {
             is Resource.Success -> {
                 val data = (weatherState as Resource.Success).data
                 if (data != null) {
-                    WeatherContent(data, viewModel)
+                    WeatherContent(data, viewModel, onNavigateToAnalysis)
                 }
             }
 
@@ -129,7 +129,7 @@ fun HomeScreen(viewModel: HomeViewModel) {
 }
 
 @Composable
-fun WeatherContent(data: WeatherResponse, viewModel: HomeViewModel) {
+fun WeatherContent(data: WeatherResponse, viewModel: HomeViewModel, onNavigateToAnalysis: () -> Unit) {
     val currentWeather = data.forecastList.firstOrNull() ?: return
     val aiState by viewModel.aiSummaryState.collectAsStateWithLifecycle()
 
@@ -167,7 +167,12 @@ fun WeatherContent(data: WeatherResponse, viewModel: HomeViewModel) {
                 enter = slideInVertically(initialOffsetY = { 50 }) + androidx.compose.animation.fadeIn(),
                 exit = slideOutVertically() + androidx.compose.animation.fadeOut()
             ) {
-                AiBriefCard(aiState = aiState, currentWeather = currentWeather, cityName = data.city.name)
+                AiBriefCard(
+                    aiState = aiState, 
+                    currentWeather = currentWeather, 
+                    cityName = data.city.name,
+                    onClick = onNavigateToAnalysis
+                )
             }
         }
 
