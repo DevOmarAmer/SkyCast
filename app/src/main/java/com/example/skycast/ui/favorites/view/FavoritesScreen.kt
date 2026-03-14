@@ -33,6 +33,9 @@ import com.example.skycast.R
 import com.example.skycast.data.model.FavoriteLocation
 import com.example.skycast.ui.favorites.viewModel.FavoritesViewModel
 import com.example.skycast.ui.theme.*
+import com.example.skycast.ui.favorites.view.components.EmptyFavoritesContent
+import com.example.skycast.ui.favorites.view.components.FavoriteItemCard
+import com.example.skycast.ui.favorites.view.components.SwipeToDeleteWrapper
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -119,133 +122,4 @@ fun FavoritesScreen(
         }
     }
 }
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun SwipeToDeleteWrapper(
-    onDelete: () -> Unit,
-    content: @Composable () -> Unit
-) {
-    val state = rememberSwipeToDismissBoxState(
-        confirmValueChange = {
-            if (it == SwipeToDismissBoxValue.EndToStart) { onDelete(); true }
-            else false
-        }
-    )
-    SwipeToDismissBox(
-        state = state,
-        backgroundContent = {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(RoundedCornerShape(20.dp))
-                    .background(StormRed),
-                contentAlignment = Alignment.CenterEnd
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = "Delete",
-                    tint = CloudWhite,
-                    modifier = Modifier.padding(end = 24.dp)
-                )
-            }
-        },
-        content = { content() }
-    )
-}
-
-@Composable
-fun EmptyFavoritesContent() {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(32.dp)) {
-            Text("🌍", fontSize = 64.sp)
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = stringResource(R.string.no_favorites),
-                style = MaterialTheme.typography.titleLarge,
-                color = CloudWhite,
-                fontWeight = FontWeight.W600
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = stringResource(R.string.add_favorite_hint),
-                style = MaterialTheme.typography.bodyMedium,
-                color = CloudGrey,
-                textAlign = TextAlign.Center
-            )
-        }
-    }
-}
-
-@Composable
-fun FavoriteItemCard(
-    location: FavoriteLocation,
-    onDeleteClick: () -> Unit,
-    onItemClick: () -> Unit
-) {
-    Card(
-        onClick = onItemClick,
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = SkyNavy),
-        border = BorderStroke(1.dp, FrostStrong),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 18.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
-                // Location icon badge
-                Box(
-                    modifier = Modifier
-                        .size(44.dp)
-                        .clip(CircleShape)
-                        .background(SkyBlueBright.copy(alpha = 0.2f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.LocationOn,
-                        contentDescription = null,
-                        tint = SkyBlueBright,
-                        modifier = Modifier.size(22.dp)
-                    )
-                }
-                Spacer(modifier = Modifier.width(14.dp))
-                Column {
-                    Text(
-                        text = location.cityName,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.W600,
-                        color = CloudWhite
-                    )
-                    Spacer(modifier = Modifier.height(2.dp))
-                    Text(
-                        text = "${"%.2f".format(location.latitude)}°N, ${"%.2f".format(location.longitude)}°E",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = CloudGrey
-                    )
-                }
-            }
-            IconButton(onClick = onDeleteClick) {
-                Box(
-                    modifier = Modifier
-                        .size(36.dp)
-                        .clip(CircleShape)
-                        .background(StormRed.copy(alpha = 0.15f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = "Delete",
-                        tint = StormRed,
-                        modifier = Modifier.size(18.dp)
-                    )
-                }
-            }
-        }
-    }
-}
+
