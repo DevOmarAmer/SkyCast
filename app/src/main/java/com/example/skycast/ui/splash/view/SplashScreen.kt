@@ -21,8 +21,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.skycast.ui.theme.*
 import kotlinx.coroutines.delay
-import kotlin.math.cos
-import kotlin.math.sin
+import com.example.skycast.ui.splash.view.components.ParticleCanvasWidget
+import com.example.skycast.ui.splash.view.components.SplashBrandDotsWidget
+import com.example.skycast.ui.splash.view.components.SplashLogoWidget
 
 @Composable
 fun SplashScreen(onSplashComplete: () -> Unit) {
@@ -123,65 +124,20 @@ fun SplashScreen(onSplashComplete: () -> Unit) {
         contentAlignment = Alignment.Center
     ) {
         // Decorative background particles
-        ParticleCanvas()
+        ParticleCanvasWidget()
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
             // ── Logo area ─────────────────────────────────────────────────────
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier.size(180.dp)
-            ) {
-                // Outer rotating dashed ring
-                Canvas(modifier = Modifier.size(180.dp)) {
-                    drawRotatingRing(ringRotation, SkyBluePale.copy(alpha = 0.35f), 6f, size.width / 2)
-                }
-
-                // Pulsing glow circle
-                Box(
-                    modifier = Modifier
-                        .size((130 * pulse).dp)
-                        .background(
-                            Brush.radialGradient(
-                                colors = listOf(
-                                    SkyBlueBright.copy(alpha = 0.18f),
-                                    Color.Transparent
-                                )
-                            ),
-                            CircleShape
-                        )
-                )
-
-                // Logo container (frosted circle)
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .size(120.dp)
-                        .scale(logoScale)
-                        .alpha(logoAlpha)
-                        .background(
-                            Brush.radialGradient(
-                                colors = listOf(SkyBlue.copy(alpha = 0.7f), SkyNavy)
-                            ),
-                            CircleShape
-                        )
-                        .drawBehind {
-                            drawCircle(
-                                color = SkyBluePale.copy(alpha = 0.4f),
-                                radius = size.minDimension / 2,
-                                style = Stroke(width = 2.dp.toPx())
-                            )
-                        }
-                        .offset(y = float.dp)
-                ) {
-                    Text(
-                        text = "⛅",
-                        fontSize = 52.sp
-                    )
-                }
-            }
+            SplashLogoWidget(
+                ringRotation = ringRotation,
+                pulse = pulse,
+                logoScale = logoScale,
+                logoAlpha = logoAlpha,
+                floatOffset = float
+            )
 
             Spacer(modifier = Modifier.height(32.dp))
 
@@ -231,116 +187,10 @@ fun SplashScreen(onSplashComplete: () -> Unit) {
         }
 
         // ── Bottom brand dots ─────────────────────────────────────────────────
-        Row(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 56.dp)
-                .alpha(tagAlpha),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            repeat(3) { index ->
-                val dotPulse by infiniteTransition.animateFloat(
-                    initialValue = 0.5f, targetValue = 1f,
-                    animationSpec = infiniteRepeatable(
-                        tween(600, delayMillis = index * 180, easing = FastOutSlowInEasing),
-                        RepeatMode.Reverse
-                    ),
-                    label = "dot$index"
-                )
-                Box(
-                    modifier = Modifier
-                        .size(6.dp)
-                        .alpha(dotPulse)
-                        .background(SkyBlueBright, CircleShape)
-                )
-            }
+        Box(modifier = Modifier.align(Alignment.BottomCenter)) {
+            SplashBrandDotsWidget(tagAlpha = tagAlpha)
         }
     }
 }
 
-// ── Rotating dashed ring ──────────────────────────────────────────────────────
-private fun DrawScope.drawRotatingRing(
-    rotationDeg: Float,
-    color: Color,
-    strokeWidth: Float,
-    radius: Float
-) {
-    val dashCount = 20
-    val dashAngle = 360f / dashCount
-    val dashLength = dashAngle * 0.5f
-    for (i in 0 until dashCount) {
-        val startAngle = rotationDeg + i * dashAngle
-        val endAngle = startAngle + dashLength
-        val startRad = Math.toRadians(startAngle.toDouble())
-        val endRad = Math.toRadians(endAngle.toDouble())
-        drawLine(
-            color = color,
-            start = Offset(
-                x = center.x + (radius * cos(startRad)).toFloat(),
-                y = center.y + (radius * sin(startRad)).toFloat()
-            ),
-            end = Offset(
-                x = center.x + (radius * cos(endRad)).toFloat(),
-                y = center.y + (radius * sin(endRad)).toFloat()
-            ),
-            strokeWidth = strokeWidth,
-            cap = StrokeCap.Round
-        )
-    }
-}
 
-// ── Ambient background particles ─────────────────────────────────────────────
-@Composable
-private fun ParticleCanvas() {
-    val infiniteTransition = rememberInfiniteTransition(label = "particles")
-    val particles = remember {
-        listOf(
-            ParticleData(0.15f, 0.20f, 28f, 5000, SkyBluePale, 3200),
-            ParticleData(0.80f, 0.15f, 18f, 6000, SunGold,     2800),
-            ParticleData(0.10f, 0.75f, 22f, 4500, RainBlue,    3500),
-            ParticleData(0.85f, 0.65f, 14f, 7000, SkyBlueBright, 4000),
-            ParticleData(0.45f, 0.88f, 20f, 5500, SkyBluePale, 3000),
-            ParticleData(0.70f, 0.42f, 10f, 6500, SunGoldDark, 2500),
-        )
-    }
-
-    Canvas(modifier = Modifier.fillMaxSize()) {
-        // Soft radial gradient overlay
-        drawRect(
-            Brush.radialGradient(
-                colors = listOf(SkyBlue.copy(alpha = 0.08f), Color.Transparent),
-                center = Offset(size.width * 0.5f, size.height * 0.35f),
-                radius = size.width * 0.7f
-            )
-        )
-    }
-
-    particles.forEach { p ->
-        val alpha by infiniteTransition.animateFloat(
-            initialValue = 0.05f,
-            targetValue = p.maxAlpha,
-            animationSpec = infiniteRepeatable(
-                tween(p.duration, delayMillis = p.delay, easing = FastOutSlowInEasing),
-                RepeatMode.Reverse
-            ),
-            label = "pa${p.hashCode()}"
-        )
-        Canvas(modifier = Modifier.fillMaxSize()) {
-            drawCircle(
-                color = p.color.copy(alpha = alpha),
-                radius = p.radius,
-                center = Offset(size.width * p.x, size.height * p.y)
-            )
-        }
-    }
-}
-
-private data class ParticleData(
-    val x: Float,
-    val y: Float,
-    val radius: Float,
-    val duration: Int,
-    val color: Color,
-    val delay: Int,
-    val maxAlpha: Float = 0.35f
-)
