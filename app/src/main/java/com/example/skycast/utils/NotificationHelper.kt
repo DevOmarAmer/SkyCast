@@ -4,6 +4,8 @@ import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.app.PendingIntent
+import android.content.Intent
 import android.media.AudioAttributes
 import android.media.RingtoneManager
 import android.os.Build
@@ -13,12 +15,13 @@ import android.os.VibratorManager
 import androidx.annotation.RequiresPermission
 import androidx.core.app.NotificationCompat
 import com.example.skycast.R
+import com.example.skycast.ui.alerts.view.AlarmActivity
 
 object NotificationHelper {
 
-    private const val ALARM_CHANNEL_ID = "weather_alarm_channel"
-    private const val NOTIF_CHANNEL_ID = "weather_notif_channel"
-    private const val BRIEF_CHANNEL_ID = "morning_brief_channel"
+    private const val ALARM_CHANNEL_ID = "com.example.skycast.ALARM"
+    private const val NOTIF_CHANNEL_ID = "com.example.skycast.NOTIF"
+    private const val BRIEF_CHANNEL_ID = "com.example.skycast.BRIEF"
 
     // Long rumble: 0ms delay, 500ms on, 200ms off, 800ms on, 200ms off, 500ms on
     private val ALARM_VIBRATION = longArrayOf(0, 500, 200, 800, 200, 500)
@@ -37,9 +40,9 @@ object NotificationHelper {
         manager.createNotificationChannel(
             NotificationChannel(ALARM_CHANNEL_ID, context.getString(R.string.channel_weather_alarms), NotificationManager.IMPORTANCE_HIGH).apply {
                 description   = context.getString(R.string.channel_weather_alarms_desc)
-                setSound(alarmSound, alarmAttr)
-                enableVibration(true)
-                vibrationPattern = ALARM_VIBRATION
+                // Activity handles sound/vibration to loop continuously
+                setSound(null, null)
+                enableVibration(false)
             }
         )
 
@@ -70,30 +73,45 @@ object NotificationHelper {
         val manager   = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val channelId = if (isAlarm) ALARM_CHANNEL_ID else NOTIF_CHANNEL_ID
 
-        val soundUri = if (isAlarm)
-            RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-        else
-            RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-
-        val notification = NotificationCompat.Builder(context, channelId)
+        val notifId = System.currentTimeMillis().toInt()
+        val builder = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.splash_logo)
             .setContentTitle(title)
             .setContentText(message)
             .setStyle(NotificationCompat.BigTextStyle().bigText(message))
-            .setPriority(if (isAlarm) NotificationCompat.PRIORITY_MAX else NotificationCompat.PRIORITY_HIGH)
-            .setSound(soundUri)
-            .setVibrate(if (isAlarm) ALARM_VIBRATION else longArrayOf(0, 300, 150, 300))
             .setAutoCancel(true)
-            .build()
 
-        manager.notify(System.currentTimeMillis().toInt(), notification)
+        if (isAlarm) {
+            val fullScreenIntent = Intent(context, AlarmActivity::class.java).apply {
+                putExtra("EXTRA_TITLE", title)
+                putExtra("EXTRA_MESSAGE", message)
+                putExtra("EXTRA_NOTIF_ID", notifId)
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            }
+            
+            // Attempt to forcefully launch the activity directly (works if in foreground, or if app has SYSTEM_ALERT_WINDOW)
+            try {
+                context.startActivity(fullScreenIntent)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
 
-        // Extra: vibrate on older APIs where channel vibration may not apply
-        if (isAlarm && Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            @Suppress("DEPRECATION")
-            (context.getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator)
-                ?.vibrate(ALARM_VIBRATION, -1)
+            val fullScreenPendingIntent = PendingIntent.getActivity(
+                context, notifId, fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            builder.setFullScreenIntent(fullScreenPendingIntent, true)
+            builder.setPriority(NotificationCompat.PRIORITY_MAX)
+            builder.setCategory(NotificationCompat.CATEGORY_ALARM)
+            // Hide the actual notification content if it shows up as a heads up because we want the activity
+            builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+        } else {
+            val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+            builder.setSound(soundUri)
+            builder.setVibrate(longArrayOf(0, 300, 150, 300))
+            builder.setPriority(NotificationCompat.PRIORITY_HIGH)
         }
+
+        manager.notify(notifId, builder.build())
     }
 
     fun showMorningBrief(context: Context, message: String) {
