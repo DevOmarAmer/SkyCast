@@ -33,6 +33,8 @@ import androidx.compose.ui.unit.sp
 import com.example.skycast.R
 import com.example.skycast.ui.settings.viewModel.SettingsViewModel
 import com.example.skycast.ui.theme.*
+import com.example.skycast.ui.settings.view.components.SegmentedOptions
+import com.example.skycast.ui.settings.view.components.SettingsSection
 
 @Composable
 fun SettingsScreen(viewModel: SettingsViewModel, onOpenMap: () -> Unit = {}) {
@@ -158,92 +160,4 @@ fun SettingsScreen(viewModel: SettingsViewModel, onOpenMap: () -> Unit = {}) {
         }
     }
 }
-
-@Composable
-fun SettingsSection(
-    icon: ImageVector,
-    title: String,
-    content: @Composable ColumnScope.() -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-    ) {
-        // Section label
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(start = 4.dp, bottom = 10.dp)
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = SkyBlueBright,
-                modifier = Modifier.size(18.dp)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = title,
-                style = MaterialTheme.typography.labelLarge,
-                color = SkyBluePale,
-                fontWeight = FontWeight.W600,
-                letterSpacing = 0.8.sp
-            )
-        }
-        // Card container
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(20.dp),
-            colors = CardDefaults.cardColors(containerColor = Frost),
-            border = BorderStroke(1.dp, FrostStrong)
-        ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                content()
-            }
-        }
-    }
-}
-
-@Composable
-fun SegmentedOptions(
-    options: List<Pair<String, String>>,  // label -> value
-    selected: String,
-    onSelect: (String) -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
-            .background(SkyDeepNavy.copy(alpha = 0.5f)),
-        horizontalArrangement = Arrangement.spacedBy(0.dp)
-    ) {
-        options.forEachIndexed { index, (label, value) ->
-            val isSelected = selected == value
-            val bgColor by animateColorAsState(
-                targetValue = if (isSelected) SkyBlueBright else Color.Transparent,
-                animationSpec = tween(250),
-                label = "segBg_$index"
-            )
-            val textColor by animateColorAsState(
-                targetValue = if (isSelected) CloudWhite else CloudGrey,
-                animationSpec = tween(250),
-                label = "segText_$index"
-            )
-
-            TextButton(
-                onClick = { onSelect(value) },
-                modifier = Modifier
-                    .weight(1f)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(bgColor),
-                colors = ButtonDefaults.textButtonColors(contentColor = textColor)
-            ) {
-                Text(
-                    text = label,
-                    style = MaterialTheme.typography.labelLarge,
-                    fontWeight = if (isSelected) FontWeight.W600 else FontWeight.W400
-                )
-            }
-        }
-    }
-}
+
