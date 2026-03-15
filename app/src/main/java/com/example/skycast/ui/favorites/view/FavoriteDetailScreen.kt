@@ -44,18 +44,17 @@ import com.example.skycast.ui.favorites.view.components.DetailLoadingState
 import com.example.skycast.ui.favorites.view.components.DetailSectionHeader
 import com.example.skycast.ui.favorites.view.components.DetailStatsRow
 import com.example.skycast.ui.favorites.view.components.TemperaturePill
-private const val API_KEY = "59ea0a0dbe5f3beceb5f818d109328ec"
-
 @Composable
 fun FavoriteDetailScreen(
     location: FavoriteLocation,
     viewModel: FavoritesViewModel,
+    apiKey: String,              // ← injected by the nav host, never hardcoded here
     onNavigateBack: () -> Unit
 ) {
     val weatherState by viewModel.selectedFavoriteWeather.collectAsStateWithLifecycle()
 
     LaunchedEffect(location) {
-        viewModel.loadFavoriteWeather(location.latitude, location.longitude, API_KEY)
+        viewModel.loadFavoriteWeather(location.latitude, location.longitude, apiKey)
     }
 
     // ── Derive dynamic colors from current weather data ────────────────────────

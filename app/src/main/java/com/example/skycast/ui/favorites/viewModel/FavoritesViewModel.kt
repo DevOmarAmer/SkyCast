@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.skycast.data.model.FavoriteLocation
 import com.example.skycast.data.model.WeatherResponse
-import com.example.skycast.data.repository.WeatherRepository
+import com.example.skycast.data.repository.IWeatherRepository
 import com.example.skycast.utils.Resource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class FavoritesViewModel(
-    private val repository: WeatherRepository
+    private val repository: IWeatherRepository  // ← interface, not concrete class
 ) : ViewModel() {
 
     // ── Favorites list from Room ──────────────────────────────────────────────

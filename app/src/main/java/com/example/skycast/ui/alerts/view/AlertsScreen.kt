@@ -32,18 +32,19 @@ import com.example.skycast.ui.alerts.view.components.ConditionAlertCard
 import com.example.skycast.ui.alerts.view.components.MorningBriefCard
 import com.example.skycast.ui.alerts.view.components.MorningBriefTimePicker
 import com.example.skycast.ui.alerts.viewModel.AlertsViewModel
-import com.example.skycast.ui.home.viewModel.HomeViewModel
 import com.example.skycast.ui.theme.*
 
 @Composable
-fun AlertsScreen(viewModel: AlertsViewModel, homeViewModel: HomeViewModel) {
+fun AlertsScreen(
+    viewModel: AlertsViewModel,
+    location: Pair<Double, Double>?,  // ← plain data, injected by nav host
+    apiKey: String                    // ← plain data, injected by nav host
+) {
     val context       = LocalContext.current
     val alerts        by viewModel.alertsList.collectAsStateWithLifecycle()
     val briefEnabled  by viewModel.morningBriefEnabled.collectAsStateWithLifecycle()
     val briefHour     by viewModel.morningBriefHour.collectAsStateWithLifecycle()
     val briefMinute   by viewModel.morningBriefMinute.collectAsStateWithLifecycle()
-    val location      by homeViewModel.currentLocation.collectAsStateWithLifecycle()
-    val apiKey        by homeViewModel.exposedApiKey.collectAsStateWithLifecycle()
 
     var showAddDialog   by remember { mutableStateOf(false) }
     var showTimePicker  by remember { mutableStateOf(false) }

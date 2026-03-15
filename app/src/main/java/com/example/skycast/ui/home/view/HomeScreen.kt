@@ -1,27 +1,25 @@
 package com.example.skycast.ui.home.view
 
-import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -29,28 +27,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.skycast.R
-import com.example.skycast.data.model.ForecastItem
 import com.example.skycast.data.model.WeatherResponse
+import com.example.skycast.ui.home.view.components.*
+import com.example.skycast.ui.home.viewModel.AiState
 import com.example.skycast.ui.home.viewModel.HomeViewModel
 import com.example.skycast.ui.theme.*
-import com.example.skycast.utils.Resource
-import java.text.SimpleDateFormat
-import java.util.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.AutoAwesome
-import com.example.skycast.ui.home.viewModel.AiState
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import com.example.skycast.utils.ConnectivityObserver
-import com.example.skycast.ui.home.view.components.*
+import com.example.skycast.utils.Resource
 
 @Composable
 fun HomeScreen(viewModel: HomeViewModel, onNavigateToAnalysis: () -> Unit) {
     val weatherState by viewModel.weatherState.collectAsStateWithLifecycle()
     val networkStatus by viewModel.networkStatus.collectAsStateWithLifecycle()
+    // Observe AI state at the top level — passed down as plain data, not ViewModel
+    val aiState by viewModel.aiSummaryState.collectAsStateWithLifecycle()
 
     Box(
         modifier = Modifier
@@ -79,7 +71,12 @@ fun HomeScreen(viewModel: HomeViewModel, onNavigateToAnalysis: () -> Unit) {
             is Resource.Success -> {
                 val data = (weatherState as Resource.Success).data
                 if (data != null) {
-                    WeatherContent(data, viewModel, onNavigateToAnalysis)
+                    // ↓ Pass plain data values — NOT the ViewModel object
+                    WeatherContent(
+                        data = data,
+                        aiState = aiState,
+                        onNavigateToAnalysis = onNavigateToAnalysis
+                    )
                 }
             }
 
@@ -92,7 +89,8 @@ fun HomeScreen(viewModel: HomeViewModel, onNavigateToAnalysis: () -> Unit) {
                         Text("⚠️", fontSize = 48.sp)
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
-                            text = (weatherState as Resource.Error).message ?: stringResource(R.string.something_went_wrong),
+                            text = (weatherState as Resource.Error).message
+                                ?: stringResource(R.string.something_went_wrong),
                             color = StormRed,
                             style = MaterialTheme.typography.bodyLarge,
                             textAlign = TextAlign.Center
@@ -104,7 +102,8 @@ fun HomeScreen(viewModel: HomeViewModel, onNavigateToAnalysis: () -> Unit) {
 
         // ── Offline Banner ────────────────────────────────────────────────────────
         AnimatedVisibility(
-            visible = networkStatus == ConnectivityObserver.Status.Unavailable || networkStatus == ConnectivityObserver.Status.Lost,
+            visible = networkStatus == ConnectivityObserver.Status.Unavailable
+                    || networkStatus == ConnectivityObserver.Status.Lost,
             enter = slideInVertically(initialOffsetY = { -it }),
             exit = slideOutVertically(targetOffsetY = { -it }),
             modifier = Modifier.align(Alignment.TopCenter)
@@ -128,16 +127,23 @@ fun HomeScreen(viewModel: HomeViewModel, onNavigateToAnalysis: () -> Unit) {
     }
 }
 
+/**
+ * Pure UI composable — receives only plain data, no ViewModel references.
+ * All state is already derived by [HomeScreen] and passed down.
+ */
 @Composable
-fun WeatherContent(data: WeatherResponse, viewModel: HomeViewModel, onNavigateToAnalysis: () -> Unit) {
+fun WeatherContent(
+    data: WeatherResponse,
+    aiState: AiState,
+    onNavigateToAnalysis: () -> Unit
+) {
     val currentWeather = data.forecastList.firstOrNull() ?: return
-    val aiState by viewModel.aiSummaryState.collectAsStateWithLifecycle()
 
     // Group forecast by day for the 5-day section
     val dailyForecasts = data.forecastList
         .groupBy { it.dateText.substring(0, 10) }
         .entries.take(5)
-        .map { it.value.first() } // take first forecast item per day
+        .map { it.value.first() }
 
     // Today's hourly items
     val todayDate = data.forecastList.firstOrNull()?.dateText?.substring(0, 10) ?: ""
@@ -164,12 +170,12 @@ fun WeatherContent(data: WeatherResponse, viewModel: HomeViewModel, onNavigateTo
         item {
             AnimatedVisibility(
                 visible = aiState !is AiState.Idle,
-                enter = slideInVertically(initialOffsetY = { 50 }) + androidx.compose.animation.fadeIn(),
-                exit = slideOutVertically() + androidx.compose.animation.fadeOut()
+                enter = slideInVertically(initialOffsetY = { 50 }) + fadeIn(),
+                exit = slideOutVertically() + fadeOut()
             ) {
                 AiBriefCard(
-                    aiState = aiState, 
-                    currentWeather = currentWeather, 
+                    aiState = aiState,
+                    currentWeather = currentWeather,
                     cityName = data.city.name,
                     onClick = onNavigateToAnalysis
                 )

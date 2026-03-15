@@ -2,15 +2,14 @@ package com.example.skycast.ui.home.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.skycast.data.repository.WeatherRepository
+import com.example.skycast.data.repository.IWeatherRepository  // ← interface, not concrete class
 import com.example.skycast.data.repository.IAIAssistantRepository
 import com.example.skycast.utils.SettingsManager
 import com.example.skycast.utils.IWidgetUpdaterService
-
 import com.example.skycast.utils.ConnectivityObserver
 
 class HomeViewModelFactory(
-    private val repository: WeatherRepository,
+    private val repository: IWeatherRepository,
     private val aiRepository: IAIAssistantRepository,
     private val settingsManager: SettingsManager,
     private val widgetUpdaterService: IWidgetUpdaterService,

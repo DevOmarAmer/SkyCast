@@ -7,6 +7,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -63,7 +64,16 @@ fun SkyCastNavGraphWidget(
             )
         }
         composable(BottomNavItem.Alerts.route) {
-            AlertsScreen(viewModel = alertsViewModel, homeViewModel = homeViewModel)
+            // Extract plain values from HomeViewModel here in the nav layer —
+            // AlertsScreen and AlertsViewModel must NOT depend on HomeViewModel.
+            val location by homeViewModel.currentLocation.collectAsStateWithLifecycle()
+            val apiKey by homeViewModel.exposedApiKey.collectAsStateWithLifecycle()
+
+            AlertsScreen(
+                viewModel = alertsViewModel,
+                location = location,
+                apiKey = apiKey
+            )
         }
         composable(BottomNavItem.Settings.route) {
             SettingsScreen(
@@ -86,6 +96,7 @@ fun SkyCastNavGraphWidget(
                 FavoriteDetailScreen(
                     location = location,
                     viewModel = favoritesViewModel,
+                    apiKey = BuildConfig.API_KEY, // ← injected here, not hardcoded in the screen
                     onNavigateBack = { navController.popBackStack() }
                 )
             }
