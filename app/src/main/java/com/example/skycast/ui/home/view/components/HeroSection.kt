@@ -143,7 +143,6 @@ fun HeroSection(data: WeatherResponse, currentWeather: ForecastItem) {
     }
 }
 
-// ── Temperature pill ──────────────────────────────────────────────────────────
 @Composable
 private fun TemperaturePill(label: String, value: String, color: Color) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -152,7 +151,6 @@ private fun TemperaturePill(label: String, value: String, color: Color) {
     }
 }
 
-// ── Date Formatter ────────────────────────────────────────────────────────────
 fun formatFullDate(dateString: String): String {
     return try {
         val parser = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())

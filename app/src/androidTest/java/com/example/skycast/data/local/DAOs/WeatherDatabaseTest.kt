@@ -5,8 +5,8 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.skycast.data.local.db.WeatherDatabase
-import com.example.skycast.data.model.FavoriteLocation
-import com.example.skycast.data.model.WeatherAlert
+import com.example.skycast.data.local.entity.FavoriteLocation
+import com.example.skycast.data.local.entity.WeatherAlert
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.After

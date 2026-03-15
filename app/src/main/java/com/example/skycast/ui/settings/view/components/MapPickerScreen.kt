@@ -52,7 +52,6 @@ fun MapPickerScreen(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
-    /* ── State ─────────────────────────────────────────────────────────────── */
     var selectedLocation by remember { mutableStateOf<LatLng?>(null) }
     var cityName by remember { mutableStateOf("") }
     var countryName by remember { mutableStateOf("") }
@@ -64,7 +63,6 @@ fun MapPickerScreen(
         position = CameraPosition.fromLatLngZoom(LatLng(30.0444, 31.2357), 5f)
     }
 
-    /* ── Helpers ───────────────────────────────────────────────────────────── */
     fun fetchWeatherPreview(latLng: LatLng) {
         scope.launch {
             isWeatherLoading = true
@@ -126,7 +124,6 @@ fun MapPickerScreen(
         }
     }
 
-    /* ── On launch: fly to GPS ─────────────────────────────────────────────── */
     var isMapReady by remember { mutableStateOf(false) }
     
     LaunchedEffect(Unit) {
@@ -141,7 +138,6 @@ fun MapPickerScreen(
         }
     }
 
-    /* ── Derive dynamic colors ─────────────────────────────────────────────── */
     val rawColors = if (weatherPreview != null) {
         deriveWeatherColors(
             tempCelsius = weatherPreview!!.temp.toDouble(),
@@ -163,7 +159,6 @@ fun MapPickerScreen(
         bgTop = bgTop, bgBottom = bgBottom, heroGlow = heroGlow, accent = accent, cardSurface = surface
     )
 
-    /* ── UI ────────────────────────────────────────────────────────────────── */
     CompositionLocalProvider(LocalWeatherColors provides animatedColors) {
         val wc = LocalWeatherColors.current
         Box(modifier = Modifier.fillMaxSize().background(wc.bgTop)) {
@@ -192,7 +187,6 @@ fun MapPickerScreen(
                 }
             }
 
-        // ── Search bar (autocomplete) ──────────────────────────────────────────
         MapSearchBar(
             onBack = onBack,
             onSuggestionPicked = { place: PlaceSuggestion ->
@@ -201,7 +195,6 @@ fun MapPickerScreen(
             }
         )
 
-        // ── My Location FAB ────────────────────────────────────────────────────
         FloatingActionButton(
             onClick = {
                 isLocatingMe = true
@@ -236,7 +229,6 @@ fun MapPickerScreen(
             }
         }
 
-        // ── Bottom sheet ───────────────────────────────────────────────────────
         AnimatedVisibility(
             visible = selectedLocation != null,
             modifier = Modifier.align(Alignment.BottomCenter),

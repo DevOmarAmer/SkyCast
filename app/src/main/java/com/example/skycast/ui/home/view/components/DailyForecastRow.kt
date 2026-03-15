@@ -18,7 +18,6 @@ import com.example.skycast.ui.theme.*
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-// ── Daily 5-Day Row ───────────────────────────────────────────────────────────
 @Composable
 fun DailyForecastRow(forecast: ForecastItem) {
     val dayName = try {

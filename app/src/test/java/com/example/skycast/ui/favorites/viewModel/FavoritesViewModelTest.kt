@@ -1,7 +1,7 @@
 package com.example.skycast.ui.favorites.viewModel
 
 import app.cash.turbine.test
-import com.example.skycast.data.model.FavoriteLocation
+import com.example.skycast.data.local.entity.FavoriteLocation
 import com.example.skycast.data.repository.IWeatherRepository
 import io.mockk.coEvery
 import io.mockk.coVerify

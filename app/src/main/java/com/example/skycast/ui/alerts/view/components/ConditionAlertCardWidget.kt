@@ -20,8 +20,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.skycast.R
-import com.example.skycast.data.model.AlertCondition
-import com.example.skycast.data.model.WeatherAlert
+import com.example.skycast.data.local.entity.AlertCondition
+import com.example.skycast.data.local.entity.WeatherAlert
 import com.example.skycast.ui.theme.*
 import com.example.skycast.utils.AlertUtils
 import java.text.SimpleDateFormat

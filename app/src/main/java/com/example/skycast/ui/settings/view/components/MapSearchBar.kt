@@ -99,7 +99,6 @@ fun MapSearchBar(
             .statusBarsPadding()
             .padding(horizontal = 16.dp, vertical = 12.dp)
     ) {
-        // ── Input row ──────────────────────────────────────────────────────────
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -146,7 +145,6 @@ fun MapSearchBar(
             }
         }
 
-        // ── Autocomplete dropdown ──────────────────────────────────────────────
         AnimatedVisibility(
             visible = suggestions.isNotEmpty(),
             enter = slideInVertically(tween(200)) { -10 } + fadeIn(tween(200)),
@@ -178,7 +176,6 @@ fun MapSearchBar(
     }
 }
 
-// ── Private: single suggestion row ───────────────────────────────────────────
 @Composable
 private fun SuggestionItem(
     suggestion: PlaceSuggestion,

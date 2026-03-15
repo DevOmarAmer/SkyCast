@@ -1,4 +1,4 @@
-package com.example.skycast.data.model
+package com.example.skycast.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -18,9 +18,9 @@ data class WeatherAlert(
     val conditionType: String,
     val threshold: Double = 0.0,
     val label: String,
-    val alertType: String,          // "notification" | "alarm"
+    val alertType: String,
     val isActive: Boolean = true,
-    val workerId: String,           // UUID or unique tag used to cancel WorkManager job
+    val workerId: String,
     val createdAt: Long = System.currentTimeMillis(),
     val startDateTime: Long = System.currentTimeMillis(),
     val endDateTime: Long   = System.currentTimeMillis() + 24L * 60 * 60 * 1000

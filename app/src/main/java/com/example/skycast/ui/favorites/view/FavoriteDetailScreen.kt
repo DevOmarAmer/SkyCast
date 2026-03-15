@@ -2,7 +2,6 @@ package com.example.skycast.ui.favorites.view
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -24,18 +23,15 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.skycast.R
-import com.example.skycast.data.model.FavoriteLocation
-import com.example.skycast.data.model.ForecastItem
+import com.example.skycast.data.local.entity.FavoriteLocation
 import com.example.skycast.data.model.WeatherResponse
 import com.example.skycast.ui.favorites.viewModel.FavoritesViewModel
 import com.example.skycast.ui.theme.*
 import com.example.skycast.utils.Resource
-import java.text.SimpleDateFormat
 import java.util.*
 import com.example.skycast.ui.favorites.view.components.DetailDailyCard
 import com.example.skycast.ui.favorites.view.components.DetailErrorState
@@ -48,7 +44,7 @@ import com.example.skycast.ui.favorites.view.components.TemperaturePill
 fun FavoriteDetailScreen(
     location: FavoriteLocation,
     viewModel: FavoritesViewModel,
-    apiKey: String,              // ← injected by the nav host, never hardcoded here
+    apiKey: String,
     onNavigateBack: () -> Unit
 ) {
     val weatherState by viewModel.selectedFavoriteWeather.collectAsStateWithLifecycle()
@@ -57,7 +53,6 @@ fun FavoriteDetailScreen(
         viewModel.loadFavoriteWeather(location.latitude, location.longitude, apiKey)
     }
 
-    // ── Derive dynamic colors from current weather data ────────────────────────
     val rawColors: WeatherColors = when (weatherState) {
         is Resource.Success -> {
             val first = (weatherState as Resource.Success<WeatherResponse>).data
@@ -73,7 +68,6 @@ fun FavoriteDetailScreen(
         else -> DefaultWeatherColors
     }
 
-    // ── Animate all color transitions smoothly ────────────────────────────────
     val animSpec = tween<Color>(durationMillis = 1200, easing = FastOutSlowInEasing)
     val bgTop     by animateColorAsState(rawColors.bgTop,       animSpec, label = "bgTop")
     val bgBottom  by animateColorAsState(rawColors.bgBottom,    animSpec, label = "bgBottom")
@@ -112,7 +106,6 @@ fun FavoriteDetailScreen(
     }
 }
 
-// ── Success: full rich layout ─────────────────────────────────────────────────
 @Composable
 private fun DetailSuccessContent(
     data: WeatherResponse,
@@ -146,7 +139,6 @@ private fun DetailSuccessContent(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(bottom = 120.dp)
     ) {
-        // ── Hero header with glassmorphism ────────────────────────────────────
         item {
             Box(
                 modifier = Modifier
@@ -273,12 +265,10 @@ private fun DetailSuccessContent(
             }
         }
 
-        // ── Stats row ─────────────────────────────────────────────────────────
         item {
             DetailStatsRow(current)
         }
 
-        // ── Hourly Forecast ───────────────────────────────────────────────────
         item { DetailSectionHeader(stringResource(R.string.today_forecast)) }
         item {
             LazyRow(
@@ -291,7 +281,6 @@ private fun DetailSuccessContent(
             }
         }
 
-        // ── 5-Day Forecast ────────────────────────────────────────────────────
         item { DetailSectionHeader(stringResource(R.string.five_day_forecast)) }
         items(dailyForecasts) { day ->
             DetailDailyCard(day)

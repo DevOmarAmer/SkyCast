@@ -48,7 +48,6 @@ fun MapLocationBottomSheet(
     ) {
         Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = 20.dp)) {
 
-            // ── Drag handle ────────────────────────────────────────────────────
             Box(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
@@ -59,7 +58,6 @@ fun MapLocationBottomSheet(
 
             Spacer(Modifier.height(18.dp))
 
-            // ── Location header ────────────────────────────────────────────────
             Row(verticalAlignment = Alignment.CenterVertically) {
                 // Pin icon box
                 Box(
@@ -101,7 +99,6 @@ fun MapLocationBottomSheet(
             HorizontalDivider(color = FrostStrong, thickness = 0.5.dp)
             Spacer(Modifier.height(16.dp))
 
-            // ── Weather preview ────────────────────────────────────────────────
             WeatherPreviewSection(
                 isLoading = isWeatherLoading,
                 preview = weatherPreview
@@ -109,7 +106,6 @@ fun MapLocationBottomSheet(
 
             Spacer(Modifier.height(18.dp))
 
-            // ── Confirm button ─────────────────────────────────────────────────
             Button(
                 onClick = onConfirm,
                 modifier = Modifier
@@ -128,7 +124,6 @@ fun MapLocationBottomSheet(
     }
 }
 
-// ── Private sub-composables ───────────────────────────────────────────────────
 
 @Composable
 private fun CoordLabel(text: String) {

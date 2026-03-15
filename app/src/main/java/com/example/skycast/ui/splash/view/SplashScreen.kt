@@ -30,13 +30,11 @@ import com.example.skycast.ui.splash.view.components.SplashLogoWidget
 @Composable
 fun SplashScreen(onSplashComplete: () -> Unit) {
 
-    // ── Master timeline: fires onSplashComplete after 3s ─────────────────────
     LaunchedEffect(Unit) {
         delay(3000)
         onSplashComplete()
     }
 
-    // ── Animation states ──────────────────────────────────────────────────────
 
     // Background gradient reveal
     val bgAlpha by animateFloatAsState(
@@ -113,7 +111,6 @@ fun SplashScreen(onSplashComplete: () -> Unit) {
         label = "float"
     )
 
-    // ── UI ────────────────────────────────────────────────────────────────────
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -132,7 +129,6 @@ fun SplashScreen(onSplashComplete: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // ── Logo area ─────────────────────────────────────────────────────
             SplashLogoWidget(
                 ringRotation = ringRotation,
                 pulse = pulse,
@@ -143,7 +139,6 @@ fun SplashScreen(onSplashComplete: () -> Unit) {
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // ── App name ──────────────────────────────────────────────────────
             Text(
                 text = stringResource(R.string.app_name),
                 fontSize = 42.sp,
@@ -173,7 +168,6 @@ fun SplashScreen(onSplashComplete: () -> Unit) {
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // ── Tagline ───────────────────────────────────────────────────────
             Text(
                 text = stringResource(R.string.splash_tagline),
                 fontSize = 15.sp,
@@ -188,7 +182,6 @@ fun SplashScreen(onSplashComplete: () -> Unit) {
             )
         }
 
-        // ── Bottom brand dots ─────────────────────────────────────────────────
         Box(modifier = Modifier.align(Alignment.BottomCenter)) {
             SplashBrandDotsWidget(tagAlpha = tagAlpha)
         }

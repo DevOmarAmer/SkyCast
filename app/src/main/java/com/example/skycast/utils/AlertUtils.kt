@@ -2,7 +2,7 @@ package com.example.skycast.utils
 
 import android.content.Context
 import com.example.skycast.R
-import com.example.skycast.data.model.AlertCondition
+import com.example.skycast.data.local.entity.AlertCondition
 
 object AlertUtils {
     fun buildLocalizedLabel(context: Context, condType: String, threshold: Double): String {

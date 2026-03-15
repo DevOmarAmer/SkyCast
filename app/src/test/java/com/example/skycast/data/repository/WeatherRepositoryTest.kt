@@ -2,7 +2,7 @@ package com.example.skycast.data.repository
 
 import app.cash.turbine.test
 import com.example.skycast.data.local.ILocalDataSource
-import com.example.skycast.data.model.FavoriteLocation
+import com.example.skycast.data.local.entity.FavoriteLocation
 import com.example.skycast.data.model.WeatherResponse
 import com.example.skycast.data.remote.IRemoteDataSource
 import com.example.skycast.utils.Resource

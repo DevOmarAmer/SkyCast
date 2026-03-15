@@ -2,7 +2,7 @@ package com.example.skycast.ui.favorites.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.skycast.data.repository.IWeatherRepository  // ← interface, not concrete class
+import com.example.skycast.data.repository.IWeatherRepository
 
 class FavoritesViewModelFactory(
     private val repository: IWeatherRepository

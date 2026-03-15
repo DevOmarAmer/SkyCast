@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.skycast.BuildConfig
 import com.example.skycast.R
+import com.example.skycast.data.local.entity.WeatherAlert
 import com.example.skycast.ui.alerts.view.components.AddConditionAlertDialog
 import com.example.skycast.ui.alerts.view.components.ConditionAlertCard
 import com.example.skycast.ui.alerts.view.components.MorningBriefCard
@@ -37,8 +38,8 @@ import com.example.skycast.ui.theme.*
 @Composable
 fun AlertsScreen(
     viewModel: AlertsViewModel,
-    location: Pair<Double, Double>?,  // ← plain data, injected by nav host
-    apiKey: String                    // ← plain data, injected by nav host
+    location: Pair<Double, Double>?,
+    apiKey: String
 ) {
     val context       = LocalContext.current
     val alerts        by viewModel.alertsList.collectAsStateWithLifecycle()
@@ -48,7 +49,7 @@ fun AlertsScreen(
 
     var showAddDialog   by remember { mutableStateOf(false) }
     var showTimePicker  by remember { mutableStateOf(false) }
-    var alertToDelete   by remember { mutableStateOf<com.example.skycast.data.model.WeatherAlert?>(null) }
+    var alertToDelete   by remember { mutableStateOf<WeatherAlert?>(null) }
 
     Box(
         modifier = Modifier
@@ -57,7 +58,6 @@ fun AlertsScreen(
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
 
-            // ── Top Bar
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -81,7 +81,6 @@ fun AlertsScreen(
                 contentPadding = PaddingValues(bottom = 120.dp)
             ) {
 
-                // ── Morning Brief Card ─────────────────────────────────────────
                 item {
                     MorningBriefCard(
                         enabled   = briefEnabled,
@@ -104,7 +103,6 @@ fun AlertsScreen(
                     )
                 }
 
-                // ── Section header for condition alerts ────────────────────────
                 item {
                     Spacer(Modifier.height(4.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -122,7 +120,6 @@ fun AlertsScreen(
                     }
                 }
 
-                // ── Empty state for alerts ─────────────────────────────────────
                 if (alerts.isEmpty()) {
                     item {
                         Column(
@@ -165,7 +162,6 @@ fun AlertsScreen(
             }
         }
 
-        // ── FAB
         FloatingActionButton(
             onClick = { showAddDialog = true },
             modifier = Modifier
@@ -180,7 +176,6 @@ fun AlertsScreen(
         }
     }
 
-    // ── Add Condition Alert Dialog ────────────────────────────────────────────
     if (showAddDialog) {
         val loc = location ?: Pair(30.0444, 31.2357)
         AddConditionAlertDialog(
@@ -203,7 +198,6 @@ fun AlertsScreen(
         )
     }
 
-    // ── Time Picker Dialog ────────────────────────────────────────────────────
     if (showTimePicker) {
         MorningBriefTimePicker(
             initialHour   = briefHour,
@@ -224,7 +218,6 @@ fun AlertsScreen(
         )
     }
 
-    // ── Delete Confirmation Dialog ───────────────────────────────────────────
     if (alertToDelete != null) {
         AlertDialog(
             onDismissRequest = { alertToDelete = null },

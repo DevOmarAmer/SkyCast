@@ -9,7 +9,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.skycast.ui.theme.CloudWhite
 
-// ── Section Header ────────────────────────────────────────────────────────────
 @Composable
 fun SectionHeader(title: String) {
     Text(

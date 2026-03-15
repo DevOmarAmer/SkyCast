@@ -5,7 +5,7 @@ import androidx.work.Data
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.example.skycast.data.model.WeatherAlert
+import com.example.skycast.data.local.entity.WeatherAlert
 import com.example.skycast.data.service.worker.MorningBriefWorker
 import com.example.skycast.data.service.worker.WeatherConditionWorker
 import java.util.Calendar
@@ -27,7 +27,6 @@ class WorkManagerAlertScheduler(private val context: Context) : IAlertScheduler 
         startDateTime: Long,
         endDateTime: Long
     ): WeatherAlert {
-        // Tag is used for cancellation inside the worker once end time is reached
         val uniqueTag = "alert_${System.currentTimeMillis()}"
 
         val inputData = Data.Builder()
@@ -57,7 +56,7 @@ class WorkManagerAlertScheduler(private val context: Context) : IAlertScheduler 
             threshold     = threshold,
             label         = label,
             alertType     = alertType,
-            workerId      = uniqueTag, // Instead of ID, save tag to cancel by tag
+            workerId      = uniqueTag,
             createdAt     = System.currentTimeMillis(),
             startDateTime = startDateTime,
             endDateTime   = endDateTime
@@ -99,11 +98,7 @@ class WorkManagerAlertScheduler(private val context: Context) : IAlertScheduler 
         } catch (_: Exception) {}
     }
 
-    // ------------------------------------------------------------
-    // Helpers
-    // ------------------------------------------------------------
 
-    /** Returns the milliseconds until the next occurrence of [hour]:[minute]. */
     private fun calculateDelayUntil(hour: Int, minute: Int): Long {
         val now    = Calendar.getInstance()
         val target = Calendar.getInstance().apply {

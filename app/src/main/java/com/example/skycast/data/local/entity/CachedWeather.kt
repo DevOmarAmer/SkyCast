@@ -1,7 +1,8 @@
-package com.example.skycast.data.model
+package com.example.skycast.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.skycast.data.model.WeatherResponse
 
 @Entity(tableName = "cached_weather")
 data class CachedWeather(

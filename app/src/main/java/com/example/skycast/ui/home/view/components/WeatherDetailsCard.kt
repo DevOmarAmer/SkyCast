@@ -20,7 +20,6 @@ import com.example.skycast.R
 import com.example.skycast.data.model.ForecastItem
 import com.example.skycast.ui.theme.*
 
-// ── Glass Details Card ────────────────────────────────────────────────────────
 @Composable
 fun WeatherDetailsCard(currentWeather: ForecastItem) {
     Card(

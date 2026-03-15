@@ -18,7 +18,6 @@ import coil.compose.AsyncImage
 import com.example.skycast.data.model.ForecastItem
 import com.example.skycast.ui.theme.*
 
-// ── Hourly Forecast Row ───────────────────────────────────────────────────────
 @Composable
 fun HourlyForecastRow(hourlyItems: List<ForecastItem>) {
     LazyRow(
@@ -31,7 +30,6 @@ fun HourlyForecastRow(hourlyItems: List<ForecastItem>) {
     }
 }
 
-// ── Hourly Card ───────────────────────────────────────────────────────────────
 @Composable
 fun HourlyCard(forecast: ForecastItem) {
     val iconCode = forecast.weatherInfo.firstOrNull()?.icon

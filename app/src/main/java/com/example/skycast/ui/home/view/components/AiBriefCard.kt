@@ -34,7 +34,6 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 
-// ── AI Brief Card ─────────────────────────────────────────────────────────────
 @Composable
 fun AiBriefCard(aiState: AiState, currentWeather: ForecastItem, cityName: String, onClick: () -> Unit) {
     val infiniteTransition = rememberInfiniteTransition(label = "ai_pulse")

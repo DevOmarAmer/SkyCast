@@ -1,10 +1,10 @@
 package com.example.skycast.data.local
 
 import com.example.skycast.data.local.DAOs.AlertDao
-import com.example.skycast.data.model.CachedWeather
+import com.example.skycast.data.local.entity.CachedWeather
 import com.example.skycast.data.local.DAOs.FavoriteLocationDao
 import com.example.skycast.data.local.DAOs.WeatherDao
-import com.example.skycast.data.model.FavoriteLocation
+import com.example.skycast.data.local.entity.FavoriteLocation
 import com.example.skycast.data.model.WeatherResponse
 import io.mockk.coEvery
 import io.mockk.coVerify

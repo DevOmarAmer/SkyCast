@@ -90,7 +90,6 @@ fun SplashLogoWidget(
     }
 }
 
-// ── Rotating dashed ring ──────────────────────────────────────────────────────
 private fun DrawScope.drawRotatingRing(
     rotationDeg: Float,
     color: Color,

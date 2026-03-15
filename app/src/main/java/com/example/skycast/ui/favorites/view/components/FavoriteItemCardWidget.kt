@@ -17,7 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
 import com.example.skycast.R
-import com.example.skycast.data.model.FavoriteLocation
+import com.example.skycast.data.local.entity.FavoriteLocation
 import com.example.skycast.ui.theme.*
 
 @Composable

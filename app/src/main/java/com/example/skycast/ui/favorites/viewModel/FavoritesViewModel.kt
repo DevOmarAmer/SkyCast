@@ -2,7 +2,7 @@ package com.example.skycast.ui.favorites.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.skycast.data.model.FavoriteLocation
+import com.example.skycast.data.local.entity.FavoriteLocation
 import com.example.skycast.data.model.WeatherResponse
 import com.example.skycast.data.repository.IWeatherRepository
 import com.example.skycast.utils.Resource
@@ -14,10 +14,9 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class FavoritesViewModel(
-    private val repository: IWeatherRepository  // ← interface, not concrete class
+    private val repository: IWeatherRepository
 ) : ViewModel() {
 
-    // ── Favorites list from Room ──────────────────────────────────────────────
     val favoritesList: StateFlow<List<FavoriteLocation>> = repository.getFavoriteLocations()
         .stateIn(
             scope = viewModelScope,
@@ -25,7 +24,6 @@ class FavoritesViewModel(
             initialValue = emptyList()
         )
 
-    // ── Selected favorite weather (for FavoriteDetailScreen) ─────────────────
     private val _selectedFavoriteWeather =
         MutableStateFlow<Resource<WeatherResponse>>(Resource.Loading())
     val selectedFavoriteWeather: StateFlow<Resource<WeatherResponse>> =
@@ -40,7 +38,6 @@ class FavoritesViewModel(
         }
     }
 
-    // ── CRUD ──────────────────────────────────────────────────────────────────
     fun deleteLocation(location: FavoriteLocation) {
         viewModelScope.launch { repository.deleteFavoriteLocation(location) }
     }

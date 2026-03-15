@@ -1,6 +1,5 @@
 package com.example.skycast.ui.components
 
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -12,7 +11,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.skycast.BuildConfig
-import com.example.skycast.data.model.FavoriteLocation
+import com.example.skycast.data.local.entity.FavoriteLocation
 import com.example.skycast.navigation.BottomNavItem
 import com.example.skycast.ui.alerts.view.AlertsScreen
 import com.example.skycast.ui.alerts.viewModel.AlertsViewModel
@@ -64,8 +63,8 @@ fun SkyCastNavGraphWidget(
             )
         }
         composable(BottomNavItem.Alerts.route) {
-            // Extract plain values from HomeViewModel here in the nav layer —
-            // AlertsScreen and AlertsViewModel must NOT depend on HomeViewModel.
+            // Extract plain values from HomeViewModel here in the nav layer
+            // AlertsScreen and AlertsViewModel must not depend on HomeViewModel.
             val location by homeViewModel.currentLocation.collectAsStateWithLifecycle()
             val apiKey by homeViewModel.exposedApiKey.collectAsStateWithLifecycle()
 
@@ -96,7 +95,7 @@ fun SkyCastNavGraphWidget(
                 FavoriteDetailScreen(
                     location = location,
                     viewModel = favoritesViewModel,
-                    apiKey = BuildConfig.API_KEY, // ← injected here, not hardcoded in the screen
+                    apiKey = BuildConfig.API_KEY,
                     onNavigateBack = { navController.popBackStack() }
                 )
             }

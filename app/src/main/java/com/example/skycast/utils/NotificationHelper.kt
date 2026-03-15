@@ -27,7 +27,6 @@ object NotificationHelper {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
         val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        // ── Alarm channel – plays alarm ringtone, max importance
         val alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
         val alarmAttr  = AudioAttributes.Builder()
             .setUsage(AudioAttributes.USAGE_ALARM)
@@ -43,7 +42,6 @@ object NotificationHelper {
             }
         )
 
-        // ── Notification channel – default notification sound
         val notifSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         manager.createNotificationChannel(
             NotificationChannel(NOTIF_CHANNEL_ID, context.getString(R.string.channel_weather_alerts), NotificationManager.IMPORTANCE_HIGH).apply {
@@ -56,7 +54,6 @@ object NotificationHelper {
             }
         )
 
-        // ── Morning brief – gentle, default
         manager.createNotificationChannel(
             NotificationChannel(BRIEF_CHANNEL_ID, context.getString(R.string.channel_morning_brief_name), NotificationManager.IMPORTANCE_DEFAULT).apply {
                 description = context.getString(R.string.channel_morning_brief_desc)

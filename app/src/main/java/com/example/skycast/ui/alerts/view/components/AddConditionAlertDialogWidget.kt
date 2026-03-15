@@ -1,6 +1,5 @@
 package com.example.skycast.ui.alerts.view.components
 
-import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -19,7 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.example.skycast.R
-import com.example.skycast.data.model.AlertCondition
+import com.example.skycast.data.local.entity.AlertCondition
 import com.example.skycast.ui.theme.*
 import com.example.skycast.utils.AlertUtils
 import java.text.SimpleDateFormat
@@ -94,7 +93,6 @@ fun AddConditionAlertDialog(
                     )
                 }
 
-                // ── Condition Type ─────────────────────────────────────────────
                 item {
                     Text(stringResource(R.string.condition_type_label), style = MaterialTheme.typography.labelLarge, color = SkyBluePale)
                     Spacer(Modifier.height(8.dp))
@@ -126,7 +124,6 @@ fun AddConditionAlertDialog(
                     }
                 }
 
-                // ── Threshold Slider ───────────────────────────────────────────
                 if (selectedCondition.third) {
                     item {
                         Text(stringResource(R.string.threshold_label), style = MaterialTheme.typography.labelLarge, color = SkyBluePale)
@@ -149,7 +146,6 @@ fun AddConditionAlertDialog(
                     }
                 }
 
-                // ── Time Range Selection ───────────────────────────────────────
                 item {
                     Text(stringResource(R.string.time_range), style = MaterialTheme.typography.labelLarge, color = SkyBluePale)
                     Spacer(Modifier.height(8.dp))
@@ -210,7 +206,6 @@ fun AddConditionAlertDialog(
                     }
                 }
 
-                // ── Alert Type ─────────────────────────────────────────────────
                 item {
                     Text(stringResource(R.string.alert_type), style = MaterialTheme.typography.labelLarge, color = SkyBluePale)
                     Spacer(Modifier.height(8.dp))
@@ -242,7 +237,6 @@ fun AddConditionAlertDialog(
                     }
                 }
 
-                // ── Action Buttons ─────────────────────────────────────────────
                 item {
                     Spacer(Modifier.height(8.dp))
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {

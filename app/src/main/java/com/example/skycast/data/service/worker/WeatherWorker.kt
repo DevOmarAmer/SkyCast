@@ -7,7 +7,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.example.skycast.R
-import com.example.skycast.data.model.AlertCondition
+import com.example.skycast.data.local.entity.AlertCondition
 import com.example.skycast.data.remote.ApiService.RetrofitClient
 import com.example.skycast.utils.AlertUtils
 import com.example.skycast.utils.LocaleHelper
@@ -15,14 +15,6 @@ import com.example.skycast.utils.NotificationHelper
 import com.example.skycast.utils.SettingsManager
 import kotlinx.coroutines.flow.first
 
-/**
- * Periodic worker (every 15 min) that:
- *  1. Guards: skips if current time is outside [START_DATETIME, END_DATETIME].
- *  2. Self-cancels via unique tag when end time is reached.
- *  3. Fetches current weather and fires a notification when the condition is met.
- *
- * Input data keys  →  see companion object.
- */
 class WeatherConditionWorker(
     private val context: Context,
     params: WorkerParameters
@@ -43,8 +35,7 @@ class WeatherConditionWorker(
 
         val now = System.currentTimeMillis()
 
-        // ── Outside the active window → self-cancel if expired ─────────────────
-        if (now < startDateTime) return Result.success()   // too early, wait
+        if (now < startDateTime) return Result.success()
         if (now > endDateTime) {
             if (workTag.isNotEmpty()) {
                 WorkManager.getInstance(context).cancelAllWorkByTag(workTag)
@@ -52,7 +43,7 @@ class WeatherConditionWorker(
             return Result.success()
         }
 
-        // ── Check weather condition ────────────────────────────────────────────
+        // Check weather condition
         return try {
             val settingsManager = SettingsManager(context)
             val savedLang       = settingsManager.langFlow.first()

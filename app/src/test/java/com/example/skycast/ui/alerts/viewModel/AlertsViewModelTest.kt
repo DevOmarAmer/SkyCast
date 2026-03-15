@@ -1,7 +1,7 @@
 package com.example.skycast.ui.alerts.viewModel
 
 import app.cash.turbine.test
-import com.example.skycast.data.model.WeatherAlert
+import com.example.skycast.data.local.entity.WeatherAlert
 import com.example.skycast.data.repository.IWeatherRepository
 import com.example.skycast.utils.IAlertScheduler
 import com.example.skycast.utils.SettingsManager

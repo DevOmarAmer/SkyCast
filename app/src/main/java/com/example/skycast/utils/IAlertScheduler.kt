@@ -1,6 +1,6 @@
 package com.example.skycast.utils
 
-import com.example.skycast.data.model.WeatherAlert
+import com.example.skycast.data.local.entity.WeatherAlert
 
 interface IAlertScheduler {
     fun scheduleConditionAlert(

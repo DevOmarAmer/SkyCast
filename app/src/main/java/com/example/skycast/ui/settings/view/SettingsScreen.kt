@@ -55,7 +55,6 @@ fun SettingsScreen(viewModel: SettingsViewModel, onOpenMap: () -> Unit = {}) {
                 .verticalScroll(rememberScrollState())
                 .padding(bottom = 100.dp)
         ) {
-            // ── Top Bar ───────────────────────────────────────────────────────
             Box(
                 modifier = Modifier
                     .fillMaxWidth()

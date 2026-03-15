@@ -71,7 +71,6 @@ fun HomeScreen(viewModel: HomeViewModel, onNavigateToAnalysis: () -> Unit) {
             is Resource.Success -> {
                 val data = (weatherState as Resource.Success).data
                 if (data != null) {
-                    // ↓ Pass plain data values — NOT the ViewModel object
                     WeatherContent(
                         data = data,
                         aiState = aiState,
@@ -100,7 +99,6 @@ fun HomeScreen(viewModel: HomeViewModel, onNavigateToAnalysis: () -> Unit) {
             }
         }
 
-        // ── Offline Banner ────────────────────────────────────────────────────────
         AnimatedVisibility(
             visible = networkStatus == ConnectivityObserver.Status.Unavailable
                     || networkStatus == ConnectivityObserver.Status.Lost,
@@ -156,17 +154,14 @@ fun WeatherContent(
             bottom = 100.dp
         )
     ) {
-        // ── Hero Section ──────────────────────────────────────────────────────
         item {
             HeroSection(data = data, currentWeather = currentWeather)
         }
 
-        // ── Details Card ─────────────────────────────────────────────────────
         item {
             WeatherDetailsCard(currentWeather = currentWeather)
         }
 
-        // ── AI Brief Section ─────────────────────────────────────────────────
         item {
             AnimatedVisibility(
                 visible = aiState !is AiState.Idle,
@@ -182,7 +177,6 @@ fun WeatherContent(
             }
         }
 
-        // ── Today's Hourly Forecast ───────────────────────────────────────────
         item {
             SectionHeader(title = stringResource(R.string.today_forecast))
         }
@@ -190,7 +184,6 @@ fun WeatherContent(
             HourlyForecastRow(hourlyItems = hourlyToday)
         }
 
-        // ── 5-Day Forecast ────────────────────────────────────────────────────
         item {
             SectionHeader(title = stringResource(R.string.five_day_forecast))
         }

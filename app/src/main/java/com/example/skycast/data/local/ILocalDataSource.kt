@@ -1,7 +1,7 @@
 package com.example.skycast.data.local
 
-import com.example.skycast.data.model.FavoriteLocation
-import com.example.skycast.data.model.WeatherAlert
+import com.example.skycast.data.local.entity.FavoriteLocation
+import com.example.skycast.data.local.entity.WeatherAlert
 import com.example.skycast.data.model.WeatherResponse
 import kotlinx.coroutines.flow.Flow
 

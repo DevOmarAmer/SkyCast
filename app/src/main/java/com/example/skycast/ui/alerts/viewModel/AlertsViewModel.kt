@@ -2,7 +2,7 @@ package com.example.skycast.ui.alerts.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.skycast.data.model.WeatherAlert
+import com.example.skycast.data.local.entity.WeatherAlert
 import com.example.skycast.data.repository.IWeatherRepository
 import com.example.skycast.utils.IAlertScheduler
 import com.example.skycast.utils.SettingsManager
@@ -34,7 +34,6 @@ class AlertsViewModel(
     val morningBriefMinute: StateFlow<Int> = settingsManager.morningBriefMinuteFlow
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
 
-    // ── Condition Alerts ────────────────────────────────────────────────────────
 
     fun scheduleConditionAlert(
         conditionType: String,
@@ -66,7 +65,6 @@ class AlertsViewModel(
         viewModelScope.launch { repository.deleteAlert(alert) }
     }
 
-    // ── Morning Brief ───────────────────────────────────────────────────────────
 
     fun setMorningBriefEnabled(
         enabled: Boolean,

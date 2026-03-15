@@ -1,4 +1,4 @@
-package com.example.skycast.data.model
+package com.example.skycast.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

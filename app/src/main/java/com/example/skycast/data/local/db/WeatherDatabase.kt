@@ -7,11 +7,11 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.skycast.data.local.Converters
 import com.example.skycast.data.local.DAOs.AlertDao
-import com.example.skycast.data.model.CachedWeather
+import com.example.skycast.data.local.entity.CachedWeather
 import com.example.skycast.data.local.DAOs.FavoriteLocationDao
 import com.example.skycast.data.local.DAOs.WeatherDao
-import com.example.skycast.data.model.FavoriteLocation
-import com.example.skycast.data.model.WeatherAlert
+import com.example.skycast.data.local.entity.FavoriteLocation
+import com.example.skycast.data.local.entity.WeatherAlert
 
 @Database(entities = [FavoriteLocation::class, WeatherAlert::class, CachedWeather::class], version = 5, exportSchema = false)
 @TypeConverters(Converters::class)
