@@ -30,4 +30,19 @@ object LocaleHelper {
             LocaleListCompat.create(locale)
         )
     }
+
+    /**
+     * Returns a context wrapped with the specified language to fetch strings in that language
+     * even when the system language is different.
+     */
+    fun getLocalizedContext(context: Context, languageCode: String): Context {
+        val locale = Locale(languageCode)
+        Locale.setDefault(locale)
+        val config = context.resources.configuration
+        config.setLocale(locale)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            config.setLocales(LocaleList(locale))
+        }
+        return context.createConfigurationContext(config)
+    }
 }

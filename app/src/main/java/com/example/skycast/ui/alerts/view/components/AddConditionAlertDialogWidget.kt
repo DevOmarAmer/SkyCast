@@ -21,6 +21,7 @@ import androidx.compose.ui.window.Dialog
 import com.example.skycast.R
 import com.example.skycast.data.model.AlertCondition
 import com.example.skycast.ui.theme.*
+import com.example.skycast.utils.AlertUtils
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -260,7 +261,7 @@ fun AddConditionAlertDialog(
                                 }
                                 val condType  = selectedCondition.first
                                 val threshold = if (selectedCondition.third) sliderValue.toDouble() else 0.0
-                                val label = buildLabel(context, condType, threshold, selectedCondition.second)
+                                val label = AlertUtils.buildLocalizedLabel(context, condType, threshold)
                                 onConfirm(condType, threshold, selectedType, label, startCal.timeInMillis, endCal.timeInMillis)
                             },
                             modifier = Modifier.weight(1f),
@@ -280,7 +281,16 @@ fun AddConditionAlertDialog(
             onDismissRequest = { showStartDatePicker = false },
             confirmButton = {
                 TextButton(onClick = {
-                    datePickerState.selectedDateMillis?.let { startCal.timeInMillis = it }
+                    datePickerState.selectedDateMillis?.let { mills ->
+                        val utcCal = Calendar.getInstance(java.util.TimeZone.getTimeZone("UTC")).apply { timeInMillis = mills }
+                        val newCal = startCal.clone() as Calendar
+                        newCal.set(
+                            utcCal.get(Calendar.YEAR),
+                            utcCal.get(Calendar.MONTH),
+                            utcCal.get(Calendar.DAY_OF_MONTH)
+                        )
+                        startCal = newCal
+                    }
                     showStartDatePicker = false
                 }) { Text(stringResource(R.string.ok_button), color = SkyBlueBright) }
             }
@@ -293,8 +303,10 @@ fun AddConditionAlertDialog(
                 Column(Modifier.padding(16.dp)) {
                     TimePicker(state = timePickerState)
                     Button(onClick = {
-                        startCal.set(Calendar.HOUR_OF_DAY, timePickerState.hour)
-                        startCal.set(Calendar.MINUTE, timePickerState.minute)
+                        val newCal = startCal.clone() as Calendar
+                        newCal.set(Calendar.HOUR_OF_DAY, timePickerState.hour)
+                        newCal.set(Calendar.MINUTE, timePickerState.minute)
+                        startCal = newCal
                         showStartTimePicker = false
                     }, colors = ButtonDefaults.buttonColors(containerColor = SkyBlueBright)) { Text(stringResource(R.string.ok_button)) }
                 }
@@ -307,7 +319,16 @@ fun AddConditionAlertDialog(
             onDismissRequest = { showEndDatePicker = false },
             confirmButton = {
                 TextButton(onClick = {
-                    datePickerState.selectedDateMillis?.let { endCal.timeInMillis = it }
+                    datePickerState.selectedDateMillis?.let { mills ->
+                        val utcCal = Calendar.getInstance(java.util.TimeZone.getTimeZone("UTC")).apply { timeInMillis = mills }
+                        val newCal = endCal.clone() as Calendar
+                        newCal.set(
+                            utcCal.get(Calendar.YEAR),
+                            utcCal.get(Calendar.MONTH),
+                            utcCal.get(Calendar.DAY_OF_MONTH)
+                        )
+                        endCal = newCal
+                    }
                     showEndDatePicker = false
                 }) { Text(stringResource(R.string.ok_button), color = SkyBlueBright) }
             }
@@ -320,21 +341,14 @@ fun AddConditionAlertDialog(
                 Column(Modifier.padding(16.dp)) {
                     TimePicker(state = timePickerState)
                     Button(onClick = {
-                        endCal.set(Calendar.HOUR_OF_DAY, timePickerState.hour)
-                        endCal.set(Calendar.MINUTE, timePickerState.minute)
+                        val newCal = endCal.clone() as Calendar
+                        newCal.set(Calendar.HOUR_OF_DAY, timePickerState.hour)
+                        newCal.set(Calendar.MINUTE, timePickerState.minute)
+                        endCal = newCal
                         showEndTimePicker = false
                     }, colors = ButtonDefaults.buttonColors(containerColor = SkyBlueBright)) { Text(stringResource(R.string.ok_button)) }
                 }
             }
         }
     }
-}
-
-private fun buildLabel(context: Context, condType: String, threshold: Double, condName: String): String = when (condType) {
-    AlertCondition.TEMP_ABOVE    -> "${context.getString(R.string.cond_temp_above)}: ${threshold.toInt()}°C"
-    AlertCondition.TEMP_BELOW    -> "${context.getString(R.string.cond_temp_below)}: ${threshold.toInt()}°C"
-    AlertCondition.WIND_ABOVE    -> "${context.getString(R.string.cond_wind_above)}: ${threshold.toInt()} m/s"
-    AlertCondition.RAIN_EXPECTED -> context.getString(R.string.cond_rain_expected)
-    AlertCondition.VERY_CLOUDY   -> context.getString(R.string.cond_very_cloudy)
-    else                         -> condName
 }

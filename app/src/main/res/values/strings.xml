@@ -56,6 +56,8 @@
     <string name="save_alert">Save Alert</string>
     <string name="cancel">Cancel</string>
     <string name="confirm">Confirm</string>
+    <string name="delete_alert_title">Delete Alert</string>
+    <string name="delete_alert_message">Are you sure you want to delete this alert? This action cannot be undone.</string>
 
     <!-- Alerts – Condition Types -->
     <string name="condition_alerts_title">Condition Alerts</string>
@@ -141,4 +143,15 @@
     <string name="dismiss_alarm">Dismiss Alarm</string>
     <string name="open_map_to_set_location">Open Map to Set Location</string>
     <string name="footer_info">SkyCast v1.0  ·  Powered by OpenWeatherMap</string>
+    <string name="fetching_weather">Fetching weather…</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="offline_mode_msg">Offline Mode - Showing Cached Data</string>
+    <string name="ai_brief_title">SkyCast AI Brief</string>
+    <string name="ai_generating_msg">Generating your personalized weather brief...</string>
+    <string name="visibility">Visibility</string>
+    <string name="clouds">Clouds</string>
+    <string name="min">Min</string>
+    <string name="max">Max</string>
+    <string name="feels_like_label">Feels Like</string>
+    <string name="splash_tagline">Your sky, your forecast</string>
 </resources>

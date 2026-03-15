@@ -50,11 +50,11 @@ fun WeatherDetailsCard(currentWeather: ForecastItem) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                WeatherStatItem(emoji = "👁️", label = "Visibility", value = "${currentWeather.visibility / 1000} km")
+                WeatherStatItem(emoji = "👁️", label = stringResource(R.string.visibility), value = "${currentWeather.visibility / 1000} km")
                 VerticalDivider()
-                WeatherStatItem(emoji = "☁️", label = "Clouds", value = "${currentWeather.clouds.all}%")
+                WeatherStatItem(emoji = "☁️", label = stringResource(R.string.clouds), value = "${currentWeather.clouds.all}%")
                 VerticalDivider()
-                WeatherStatItem(emoji = "🌫️", label = "Feels Like", value = "${currentWeather.main.feelsLike.toInt()}°")
+                WeatherStatItem(emoji = "🌫️", label = stringResource(R.string.feels_like_label), value = "${currentWeather.main.feelsLike.toInt()}°")
             }
         }
     }

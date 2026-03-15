@@ -15,10 +15,12 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.skycast.R
 import com.example.skycast.ui.theme.*
 import kotlinx.coroutines.delay
 import com.example.skycast.ui.splash.view.components.ParticleCanvasWidget
@@ -143,7 +145,7 @@ fun SplashScreen(onSplashComplete: () -> Unit) {
 
             // ── App name ──────────────────────────────────────────────────────
             Text(
-                text = "SkyCast",
+                text = stringResource(R.string.app_name),
                 fontSize = 42.sp,
                 fontWeight = FontWeight.W700,
                 letterSpacing = 3.sp,
@@ -173,7 +175,7 @@ fun SplashScreen(onSplashComplete: () -> Unit) {
 
             // ── Tagline ───────────────────────────────────────────────────────
             Text(
-                text = "Your sky, your forecast",
+                text = stringResource(R.string.splash_tagline),
                 fontSize = 15.sp,
                 fontWeight = FontWeight.W300,
                 letterSpacing = 1.5.sp,
@@ -192,5 +194,3 @@ fun SplashScreen(onSplashComplete: () -> Unit) {
         }
     }
 }
-
-

@@ -25,6 +25,8 @@ class MorningAnalysisViewModel(
     private val _analysisState = MutableStateFlow<MorningAnalysisState>(MorningAnalysisState.Loading)
     val analysisState: StateFlow<MorningAnalysisState> = _analysisState.asStateFlow()
 
+    val language = settingsManager.langFlow
+
     fun fetchDetailedAnalysis(cityName: String, forecastList: List<ForecastItem>) {
         viewModelScope.launch {
             _analysisState.value = MorningAnalysisState.Loading

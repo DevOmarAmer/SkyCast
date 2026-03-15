@@ -66,7 +66,7 @@ fun AiBriefCard(aiState: AiState, currentWeather: ForecastItem, cityName: String
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "SkyCast AI Brief",
+                        text = stringResource(R.string.ai_brief_title),
                         style = MaterialTheme.typography.titleSmall,
                         color = SkyBluePale,
                         fontWeight = FontWeight.Bold
@@ -77,7 +77,7 @@ fun AiBriefCard(aiState: AiState, currentWeather: ForecastItem, cityName: String
                 when (aiState) {
                     is AiState.Loading -> {
                         Text(
-                            text = "Generating your personalized weather brief...",
+                            text = stringResource(R.string.ai_generating_msg),
                             style = MaterialTheme.typography.bodyMedium,
                             color = CloudGrey.copy(alpha = alphaAnim)
                         )

@@ -6,7 +6,10 @@ import androidx.work.WorkerParameters
 import com.example.skycast.R
 import com.example.skycast.data.remote.RetrofitClient
 import com.example.skycast.data.repository.AIAssistantRepositoryImpl
+import com.example.skycast.utils.LocaleHelper
 import com.example.skycast.utils.NotificationHelper
+import com.example.skycast.utils.SettingsManager
+import kotlinx.coroutines.flow.first
 import java.util.Calendar
 
 /**
@@ -50,13 +53,16 @@ class MorningBriefWorker(
 
             val isRainy = (desc.contains("Rain", true) || desc.contains("Drizzle", true) || desc.contains("Thunderstorm", true))
 
+            val settingsManager = SettingsManager(context)
+            val savedLang       = settingsManager.langFlow.first()
+            val localizedContext = LocaleHelper.getLocalizedContext(context, savedLang)
+
             val aiRepo = AIAssistantRepositoryImpl()
-            val lang = context.resources.configuration.locales.get(0).language
-            val aiSummary = aiRepo.getWeatherSummary(tempC, desc, windSpeed, isRainy, lang)
+            val aiSummary = aiRepo.getWeatherSummary(tempC, desc, windSpeed, isRainy, savedLang)
 
-            val message = aiSummary?.trim() ?: (context.getString(R.string.ai_error_disclaimer) + buildGreeting(cityName, tempC, desc, humidity, windSpeed))
+            val message = aiSummary?.trim() ?: (localizedContext.getString(R.string.ai_error_disclaimer) + buildGreeting(localizedContext, cityName, tempC, desc, humidity, windSpeed))
 
-            NotificationHelper.showMorningBrief(context, message)
+            NotificationHelper.showMorningBrief(localizedContext, message)
             Result.success()
         } catch (e: Exception) {
             Result.retry()
@@ -64,16 +70,16 @@ class MorningBriefWorker(
     }
 
     private fun buildGreeting(
-        city: String, tempC: Int, desc: String, humidity: Int, wind: Int
+        localizedContext: Context, city: String, tempC: Int, desc: String, humidity: Int, wind: Int
     ): String {
         val outfit = when {
-            tempC >= 35 -> context.getString(R.string.outfit_hot)
-            tempC >= 25 -> context.getString(R.string.outfit_warm)
-            tempC >= 15 -> context.getString(R.string.outfit_mild)
-            tempC >= 5  -> context.getString(R.string.outfit_cool)
-            else        -> context.getString(R.string.outfit_cold)
+            tempC >= 35 -> localizedContext.getString(R.string.outfit_hot)
+            tempC >= 25 -> localizedContext.getString(R.string.outfit_warm)
+            tempC >= 15 -> localizedContext.getString(R.string.outfit_mild)
+            tempC >= 5  -> localizedContext.getString(R.string.outfit_cool)
+            else        -> localizedContext.getString(R.string.outfit_cold)
         }
-        return context.getString(R.string.morning_brief_message_format, city, tempC, desc, humidity, wind, outfit)
+        return localizedContext.getString(R.string.morning_brief_message_format, city, tempC, desc, humidity, wind, outfit)
     }
 
     companion object {

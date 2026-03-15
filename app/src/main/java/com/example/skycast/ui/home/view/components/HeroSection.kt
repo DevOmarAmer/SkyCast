@@ -139,11 +139,11 @@ fun HeroSection(data: WeatherResponse, currentWeather: ForecastItem) {
                     .background(Color.White.copy(alpha = 0.05f), androidx.compose.foundation.shape.RoundedCornerShape(16.dp))
                     .padding(horizontal = 24.dp, vertical = 12.dp)
             ) {
-                TemperaturePill(label = "Feels Like", value = "${currentWeather.main.feelsLike.toInt()}°", color = SunGold)
+                TemperaturePill(label = stringResource(R.string.feels_like_label), value = "${currentWeather.main.feelsLike.toInt()}°", color = SunGold)
                 Box(Modifier.size(4.dp).background(FrostStrong, CircleShape))
-                TemperaturePill(label = "Min", value = "${currentWeather.main.tempMin.toInt()}°", color = RainBlue)
+                TemperaturePill(label = stringResource(R.string.min), value = "${currentWeather.main.tempMin.toInt()}°", color = RainBlue)
                 Box(Modifier.size(4.dp).background(FrostStrong, CircleShape))
-                TemperaturePill(label = "Max", value = "${currentWeather.main.tempMax.toInt()}°", color = StormRed)
+                TemperaturePill(label = stringResource(R.string.max), value = "${currentWeather.main.tempMax.toInt()}°", color = StormRed)
             }
         }
     }

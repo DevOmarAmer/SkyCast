@@ -264,11 +264,11 @@ private fun DetailSuccessContent(
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        TemperaturePill(label = "Feels", value = "${current.main.feelsLike.toInt()}°", color = wc.accent)
-                        Box(Modifier.size(4.dp).background(FrostStrong, CircleShape))
-                        TemperaturePill(label = "Min", value = "${current.main.tempMin.toInt()}°", color = RainBlue)
-                        Box(Modifier.size(4.dp).background(FrostStrong, CircleShape))
-                        TemperaturePill(label = "Max", value = "${current.main.tempMax.toInt()}°", color = StormRed)
+                        TemperaturePill(label = stringResource(R.string.feels_like_label), value = "${current.main.feelsLike.toInt()}°", color = wc.accent)
+                        Box(Modifier.size(4.dp).background(wc.accent.copy(alpha=0.3f), CircleShape))
+                        TemperaturePill(label = stringResource(R.string.min), value = "${current.main.tempMin.toInt()}°", color = RainBlue)
+                        Box(Modifier.size(4.dp).background(wc.accent.copy(alpha=0.3f), CircleShape))
+                        TemperaturePill(label = stringResource(R.string.max), value = "${current.main.tempMax.toInt()}°", color = StormRed)
                     }
                 }
             }

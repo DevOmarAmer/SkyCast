@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
@@ -46,6 +47,7 @@ fun AlertsScreen(viewModel: AlertsViewModel, homeViewModel: HomeViewModel) {
 
     var showAddDialog   by remember { mutableStateOf(false) }
     var showTimePicker  by remember { mutableStateOf(false) }
+    var alertToDelete   by remember { mutableStateOf<com.example.skycast.data.model.WeatherAlert?>(null) }
 
     Box(
         modifier = Modifier
@@ -154,10 +156,7 @@ fun AlertsScreen(viewModel: AlertsViewModel, homeViewModel: HomeViewModel) {
                         ) {
                             ConditionAlertCard(
                                 alert    = alert,
-                                onDelete = {
-                                    viewModel.deleteAlert(alert)
-                                    Toast.makeText(context, context.getString(R.string.alert_removed), Toast.LENGTH_SHORT).show()
-                                }
+                                onDelete = { alertToDelete = alert }
                             )
                         }
                     }
@@ -221,6 +220,36 @@ fun AlertsScreen(viewModel: AlertsViewModel, homeViewModel: HomeViewModel) {
                 )
                 Toast.makeText(context, context.getString(R.string.brief_time_updated), Toast.LENGTH_SHORT).show()
             }
+        )
+    }
+
+    // ── Delete Confirmation Dialog ───────────────────────────────────────────
+    if (alertToDelete != null) {
+        AlertDialog(
+            onDismissRequest = { alertToDelete = null },
+            title = { Text(stringResource(R.string.delete_alert_title), color = CloudWhite, fontWeight = FontWeight.Bold) },
+            text = { Text(stringResource(R.string.delete_alert_message), color = CloudGrey) },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        alertToDelete?.let {
+                            viewModel.deleteAlert(it)
+                            Toast.makeText(context, context.getString(R.string.alert_removed), Toast.LENGTH_SHORT).show()
+                        }
+                        alertToDelete = null
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = StormRed)
+                ) {
+                    Text(stringResource(R.string.delete), color = CloudWhite)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { alertToDelete = null }) {
+                    Text(stringResource(R.string.cancel), color = SkyBlueBright)
+                }
+            },
+            containerColor = SkyNavy,
+            shape = RoundedCornerShape(20.dp)
         )
     }
 }

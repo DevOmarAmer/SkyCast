@@ -36,27 +36,28 @@ fun MorningAIAnalysisScreen(
     onBack: () -> Unit
 ) {
     val state by viewModel.analysisState.collectAsState()
-    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
+    val lang  by viewModel.language.collectAsState(initial = "en")
+    val isRtl = lang == "ar"
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(com.example.skycast.R.string.morning_analysis_title), fontWeight = FontWeight.Bold) },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = stringResource(com.example.skycast.R.string.back_to_home))
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = SkyNavy,
-                    titleContentColor = CloudWhite,
-                    navigationIconContentColor = CloudWhite
+    CompositionLocalProvider(LocalLayoutDirection provides if (isRtl) LayoutDirection.Rtl else LayoutDirection.Ltr) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text(stringResource(com.example.skycast.R.string.morning_analysis_title), fontWeight = FontWeight.Bold) },
+                    navigationIcon = {
+                        IconButton(onClick = onBack) {
+                            Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = stringResource(com.example.skycast.R.string.back_to_home))
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = SkyNavy,
+                        titleContentColor = CloudWhite,
+                        navigationIconContentColor = CloudWhite
+                    )
                 )
-            )
-        },
-        containerColor = SkyNavy
-    ) { padding ->
-        CompositionLocalProvider(LocalLayoutDirection provides if (isRtl) LayoutDirection.Rtl else LayoutDirection.Ltr) {
+            },
+            containerColor = SkyNavy
+        ) { padding ->
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -68,15 +69,9 @@ fun MorningAIAnalysisScreen(
                     )
             ) {
                 when (val current = state) {
-                    is MorningAnalysisState.Loading -> {
-                        LoadingAnalysis()
-                    }
-                    is MorningAnalysisState.Success -> {
-                        AnalysisContent(current.markdownContent, isRtl)
-                    }
-                    is MorningAnalysisState.Error -> {
-                        ErrorContent(current.message, onBack)
-                    }
+                    is MorningAnalysisState.Loading -> LoadingAnalysis()
+                    is MorningAnalysisState.Success -> AnalysisContent(current.markdownContent)
+                    is MorningAnalysisState.Error   -> ErrorContent(current.message, onBack)
                 }
             }
         }
@@ -125,7 +120,7 @@ fun LoadingAnalysis() {
 }
 
 @Composable
-fun AnalysisContent(content: String, isRtl: Boolean) {
+fun AnalysisContent(content: String) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -182,7 +177,7 @@ fun AnalysisContent(content: String, isRtl: Boolean) {
                         color = CloudWhite,
                         lineHeight = 26.sp,
                         style = MaterialTheme.typography.bodyLarge,
-                        textAlign = if (isRtl) TextAlign.Right else TextAlign.Left
+                        textAlign = TextAlign.Start
                     )
                 }
             }

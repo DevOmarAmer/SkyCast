@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -22,11 +23,14 @@ import com.example.skycast.R
 import com.example.skycast.data.model.AlertCondition
 import com.example.skycast.data.model.WeatherAlert
 import com.example.skycast.ui.theme.*
+import com.example.skycast.utils.AlertUtils
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 @Composable
 fun ConditionAlertCard(alert: WeatherAlert, onDelete: () -> Unit) {
+    val context = LocalContext.current
+    val localizedLabel = AlertUtils.buildLocalizedLabel(context, alert.conditionType, alert.threshold)
     val style = conditionStyle(alert.conditionType)
     val emoji = style.first
     val bgColor = style.second
@@ -61,7 +65,7 @@ fun ConditionAlertCard(alert: WeatherAlert, onDelete: () -> Unit) {
 
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = alert.label,
+                        text = localizedLabel,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.W600,
                         color = CloudWhite

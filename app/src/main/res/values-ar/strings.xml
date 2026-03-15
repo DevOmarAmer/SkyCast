@@ -57,6 +57,8 @@
     <string name="save_alert">حفظ التنبيه</string>
     <string name="cancel">إلغاء</string>
     <string name="confirm">تأكيد</string>
+    <string name="delete_alert_title">حذف التنبيه</string>
+    <string name="delete_alert_message">هل أنت متأكد من رغبتك في حذف هذا التنبيه؟ لا يمكن التراجع عن هذا الإجراء.</string>
 
     <!-- Alerts – Condition Types -->
     <string name="condition_alerts_title">تنبيهات الحالة</string>
@@ -142,4 +144,15 @@
     <string name="dismiss_alarm">إيقاف المنبه</string>
     <string name="open_map_to_set_location">افتح الخريطة لتعيين الموقع</string>
     <string name="footer_info">SkyCast v1.0  ·  مدعوم بواسطة OpenWeatherMap</string>
+    <string name="fetching_weather">جاري جلب الطقس…</string>
+    <string name="something_went_wrong">حدث خطأ ما</string>
+    <string name="offline_mode_msg">وضع عدم الاتصال - عرض البيانات المخزنة</string>
+    <string name="ai_brief_title">ملخص ذكاء سكاي كاست</string>
+    <string name="ai_generating_msg">جاري إنشاء ملخص الطقس المخصص لك...</string>
+    <string name="visibility">الرؤية</string>
+    <string name="clouds">الغيوم</string>
+    <string name="min">الصغرى</string>
+    <string name="max">العظمى</string>
+    <string name="feels_like_label">الإحساس</string>
+    <string name="splash_tagline">سماءك، وتوقعاتك</string>
 </resources>

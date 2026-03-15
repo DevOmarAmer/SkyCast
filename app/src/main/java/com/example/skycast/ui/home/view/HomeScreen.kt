@@ -68,7 +68,7 @@ fun HomeScreen(viewModel: HomeViewModel, onNavigateToAnalysis: () -> Unit) {
                         CircularProgressIndicator(color = SkyBlueBright, strokeWidth = 3.dp)
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
-                            text = "Fetching weather…",
+                            text = stringResource(R.string.fetching_weather),
                             color = CloudGrey,
                             style = MaterialTheme.typography.bodyMedium
                         )
@@ -92,7 +92,7 @@ fun HomeScreen(viewModel: HomeViewModel, onNavigateToAnalysis: () -> Unit) {
                         Text("⚠️", fontSize = 48.sp)
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
-                            text = (weatherState as Resource.Error).message ?: "Something went wrong",
+                            text = (weatherState as Resource.Error).message ?: stringResource(R.string.something_went_wrong),
                             color = StormRed,
                             style = MaterialTheme.typography.bodyLarge,
                             textAlign = TextAlign.Center
@@ -118,7 +118,7 @@ fun HomeScreen(viewModel: HomeViewModel, onNavigateToAnalysis: () -> Unit) {
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "Offline Mode - Showing Cached Data",
+                    text = stringResource(R.string.offline_mode_msg),
                     color = Color.White,
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.Bold
@@ -178,7 +178,7 @@ fun WeatherContent(data: WeatherResponse, viewModel: HomeViewModel, onNavigateTo
 
         // ── Today's Hourly Forecast ───────────────────────────────────────────
         item {
-            SectionHeader(title = "Today's Forecast")
+            SectionHeader(title = stringResource(R.string.today_forecast))
         }
         item {
             HourlyForecastRow(hourlyItems = hourlyToday)
@@ -186,7 +186,7 @@ fun WeatherContent(data: WeatherResponse, viewModel: HomeViewModel, onNavigateTo
 
         // ── 5-Day Forecast ────────────────────────────────────────────────────
         item {
-            SectionHeader(title = "5-Day Forecast")
+            SectionHeader(title = stringResource(R.string.five_day_forecast))
         }
         items(dailyForecasts) { day ->
             DailyForecastRow(forecast = day)

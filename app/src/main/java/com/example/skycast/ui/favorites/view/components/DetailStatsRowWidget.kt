@@ -50,11 +50,11 @@ fun DetailStatsRow(current: ForecastItem) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                DetailStatItem(emoji = "👁️", label = "Visibility", value = "${current.visibility / 1000} km")
+                DetailStatItem(emoji = "👁️", label = stringResource(R.string.visibility), value = "${current.visibility / 1000} km")
                 DetailStatDivider()
-                DetailStatItem(emoji = "☁️", label = "Clouds",     value = "${current.clouds.all}%")
+                DetailStatItem(emoji = "☁️", label = stringResource(R.string.clouds),     value = "${current.clouds.all}%")
                 DetailStatDivider()
-                DetailStatItem(emoji = "🌫️", label = "Feels Like", value = "${current.main.feelsLike.toInt()}°")
+                DetailStatItem(emoji = "🌫️", label = stringResource(R.string.feels_like_label), value = "${current.main.feelsLike.toInt()}°")
             }
         }
     }

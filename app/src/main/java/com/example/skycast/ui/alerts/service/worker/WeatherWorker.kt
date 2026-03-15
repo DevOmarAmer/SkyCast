@@ -9,7 +9,11 @@ import androidx.work.WorkerParameters
 import com.example.skycast.R
 import com.example.skycast.data.model.AlertCondition
 import com.example.skycast.data.remote.RetrofitClient
+import com.example.skycast.utils.AlertUtils
+import com.example.skycast.utils.LocaleHelper
 import com.example.skycast.utils.NotificationHelper
+import com.example.skycast.utils.SettingsManager
+import kotlinx.coroutines.flow.first
 
 /**
  * Periodic worker (every 15 min) that:
@@ -72,10 +76,17 @@ class WeatherConditionWorker(
             if (conditionMet) {
                 val tempC   = current.main.temp.toInt()
                 val desc    = current.weatherInfo.firstOrNull()?.description ?: ""
-                val message = buildMessage(conditionType, threshold, tempC, desc)
+
+                val settingsManager = SettingsManager(context)
+                val savedLang       = settingsManager.langFlow.first()
+                val localizedContext = LocaleHelper.getLocalizedContext(context, savedLang)
+
+                val localizedLabel = AlertUtils.buildLocalizedLabel(localizedContext, conditionType, threshold)
+                val message = buildMessage(localizedContext, conditionType, threshold, tempC, desc)
+
                 NotificationHelper.showWeatherAlert(
-                    context = context,
-                    title   = context.getString(R.string.alert_title_format, label),
+                    context = localizedContext,
+                    title   = localizedContext.getString(R.string.alert_title_format, localizedLabel),
                     message = message,
                     isAlarm = alertType == "alarm"
                 )
@@ -86,13 +97,13 @@ class WeatherConditionWorker(
         }
     }
 
-    private fun buildMessage(type: String, threshold: Double, tempC: Int, desc: String): String = when (type) {
-        AlertCondition.TEMP_ABOVE    -> context.getString(R.string.alert_msg_temp_above, tempC, threshold.toInt(), desc)
-        AlertCondition.TEMP_BELOW    -> context.getString(R.string.alert_msg_temp_below, tempC, threshold.toInt(), desc)
-        AlertCondition.WIND_ABOVE    -> context.getString(R.string.alert_msg_wind_above, threshold.toInt(), desc)
-        AlertCondition.RAIN_EXPECTED -> context.getString(R.string.alert_msg_rain_expected, desc)
-        AlertCondition.VERY_CLOUDY   -> context.getString(R.string.alert_msg_very_cloudy, desc)
-        else                         -> context.getString(R.string.alert_msg_default, desc)
+    private fun buildMessage(localizedContext: Context, type: String, threshold: Double, tempC: Int, desc: String): String = when (type) {
+        AlertCondition.TEMP_ABOVE    -> localizedContext.getString(R.string.alert_msg_temp_above, tempC, threshold.toInt(), desc)
+        AlertCondition.TEMP_BELOW    -> localizedContext.getString(R.string.alert_msg_temp_below, tempC, threshold.toInt(), desc)
+        AlertCondition.WIND_ABOVE    -> localizedContext.getString(R.string.alert_msg_wind_above, threshold.toInt(), desc)
+        AlertCondition.RAIN_EXPECTED -> localizedContext.getString(R.string.alert_msg_rain_expected, desc)
+        AlertCondition.VERY_CLOUDY   -> localizedContext.getString(R.string.alert_msg_very_cloudy, desc)
+        else                         -> localizedContext.getString(R.string.alert_msg_default, desc)
     }
 
     companion object {
