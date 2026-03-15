@@ -11,11 +11,20 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
+import com.example.skycast.utils.SettingsManager
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class FavoritesViewModel(
-    private val repository: IWeatherRepository
+    private val repository: IWeatherRepository,
+    private val settingsManager: SettingsManager
 ) : ViewModel() {
+
+    val windUnit: StateFlow<String> = settingsManager.windUnitFlow
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "m/s")
+
+    val tempUnit: StateFlow<String> = settingsManager.tempUnitFlow
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "metric")
 
     val favoritesList: StateFlow<List<FavoriteLocation>> = repository.getFavoriteLocations()
         .stateIn(
@@ -32,7 +41,9 @@ class FavoritesViewModel(
     fun loadFavoriteWeather(lat: Double, lon: Double, apiKey: String) {
         viewModelScope.launch {
             _selectedFavoriteWeather.value = Resource.Loading()
-            repository.getWeatherForecast(lat, lon, apiKey, "metric", "en").collect { result ->
+            val unit = settingsManager.tempUnitFlow.first()
+            val lang = settingsManager.langFlow.first()
+            repository.getWeatherForecast(lat, lon, apiKey, unit, lang).collect { result ->
                 _selectedFavoriteWeather.value = result
             }
         }

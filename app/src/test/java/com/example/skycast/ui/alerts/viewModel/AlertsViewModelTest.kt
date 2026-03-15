@@ -54,8 +54,7 @@ class AlertsViewModelTest {
             alertType = "notification",
             workerId = "worker-123"
         )
-        // Mocking the scheduler to return our alert object
-        coEvery { 
+        coEvery {
             alertScheduler.scheduleConditionAlert(any(), any(), any(), any(), any(), any(), any(), any(), any())
         } returns alert
         

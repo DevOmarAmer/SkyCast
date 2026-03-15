@@ -19,9 +19,10 @@ import androidx.compose.ui.unit.sp
 import com.example.skycast.R
 import com.example.skycast.data.model.ForecastItem
 import com.example.skycast.ui.theme.*
+import com.example.skycast.utils.UnitUtils
 
 @Composable
-fun DetailStatsRow(current: ForecastItem) {
+fun DetailStatsRow(current: ForecastItem, windUnit: String, tempUnit: String) {
     val wc = LocalWeatherColors.current
     Card(
         modifier = Modifier
@@ -38,7 +39,14 @@ fun DetailStatsRow(current: ForecastItem) {
             ) {
                 DetailStatItem(emoji = "💧", label = stringResource(R.string.humidity),  value = "${current.main.humidity}%")
                 DetailStatDivider()
-                DetailStatItem(emoji = "💨", label = stringResource(R.string.wind),      value = "${current.wind.speed} m/s")
+                
+                val displayWind = UnitUtils.formatWindSpeed(
+                    speed = current.wind.speed,
+                    apiUnits = tempUnit,
+                    userWindUnit = windUnit
+                )
+
+                DetailStatItem(emoji = "💨", label = stringResource(R.string.wind),      value = displayWind)
                 DetailStatDivider()
                 DetailStatItem(emoji = "🌡️", label = stringResource(R.string.pressure),  value = "${current.main.pressure} hPa")
             }

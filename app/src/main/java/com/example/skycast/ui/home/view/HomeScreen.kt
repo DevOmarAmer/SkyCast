@@ -43,6 +43,8 @@ fun HomeScreen(viewModel: HomeViewModel, onNavigateToAnalysis: () -> Unit) {
     val networkStatus by viewModel.networkStatus.collectAsStateWithLifecycle()
     // Observe AI state at the top level — passed down as plain data, not ViewModel
     val aiState by viewModel.aiSummaryState.collectAsStateWithLifecycle()
+    val windUnit by viewModel.windUnit.collectAsStateWithLifecycle()
+    val tempUnit by viewModel.tempUnit.collectAsStateWithLifecycle()
 
     Box(
         modifier = Modifier
@@ -74,6 +76,8 @@ fun HomeScreen(viewModel: HomeViewModel, onNavigateToAnalysis: () -> Unit) {
                     WeatherContent(
                         data = data,
                         aiState = aiState,
+                        windUnit = windUnit,
+                        tempUnit = tempUnit,
                         onNavigateToAnalysis = onNavigateToAnalysis
                     )
                 }
@@ -133,6 +137,8 @@ fun HomeScreen(viewModel: HomeViewModel, onNavigateToAnalysis: () -> Unit) {
 fun WeatherContent(
     data: WeatherResponse,
     aiState: AiState,
+    windUnit: String,
+    tempUnit: String,
     onNavigateToAnalysis: () -> Unit
 ) {
     val currentWeather = data.forecastList.firstOrNull() ?: return
@@ -159,7 +165,7 @@ fun WeatherContent(
         }
 
         item {
-            WeatherDetailsCard(currentWeather = currentWeather)
+            WeatherDetailsCard(currentWeather = currentWeather, windUnit = windUnit, tempUnit = tempUnit)
         }
 
         item {

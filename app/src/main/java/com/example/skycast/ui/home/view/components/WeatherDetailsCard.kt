@@ -19,9 +19,10 @@ import androidx.compose.ui.unit.sp
 import com.example.skycast.R
 import com.example.skycast.data.model.ForecastItem
 import com.example.skycast.ui.theme.*
+import com.example.skycast.utils.UnitUtils
 
 @Composable
-fun WeatherDetailsCard(currentWeather: ForecastItem) {
+fun WeatherDetailsCard(currentWeather: ForecastItem, windUnit: String, tempUnit: String) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -37,7 +38,14 @@ fun WeatherDetailsCard(currentWeather: ForecastItem) {
             ) {
                 WeatherStatItem(emoji = "💧", label = stringResource(R.string.humidity), value = "${currentWeather.main.humidity}%")
                 VerticalDivider()
-                WeatherStatItem(emoji = "💨", label = stringResource(R.string.wind), value = "${currentWeather.wind.speed} m/s")
+                
+                val displayWind = UnitUtils.formatWindSpeed(
+                    speed = currentWeather.wind.speed,
+                    apiUnits = tempUnit,
+                    userWindUnit = windUnit
+                )
+
+                WeatherStatItem(emoji = "💨", label = stringResource(R.string.wind), value = displayWind)
                 VerticalDivider()
                 WeatherStatItem(emoji = "🌡️", label = stringResource(R.string.pressure), value = "${currentWeather.main.pressure} hPa")
             }

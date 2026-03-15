@@ -48,6 +48,8 @@ fun FavoriteDetailScreen(
     onNavigateBack: () -> Unit
 ) {
     val weatherState by viewModel.selectedFavoriteWeather.collectAsStateWithLifecycle()
+    val windUnit by viewModel.windUnit.collectAsStateWithLifecycle()
+    val tempUnit by viewModel.tempUnit.collectAsStateWithLifecycle()
 
     LaunchedEffect(location) {
         viewModel.loadFavoriteWeather(location.latitude, location.longitude, apiKey)
@@ -94,7 +96,7 @@ fun FavoriteDetailScreen(
                 is Resource.Success -> {
                     val data = (weatherState as Resource.Success<WeatherResponse>).data
                     if (data != null) {
-                        DetailSuccessContent(data, location, onNavigateBack)
+                        DetailSuccessContent(data, location, onNavigateBack, windUnit, tempUnit)
                     }
                 }
                 is Resource.Error -> DetailErrorState(
@@ -110,7 +112,9 @@ fun FavoriteDetailScreen(
 private fun DetailSuccessContent(
     data: WeatherResponse,
     location: FavoriteLocation,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    windUnit: String,
+    tempUnit: String
 ) {
     val current = data.forecastList.firstOrNull() ?: return
     val todayDate = current.dateText.substring(0, 10)
@@ -266,7 +270,7 @@ private fun DetailSuccessContent(
         }
 
         item {
-            DetailStatsRow(current)
+            DetailStatsRow(current, windUnit, tempUnit)
         }
 
         item { DetailSectionHeader(stringResource(R.string.today_forecast)) }

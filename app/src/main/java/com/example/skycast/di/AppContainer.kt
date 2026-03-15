@@ -43,6 +43,6 @@ class AppContainer(private val context: Context) {
     // Factories
     val settingsFactory = SettingsViewModelFactory(settingsManager)
     val homeFactory = HomeViewModelFactory(repository, aiRepository, settingsManager, widgetUpdaterService, connectivityObserver)
-    val favoritesFactory = FavoritesViewModelFactory(repository)
+    val favoritesFactory = FavoritesViewModelFactory(repository, settingsManager)
     val alertsFactory = AlertsViewModelFactory(repository, alertScheduler, settingsManager)
 }

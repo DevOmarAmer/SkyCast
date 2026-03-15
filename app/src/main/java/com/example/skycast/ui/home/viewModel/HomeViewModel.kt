@@ -15,6 +15,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
@@ -30,6 +32,12 @@ class HomeViewModel(
 
     private val _aiSummaryState = MutableStateFlow<AiState>(AiState.Idle)
     val aiSummaryState: StateFlow<AiState> = _aiSummaryState.asStateFlow()
+
+    val windUnit: StateFlow<String> = settingsManager.windUnitFlow
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "m/s")
+
+    val tempUnit: StateFlow<String> = settingsManager.tempUnitFlow
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "metric")
 
     private val _networkStatus = MutableStateFlow(ConnectivityObserver.Status.Available)
     val networkStatus: StateFlow<ConnectivityObserver.Status> = _networkStatus.asStateFlow()
@@ -79,10 +87,17 @@ class HomeViewModel(
                 settingsManager.langFlow,
                 settingsManager.locationMethodFlow,
                 settingsManager.mapLatFlow,
-                settingsManager.mapLonFlow
-            ) { unit, lang, locMode, mapLat, mapLon ->
-                // Return a data class or map to hold these 5 values
-                SettingsData(unit, lang, locMode, mapLat, mapLon)
+                settingsManager.mapLonFlow,
+                settingsManager.windUnitFlow
+            ) { args: Array<Any?> ->
+                SettingsData(
+                    unit = args[0] as String,
+                    lang = args[1] as String,
+                    locMode = args[2] as String,
+                    mapLat = args[3] as Double,
+                    mapLon = args[4] as Double,
+                    windUnit = args[5] as String
+                )
             }.collectLatest { settings ->
                 if (settings.locMode == "map") {
                     // Mode is Map: Fetch immediately using saved coordinates
@@ -154,16 +169,13 @@ class HomeViewModel(
     private fun fetchAiSummary(firstItem: com.example.skycast.data.model.ForecastItem?, lang: String) {
         if (firstItem == null) return
         
-        // 1. If already loading, don't trigger another one
         if (_aiSummaryState.value == AiState.Loading) return
 
-        // 2. Simple deduplication: don't fetch if temp/condition/lang hasn't changed
         val weatherKey = "${firstItem.main.temp.toInt()}_${firstItem.weatherInfo.firstOrNull()?.description}_${firstItem.wind.speed.toInt()}"
         if (weatherKey == lastFetchedWeatherKey && lang == lastFetchedLang && _aiSummaryState.value is AiState.Success) {
             return 
         }
 
-        // 3. Cancel any existing job to be safe
         aiJob?.cancel()
         
         aiJob = viewModelScope.launch {
@@ -200,5 +212,6 @@ data class SettingsData(
     val lang: String,
     val locMode: String,
     val mapLat: Double,
-    val mapLon: Double
+    val mapLon: Double,
+    val windUnit: String
 )

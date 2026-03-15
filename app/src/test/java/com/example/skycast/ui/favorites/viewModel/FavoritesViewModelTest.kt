@@ -18,19 +18,26 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 
+import com.example.skycast.utils.SettingsManager
+
 @OptIn(ExperimentalCoroutinesApi::class)
 class FavoritesViewModelTest {
 
     private lateinit var viewModel: FavoritesViewModel
     private val repository: IWeatherRepository = mockk()
+    private val settingsManager: SettingsManager = mockk()
     private val testDispatcher = UnconfinedTestDispatcher()
 
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        // Mock the initial flow for favoritesList
+
         coEvery { repository.getFavoriteLocations() } returns flowOf(emptyList())
-        viewModel = FavoritesViewModel(repository)
+        every { settingsManager.windUnitFlow } returns flowOf("m/s")
+        every { settingsManager.tempUnitFlow } returns flowOf("metric")
+        every { settingsManager.langFlow } returns flowOf("en")
+
+        viewModel = FavoritesViewModel(repository, settingsManager)
     }
 
     @After
@@ -62,10 +69,8 @@ class FavoritesViewModelTest {
     fun favoritesList_exposesFlowFromRepository() = runTest {
         val list = listOf(FavoriteLocation(cityName = "Tokyo", latitude = 35.6, longitude = 139.6))
         coEvery { repository.getFavoriteLocations() } returns flowOf(list)
-        
-        // We re-init or re-subscribe since StateFlow shares the upstream.
-        // In this case, creating a new VM instance to pick up the mocked list.
-        val newViewModel = FavoritesViewModel(repository)
+
+        val newViewModel = FavoritesViewModel(repository, settingsManager)
         
         newViewModel.favoritesList.test {
             assertEquals(list, awaitItem())
