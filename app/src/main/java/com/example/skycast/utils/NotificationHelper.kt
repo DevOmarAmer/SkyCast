@@ -9,13 +9,10 @@ import android.content.Intent
 import android.media.AudioAttributes
 import android.media.RingtoneManager
 import android.os.Build
-import android.os.VibrationEffect
-import android.os.Vibrator
-import android.os.VibratorManager
 import androidx.annotation.RequiresPermission
 import androidx.core.app.NotificationCompat
 import com.example.skycast.R
-import com.example.skycast.ui.alerts.view.AlarmActivity
+import com.example.skycast.ui.alerts.AlarmActivity
 
 object NotificationHelper {
 

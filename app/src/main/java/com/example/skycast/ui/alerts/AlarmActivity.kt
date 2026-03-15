@@ -1,8 +1,7 @@
-package com.example.skycast.ui.alerts.view
+package com.example.skycast.ui.alerts
 
 import android.app.KeyguardManager
 import android.app.NotificationManager
-import android.content.Context
 import android.media.AudioAttributes
 import android.media.RingtoneManager
 import android.os.Build
@@ -11,6 +10,7 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
 import android.content.Intent
+import android.media.MediaPlayer
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -22,8 +22,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -39,7 +37,7 @@ import com.example.skycast.ui.theme.*
 class AlarmActivity : ComponentActivity() {
 
     private var vibrator: Vibrator? = null
-    private var mediaPlayer: android.media.MediaPlayer? = null
+    private var mediaPlayer: MediaPlayer? = null
 
     private val titleState = mutableStateOf("Weather Alarm")
     private val messageState = mutableStateOf("Critical weather condition met.")
@@ -66,7 +64,7 @@ class AlarmActivity : ComponentActivity() {
                     onDismiss = {
                         stopAlarm()
                         if (notifId != -1) {
-                            val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                            val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
                             manager.cancel(notifId)
                         }
                         finish()
@@ -89,7 +87,7 @@ class AlarmActivity : ComponentActivity() {
             val alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
                 ?: RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE)
 
-            mediaPlayer = android.media.MediaPlayer().apply {
+            mediaPlayer = MediaPlayer().apply {
                 setDataSource(this@AlarmActivity, alarmUri)
                 setAudioAttributes(
                     AudioAttributes.Builder()
@@ -103,11 +101,11 @@ class AlarmActivity : ComponentActivity() {
             }
 
             vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                val vibratorManager = getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+                val vibratorManager = getSystemService(VIBRATOR_MANAGER_SERVICE) as VibratorManager
                 vibratorManager.defaultVibrator
             } else {
                 @Suppress("DEPRECATION")
-                getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+                getSystemService(VIBRATOR_SERVICE) as Vibrator
             }
 
             val pattern = longArrayOf(0, 500, 200, 500, 200, 500)
@@ -137,7 +135,7 @@ class AlarmActivity : ComponentActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             setShowWhenLocked(true)
             setTurnScreenOn(true)
-            val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+            val keyguardManager = getSystemService(KEYGUARD_SERVICE) as KeyguardManager
             keyguardManager.requestDismissKeyguard(this, null)
         } else {
             @Suppress("DEPRECATION")

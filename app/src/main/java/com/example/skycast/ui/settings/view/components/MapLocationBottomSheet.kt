@@ -1,4 +1,4 @@
-package com.example.skycast.ui.map.view
+package com.example.skycast.ui.settings.view.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
