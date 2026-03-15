@@ -3,12 +3,7 @@ package com.example.skycast.data.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-/**
- * Condition types for smart weather alerts.
- * TEMP_ABOVE / TEMP_BELOW  → threshold in °C.
- * WIND_ABOVE               → threshold in m/s.
- * RAIN_EXPECTED / VERY_CLOUDY ignore threshold.
- */
+
 object AlertCondition {
     const val TEMP_ABOVE     = "TEMP_ABOVE"
     const val TEMP_BELOW     = "TEMP_BELOW"

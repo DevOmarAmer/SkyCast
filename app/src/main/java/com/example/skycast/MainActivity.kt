@@ -12,10 +12,8 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
         super.onCreate(savedInstanceState)
 
-        // Enable edge-to-edge so content goes under status & navigation bars
         enableEdgeToEdge()
 
-        // Single AppContainer mapping from our custom SkyCastApplication
         val appContainer = (application as SkyCastApplication).container
 
         setContent {

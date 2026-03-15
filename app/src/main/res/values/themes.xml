@@ -5,7 +5,7 @@
         <!-- Set the splash screen background -->
         <item name="windowSplashScreenBackground">#0A1628</item>
         <!-- Use an animated icon or a simple icon -->
-        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_logo</item>
+        <item name="windowSplashScreenAnimatedIcon">@android:color/transparent</item>
         <!-- Set the theme of the Activity that follows your splash screen. -->
         <item name="postSplashScreenTheme">@style/Theme.SkyCast</item>
     </style>

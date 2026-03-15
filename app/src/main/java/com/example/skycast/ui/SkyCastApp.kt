@@ -1,6 +1,7 @@
 package com.example.skycast.ui
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Build
 import android.widget.Toast
@@ -30,6 +31,7 @@ import com.example.skycast.utils.LocationHelper
 import com.example.skycast.utils.Resource
 import kotlinx.coroutines.delay
 
+@SuppressLint("ContextCastToActivity")
 @Composable
 fun SkyCastApp(appContainer: AppContainer) {
     val activity = LocalContext.current as Activity

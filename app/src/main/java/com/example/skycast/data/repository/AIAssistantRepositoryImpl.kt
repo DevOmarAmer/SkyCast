@@ -8,7 +8,6 @@ import kotlinx.coroutines.withContext
 
 class AIAssistantRepositoryImpl : IAIAssistantRepository {
 
-    // تهيئة نموذج Gemini (نستخدم flash-latest لأنه الأضمن في التشغيل حالياً)
     private val generativeModel by lazy {
         GenerativeModel(
             modelName = "gemini-flash-latest",

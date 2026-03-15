@@ -1,7 +1,7 @@
 package com.example.skycast.data.local
 
 import com.example.skycast.data.local.DAOs.AlertDao
-import com.example.skycast.data.local.DAOs.CachedWeather
+import com.example.skycast.data.model.CachedWeather
 import com.example.skycast.data.local.DAOs.FavoriteLocationDao
 import com.example.skycast.data.local.DAOs.WeatherDao
 import com.example.skycast.data.model.FavoriteLocation

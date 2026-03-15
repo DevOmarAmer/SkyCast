@@ -14,6 +14,4 @@ interface WeatherApiService {
         @Query("units") units: String = "metric",
         @Query("lang") lang : String = "en"
     ): Response<WeatherResponse>
-
-
 }

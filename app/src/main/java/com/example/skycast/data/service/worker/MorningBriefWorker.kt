@@ -12,15 +12,6 @@ import com.example.skycast.utils.SettingsManager
 import kotlinx.coroutines.flow.first
 import java.util.Calendar
 
-/**
- * Daily periodic worker for the Morning Brief feature.
- * Fetches today's weather and fires a friendly summary notification.
- *
- * Input data keys:
- *  - "lat"     : Double
- *  - "lon"     : Double
- *  - "api_key" : String
- */
 class MorningBriefWorker(
     private val context: Context,
     params: WorkerParameters

@@ -9,7 +9,6 @@ import com.example.skycast.data.model.WeatherAlert
 import com.example.skycast.ui.alerts.service.worker.MorningBriefWorker
 import com.example.skycast.ui.alerts.service.worker.WeatherConditionWorker
 import java.util.Calendar
-import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 class WorkManagerAlertScheduler(private val context: Context) : IAlertScheduler {

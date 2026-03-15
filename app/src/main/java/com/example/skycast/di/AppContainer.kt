@@ -2,7 +2,7 @@ package com.example.skycast.di
 
 import android.content.Context
 import com.example.skycast.data.local.LocalDataSource
-import com.example.skycast.data.local.DAOs.WeatherDatabase
+import com.example.skycast.data.local.db.WeatherDatabase
 import com.example.skycast.data.remote.RemoteDataSource
 import com.example.skycast.data.remote.ApiService.RetrofitClient
 import com.example.skycast.data.repository.AIAssistantRepositoryImpl

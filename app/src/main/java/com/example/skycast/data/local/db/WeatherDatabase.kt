@@ -1,4 +1,4 @@
-package com.example.skycast.data.local.DAOs
+package com.example.skycast.data.local.db
 
 import android.content.Context
 import androidx.room.Database
@@ -6,6 +6,10 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.skycast.data.local.Converters
+import com.example.skycast.data.local.DAOs.AlertDao
+import com.example.skycast.data.model.CachedWeather
+import com.example.skycast.data.local.DAOs.FavoriteLocationDao
+import com.example.skycast.data.local.DAOs.WeatherDao
 import com.example.skycast.data.model.FavoriteLocation
 import com.example.skycast.data.model.WeatherAlert
 
