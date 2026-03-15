@@ -5,6 +5,7 @@ import com.example.skycast.data.local.entity.FavoriteLocation
 import com.example.skycast.data.repository.IWeatherRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

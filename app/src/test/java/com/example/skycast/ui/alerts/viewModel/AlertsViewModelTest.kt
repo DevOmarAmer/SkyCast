@@ -7,6 +7,7 @@ import com.example.skycast.utils.IAlertScheduler
 import com.example.skycast.utils.SettingsManager
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -34,9 +35,9 @@ class AlertsViewModelTest {
         Dispatchers.setMain(testDispatcher)
         
         coEvery { repository.getAlerts() } returns flowOf(emptyList())
-        coEvery { settingsManager.morningBriefEnabledFlow } returns flowOf(false)
-        coEvery { settingsManager.morningBriefHourFlow } returns flowOf(8)
-        coEvery { settingsManager.morningBriefMinuteFlow } returns flowOf(0)
+        every { settingsManager.morningBriefEnabledFlow } returns flowOf(false)
+        every { settingsManager.morningBriefHourFlow } returns flowOf(8)
+        every { settingsManager.morningBriefMinuteFlow } returns flowOf(0)
         
         viewModel = AlertsViewModel(repository, alertScheduler, settingsManager)
     }
