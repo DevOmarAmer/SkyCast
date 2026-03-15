@@ -6,8 +6,8 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.example.skycast.data.model.WeatherAlert
-import com.example.skycast.ui.alerts.service.worker.MorningBriefWorker
-import com.example.skycast.ui.alerts.service.worker.WeatherConditionWorker
+import com.example.skycast.data.service.worker.MorningBriefWorker
+import com.example.skycast.data.service.worker.WeatherConditionWorker
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
 

@@ -9,6 +9,7 @@ import com.example.skycast.utils.SettingsManager
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class AlertsViewModel(
@@ -96,8 +97,10 @@ class AlertsViewModel(
     ) {
         viewModelScope.launch {
             settingsManager.saveMorningBriefTime(hour, minute)
-            // Re-schedule to apply new time (UPDATE policy cancels/replaces old work)
-            alertScheduler.scheduleMorningBrief(hour, minute, lat, lon, apiKey)
+            // Only re-schedule if it's currently enabled
+            if (settingsManager.morningBriefEnabledFlow.first()) {
+                alertScheduler.scheduleMorningBrief(hour, minute, lat, lon, apiKey)
+            }
         }
     }
 }

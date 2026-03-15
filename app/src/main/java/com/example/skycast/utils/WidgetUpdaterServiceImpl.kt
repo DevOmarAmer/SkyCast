@@ -7,4 +7,8 @@ class WidgetUpdaterServiceImpl(private val context: Context) : IWidgetUpdaterSer
     override suspend fun updateWidget(temp: String, city: String, desc: String) {
         WidgetUpdater.updateWidget(context, temp, city, desc)
     }
+
+    override suspend fun updateAiBrief(brief: String) {
+        WidgetUpdater.updateAiBrief(context, brief)
+    }
 }

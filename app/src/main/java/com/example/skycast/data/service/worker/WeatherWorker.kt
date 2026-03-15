@@ -1,4 +1,4 @@
-package com.example.skycast.ui.alerts.service.worker
+package com.example.skycast.data.service.worker
 
 import android.Manifest
 import android.content.Context
@@ -54,7 +54,10 @@ class WeatherConditionWorker(
 
         // ── Check weather condition ────────────────────────────────────────────
         return try {
-            val response = RetrofitClient.apiService.getWeatherForecast(lat, lon, apiKey)
+            val settingsManager = SettingsManager(context)
+            val savedLang       = settingsManager.langFlow.first()
+
+            val response = RetrofitClient.apiService.getWeatherForecast(lat, lon, apiKey, lang = savedLang)
             if (!response.isSuccessful) return Result.retry()
 
             val weather = response.body() ?: return Result.retry()
@@ -77,8 +80,6 @@ class WeatherConditionWorker(
                 val tempC   = current.main.temp.toInt()
                 val desc    = current.weatherInfo.firstOrNull()?.description ?: ""
 
-                val settingsManager = SettingsManager(context)
-                val savedLang       = settingsManager.langFlow.first()
                 val localizedContext = LocaleHelper.getLocalizedContext(context, savedLang)
 
                 val localizedLabel = AlertUtils.buildLocalizedLabel(localizedContext, conditionType, threshold)

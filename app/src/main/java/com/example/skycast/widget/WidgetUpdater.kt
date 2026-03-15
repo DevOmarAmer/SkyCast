@@ -17,4 +17,15 @@ object WidgetUpdater {
             WeatherWidget().update(context, glanceId)
         }
     }
+
+    suspend fun updateAiBrief(context: Context, brief: String) {
+        val manager = GlanceAppWidgetManager(context)
+        val glanceIds = manager.getGlanceIds(AiBriefWidget::class.java)
+        glanceIds.forEach { glanceId ->
+            updateAppWidgetState(context, glanceId) { prefs ->
+                prefs[AiBriefWidget.briefKey] = brief
+            }
+            AiBriefWidget().update(context, glanceId)
+        }
+    }
 }

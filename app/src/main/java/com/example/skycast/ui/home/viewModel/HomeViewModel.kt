@@ -176,9 +176,11 @@ class HomeViewModel(
 
             val summary = aiRepository.getWeatherSummary(tempC, desc, windSpeed, isRainy, lang)
             if (!summary.isNullOrBlank()) {
+                val trimmedSummary = summary.trim()
                 lastFetchedWeatherKey = weatherKey
                 lastFetchedLang = lang
-                _aiSummaryState.value = AiState.Success(summary.trim())
+                _aiSummaryState.value = AiState.Success(trimmedSummary)
+                widgetUpdaterService.updateAiBrief(trimmedSummary)
             } else {
                 _aiSummaryState.value = AiState.Error
             }

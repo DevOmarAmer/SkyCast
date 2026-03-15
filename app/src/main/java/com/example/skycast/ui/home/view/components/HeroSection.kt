@@ -31,7 +31,6 @@ import com.example.skycast.ui.theme.*
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-// ── Hero: City, Date, Big Temp, Icon ─────────────────────────────────────────
 @Composable
 fun HeroSection(data: WeatherResponse, currentWeather: ForecastItem) {
     // Pulsing glow behind the hero icon
@@ -59,7 +58,6 @@ fun HeroSection(data: WeatherResponse, currentWeather: ForecastItem) {
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth()
         ) {
-            // City name and Date
             Text(
                 text = data.city.name,
                 style = MaterialTheme.typography.headlineMedium,
@@ -75,13 +73,11 @@ fun HeroSection(data: WeatherResponse, currentWeather: ForecastItem) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Main Weather Info: Temp and Icon
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                // Temperature
                 Text(
                     text = "${currentWeather.main.temp.toInt()}°",
                     fontSize = 86.sp,
@@ -92,9 +88,7 @@ fun HeroSection(data: WeatherResponse, currentWeather: ForecastItem) {
                 
                 Spacer(modifier = Modifier.width(16.dp))
 
-                // Glowing icon
                 Box(contentAlignment = Alignment.Center) {
-                    // Ambient glow
                     Box(
                         modifier = Modifier
                             .size((100 * glowScale).dp)

@@ -1,4 +1,4 @@
-package com.example.skycast.ui.alerts.service.worker
+package com.example.skycast.data.service.worker
 
 import android.content.Context
 import androidx.work.CoroutineWorker
@@ -23,7 +23,10 @@ class MorningBriefWorker(
         val apiKey = inputData.getString(KEY_API_KEY) ?: return Result.failure()
 
         return try {
-            val response = RetrofitClient.apiService.getWeatherForecast(lat, lon, apiKey)
+            val settingsManager = SettingsManager(context)
+            val savedLang       = settingsManager.langFlow.first()
+
+            val response = RetrofitClient.apiService.getWeatherForecast(lat, lon, apiKey, lang = savedLang)
             if (!response.isSuccessful) return Result.retry()
 
             val weather = response.body() ?: return Result.retry()
@@ -44,8 +47,6 @@ class MorningBriefWorker(
 
             val isRainy = (desc.contains("Rain", true) || desc.contains("Drizzle", true) || desc.contains("Thunderstorm", true))
 
-            val settingsManager = SettingsManager(context)
-            val savedLang       = settingsManager.langFlow.first()
             val localizedContext = LocaleHelper.getLocalizedContext(context, savedLang)
 
             val aiRepo = AIAssistantRepositoryImpl()
