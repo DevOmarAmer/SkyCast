@@ -1,4 +1,4 @@
-package com.example.skycast.data.local
+package com.example.skycast.data.local.DAOs
 
 import androidx.room.Dao
 import androidx.room.Insert

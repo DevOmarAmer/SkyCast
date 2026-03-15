@@ -1,4 +1,4 @@
-package com.example.skycast.data.remote
+package com.example.skycast.data.remote.ApiService
 
 import com.example.skycast.data.model.WeatherResponse
 import retrofit2.Response

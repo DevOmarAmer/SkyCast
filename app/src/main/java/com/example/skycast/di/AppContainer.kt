@@ -1,8 +1,10 @@
 package com.example.skycast.di
 
 import android.content.Context
-import com.example.skycast.data.local.WeatherDatabase
-import com.example.skycast.data.remote.RetrofitClient
+import com.example.skycast.data.local.LocalDataSource
+import com.example.skycast.data.local.DAOs.WeatherDatabase
+import com.example.skycast.data.remote.RemoteDataSource
+import com.example.skycast.data.remote.ApiService.RetrofitClient
 import com.example.skycast.data.repository.AIAssistantRepositoryImpl
 import com.example.skycast.data.repository.WeatherRepository
 import com.example.skycast.ui.alerts.viewModel.AlertsViewModelFactory
@@ -15,13 +17,21 @@ import com.example.skycast.utils.WidgetUpdaterServiceImpl
 import com.example.skycast.utils.WorkManagerAlertScheduler
 
 class AppContainer(private val context: Context) {
-    // Data layer
+    // Data layer — raw sources
     private val database = WeatherDatabase.getDatabase(context)
-    private val favoriteDao = database.favoriteLocationDao()
-    private val weatherDao = database.weatherDao()
-    private val apiService = RetrofitClient.apiService
-    private val alertDao = database.alertDao()
-    private val repository = WeatherRepository(apiService, favoriteDao, alertDao, weatherDao)
+
+    // Data sources
+    private val localDataSource = LocalDataSource(
+        favoriteDao = database.favoriteLocationDao(),
+        alertDao = database.alertDao(),
+        weatherDao = database.weatherDao()
+    )
+    private val remoteDataSource = RemoteDataSource(
+        apiService = RetrofitClient.apiService
+    )
+
+    // Repository
+    private val repository = WeatherRepository(remoteDataSource, localDataSource)
 
     // Settings & Utils
     val settingsManager = SettingsManager(context)
@@ -29,7 +39,7 @@ class AppContainer(private val context: Context) {
     private val alertScheduler = WorkManagerAlertScheduler(context)
     private val connectivityObserver = NetworkConnectivityObserver(context)
     private val aiRepository = AIAssistantRepositoryImpl()
-    
+
     // Factories
     val settingsFactory = SettingsViewModelFactory(settingsManager)
     val homeFactory = HomeViewModelFactory(repository, aiRepository, settingsManager, widgetUpdaterService, connectivityObserver)

@@ -8,7 +8,7 @@ import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.example.skycast.R
 import com.example.skycast.data.model.AlertCondition
-import com.example.skycast.data.remote.RetrofitClient
+import com.example.skycast.data.remote.ApiService.RetrofitClient
 import com.example.skycast.utils.AlertUtils
 import com.example.skycast.utils.LocaleHelper
 import com.example.skycast.utils.NotificationHelper

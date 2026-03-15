@@ -1,29 +1,22 @@
 package com.example.skycast.data.repository
 
-
-import com.example.skycast.data.local.AlertDao
-import com.example.skycast.data.local.FavoriteLocationDao
+import com.example.skycast.data.local.ILocalDataSource
 import com.example.skycast.data.model.FavoriteLocation
 import com.example.skycast.data.model.WeatherAlert
 import com.example.skycast.data.model.WeatherResponse
-import com.example.skycast.data.remote.WeatherApiService
+import com.example.skycast.data.remote.IRemoteDataSource
 import com.example.skycast.utils.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import okio.IOException
 import retrofit2.HttpException
 
-import com.example.skycast.data.local.WeatherDao
-import com.example.skycast.data.local.CachedWeather
-
 class WeatherRepository(
-    private val apiService: WeatherApiService,
-    private val favoriteDao: FavoriteLocationDao,
-    private val alertDao: AlertDao,
-    private val weatherDao: WeatherDao
-): IWeatherRepository {
+    private val remoteDataSource: IRemoteDataSource,
+    private val localDataSource: ILocalDataSource
+) : IWeatherRepository {
 
-    // (Remote) responsibality
+    // --- Remote ---
 
     override suspend fun getWeatherForecast(
         lat: Double,
@@ -34,11 +27,11 @@ class WeatherRepository(
     ): Flow<Resource<WeatherResponse>> = flow {
         emit(Resource.Loading())
         try {
-            val response = apiService.getWeatherForecast(lat, lon, apiKey, units, lang)
+            val response = remoteDataSource.getWeatherForecast(lat, lon, apiKey, units, lang)
             if (response.isSuccessful) {
                 response.body()?.let { weatherData ->
                     // Cache the successful network response for offline use
-                    weatherDao.insertWeather(CachedWeather(1, weatherData))
+                    localDataSource.insertCachedWeather(weatherData)
                     emit(Resource.Success(weatherData))
                 } ?: emit(Resource.Error("Data is empty"))
             } else {
@@ -48,39 +41,36 @@ class WeatherRepository(
             emit(Resource.Error("HTTP Error: ${e.localizedMessage}"))
         } catch (e: IOException) {
             // No internet connection, attempt to fetch from local cache
-            val localCache = weatherDao.getCachedWeather()
-            if (localCache != null) {
-                emit(Resource.Success(localCache.weatherResponse))
+            val cachedWeather = localDataSource.getCachedWeather()
+            if (cachedWeather != null) {
+                emit(Resource.Success(cachedWeather))
             } else {
                 emit(Resource.Error("Check your internet connection."))
             }
         } catch (e: Exception) {
             emit(Resource.Error("Unexpected error: ${e.localizedMessage}"))
         }
-
     }
 
-
-
-    // --- (Local) Responsibility ---
+    // --- Local: Favorites ---
 
     override fun getFavoriteLocations(): Flow<List<FavoriteLocation>> =
-        favoriteDao.getAllFavoriteLocations()
+        localDataSource.getFavoriteLocations()
 
     override suspend fun insertFavoriteLocation(location: FavoriteLocation) =
-        favoriteDao.insertLocation(location)
+        localDataSource.insertFavoriteLocation(location)
 
     override suspend fun deleteFavoriteLocation(location: FavoriteLocation) =
-        favoriteDao.deleteLocation(location)
+        localDataSource.deleteFavoriteLocation(location)
 
-    override fun getAlerts(): Flow<List<WeatherAlert>> = alertDao.getAlerts()
+    // --- Local: Alerts ---
 
-    override suspend fun insertAlert(alert: WeatherAlert) {
-        alertDao.insertAlert(alert)
-    }
+    override fun getAlerts(): Flow<List<WeatherAlert>> =
+        localDataSource.getAlerts()
 
-    override suspend fun deleteAlert(alert: WeatherAlert) {
-        alertDao.deleteAlert(alert)
+    override suspend fun insertAlert(alert: WeatherAlert) =
+        localDataSource.insertAlert(alert)
 
-    }
+    override suspend fun deleteAlert(alert: WeatherAlert) =
+        localDataSource.deleteAlert(alert)
 }

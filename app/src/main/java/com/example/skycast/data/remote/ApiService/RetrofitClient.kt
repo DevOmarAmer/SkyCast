@@ -1,4 +1,4 @@
-package com.example.skycast.data.remote
+package com.example.skycast.data.remote.ApiService
 
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.example.skycast.R
-import com.example.skycast.data.remote.RetrofitClient
+import com.example.skycast.data.remote.ApiService.RetrofitClient
 import com.example.skycast.data.repository.AIAssistantRepositoryImpl
 import com.example.skycast.utils.LocaleHelper
 import com.example.skycast.utils.NotificationHelper

@@ -1,10 +1,11 @@
-package com.example.skycast.data.local
+package com.example.skycast.data.local.DAOs
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.example.skycast.data.local.Converters
 import com.example.skycast.data.model.FavoriteLocation
 import com.example.skycast.data.model.WeatherAlert
 

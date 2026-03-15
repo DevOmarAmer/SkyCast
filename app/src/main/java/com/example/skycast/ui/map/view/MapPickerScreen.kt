@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
 import com.example.skycast.R
 import com.example.skycast.BuildConfig
-import com.example.skycast.data.remote.RetrofitClient
+import com.example.skycast.data.remote.ApiService.RetrofitClient
 import com.example.skycast.ui.theme.*
 import com.example.skycast.utils.LocationHelper
 import com.google.android.gms.maps.CameraUpdateFactory
